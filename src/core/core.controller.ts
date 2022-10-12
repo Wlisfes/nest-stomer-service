@@ -1,4 +1,4 @@
-import { Controller, Post, Put, Get, Body, Query } from '@nestjs/common'
+import { Controller, Post, Body } from '@nestjs/common'
 import { ApiTags, PickType } from '@nestjs/swagger'
 import { ApiCompute } from '@/decorator/compute.decorator'
 import { AlicloudService } from './alicloud.service'

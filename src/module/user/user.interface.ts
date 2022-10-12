@@ -28,7 +28,7 @@ export class IUser extends PickType(ICommon, ['id', 'uid']) {
 
 	@ApiProperty({ description: '验证码' })
 	@IsNotEmpty({ message: '验证码 必填' })
-	@Length(4, 5, { message: '验证码 错误' })
+	@Length(4, 6, { message: '验证码 错误' })
 	code: string
 }
 
