@@ -1,10 +1,10 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common'
-import * as DTO from './core.interface'
+import { ICoreDator } from './core.interface'
 
 @Injectable()
 export class CoreService {
 	/**验证数据模型是否有效**/
-	public async validator<Entity>(props: DTO.NValidator<Entity>): Promise<Entity> {
+	public async validator<T>(props: ICoreDator<T>): Promise<T> {
 		try {
 			const node = await props.model.findOne(props.options)
 			if (!props.empty) {
