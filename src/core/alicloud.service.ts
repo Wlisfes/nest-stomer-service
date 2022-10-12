@@ -2,12 +2,14 @@ import { Injectable, HttpException, HttpStatus } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { create } from 'svg-captcha'
 import { RedisService } from '@/core/redis.service'
+import * as Nanoid from 'nanoid'
 import * as AliCloud from '@alicloud/pop-core'
 import * as Core from './core.interface'
 
 @Injectable()
 export class AlicloudService {
-	protected aliCloud: AliCloud
+	protected readonly aliCloud: AliCloud
+	protected readonly session = Nanoid.customAlphabet('123456789', 10)
 	constructor(private readonly config: ConfigService, private readonly redis: RedisService) {
 		this.aliCloud = new AliCloud({
 			accessKeyId: this.config.get('ALIYUN_ACCESSKEYID'),
@@ -19,7 +21,7 @@ export class AlicloudService {
 
 	/**创建验证码**/
 	public async httpCaptcha(props?: Core.ICaptcha) {
-		return create({
+		const { text, data } = create({
 			size: props?.size ?? 4,
 			fontSize: props?.fontSize ?? 38,
 			color: true,
@@ -30,13 +32,21 @@ export class AlicloudService {
 			charPreset: '123456789',
 			background: '#E8F0FE'
 		})
+		return { text, data, session: this.session(10) }
+	}
+
+	/**图形验证码**/
+	public async fetchCaptcha() {
+		const { text, data, session } = await this.httpCaptcha()
+		await this.redis.setStore(session, text, 300)
+		return { data, session }
 	}
 
 	/**发送手机验证码**/
 	public async fetchMobile(props: Core.IMobile, size?: number) {
 		try {
-			const { text } = await this.httpCaptcha({ size })
-			await this.redis.setStore(props.mobile, text, 300)
+			const code = this.session(size ?? 6)
+			await this.redis.setStore(props.mobile, code, 300)
 			return await this.aliCloud
 				.request(
 					'SendSms',
@@ -44,7 +54,7 @@ export class AlicloudService {
 						PhoneNumbers: props.mobile,
 						SignName: '妖雨录',
 						TemplateCode: 'SMS_254570125',
-						TemplateParam: JSON.stringify({ code: text })
+						TemplateParam: JSON.stringify({ code })
 					},
 					{ method: 'POST' }
 				)
