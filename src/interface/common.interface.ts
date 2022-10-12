@@ -10,10 +10,10 @@ export class ICommon {
 	@Type(type => Number)
 	id: number
 
-	@ApiProperty({ description: 'UID', example: '40b77bff-bd99-4f57-a8a3-71f0dc711c37' })
+	@ApiProperty({ description: 'UID', example: 1665553635334 })
 	@IsNotEmpty({ message: 'UID 必填' })
-	@Type(type => String)
-	uid: string
+	@Type(type => Number)
+	uid: number
 
 	@ApiProperty({ description: '创建时间', example: '2022-04-10 23:33:27' })
 	@IsNotEmpty({ message: '创建时间 必填' })
@@ -48,8 +48,8 @@ export class RCommon {
 	@ApiProperty({ description: 'ID', example: 1 })
 	id: number
 
-	@ApiProperty({ description: 'UID', example: '40b77bff-bd99-4f57-a8a3-71f0dc711c37' })
-	uid: string
+	@ApiProperty({ description: 'UID', example: 1665553635334 })
+	uid: number
 
 	@ApiProperty({ description: '创建时间', example: '2022-04-10 23:33:27' })
 	createTime: string

@@ -1,8 +1,7 @@
-import { PrimaryGeneratedColumn, UpdateDateColumn, CreateDateColumn, Column, BeforeInsert } from 'typeorm'
+import { PrimaryGeneratedColumn, UpdateDateColumn, CreateDateColumn } from 'typeorm'
 import * as day from 'dayjs'
-import * as uuid from 'uuid'
 
-export class BaseEntity {
+export class NEntity {
 	@PrimaryGeneratedColumn({ comment: '自增长主键' })
 	id: number
 
@@ -12,27 +11,17 @@ export class BaseEntity {
 		update: false,
 		transformer: {
 			from: value => day(value).format('YYYY-MM-DD HH:mm:ss'),
-			to: value => value
+			to: value => new Date(value).getTime()
 		}
 	})
-	createTime: Date
+	createTime: number
 
 	@UpdateDateColumn({
 		comment: '修改时间',
 		transformer: {
 			from: value => day(value).format('YYYY-MM-DD HH:mm:ss'),
-			to: value => value
+			to: value => new Date(value).getTime()
 		}
 	})
-	updateTime: Date
-}
-
-export class UEntity extends BaseEntity {
-	@BeforeInsert()
-	BeforeCreate() {
-		this.uid = uuid.v4()
-	}
-
-	@Column({ comment: 'UID', readonly: true })
-	uid: string
+	updateTime: number
 }
