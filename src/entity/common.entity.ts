@@ -11,17 +11,17 @@ export class NEntity {
 		update: false,
 		transformer: {
 			from: value => day(value).format('YYYY-MM-DD HH:mm:ss'),
-			to: value => new Date(value).getTime()
+			to: value => value
 		}
 	})
-	createTime: number
+	createTime: Date
 
 	@UpdateDateColumn({
 		comment: '修改时间',
 		transformer: {
 			from: value => day(value).format('YYYY-MM-DD HH:mm:ss'),
-			to: value => new Date(value).getTime()
+			to: value => value
 		}
 	})
-	updateTime: number
+	updateTime: Date
 }

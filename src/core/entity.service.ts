@@ -5,5 +5,5 @@ import { UserEntity } from '@/entity/user.entity'
 
 @Injectable()
 export class EntityService {
-	constructor(@InjectRepository(UserEntity) private readonly userModel: Repository<UserEntity>) {}
+	constructor(@InjectRepository(UserEntity) public readonly userModel: Repository<UserEntity>) {}
 }
