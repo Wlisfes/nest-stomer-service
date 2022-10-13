@@ -37,9 +37,9 @@ export class AlicloudService {
 
 	/**图形验证码**/
 	public async fetchCaptcha() {
-		const { text, data, session } = await this.httpCaptcha()
-		await this.redis.setStore(session, text, 300)
-		return { data, session }
+		const { text, data, session } = await this.httpCaptcha({ size: 6 })
+		await this.redis.setStore(session, text, 180)
+		return { data, text, session }
 	}
 
 	/**发送手机验证码**/

@@ -4,6 +4,7 @@ import { NestExpressApplication } from '@nestjs/platform-express'
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger'
 import { AppModule } from './app.module'
 import * as express from 'express'
+import * as cookieParser from 'cookie-parser'
 
 async function useSwagger(app: NestExpressApplication) {
 	const options = new DocumentBuilder()
@@ -29,6 +30,7 @@ async function bootstrap() {
 
 	//允许跨域
 	app.enableCors()
+	app.use(cookieParser())
 
 	//解析body参数
 	app.use(express.json())
