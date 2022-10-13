@@ -9,7 +9,7 @@ import * as Core from './core.interface'
 @Injectable()
 export class AlicloudService {
 	protected readonly aliCloud: AliCloud
-	protected readonly session = Nanoid.customAlphabet('123456789', 10)
+	protected readonly customSession = Nanoid.customAlphabet('123456789')
 	constructor(private readonly config: ConfigService, private readonly redis: RedisService) {
 		this.aliCloud = new AliCloud({
 			accessKeyId: this.config.get('ALIYUN_ACCESSKEYID'),
@@ -32,7 +32,7 @@ export class AlicloudService {
 			charPreset: '123456789',
 			background: '#E8F0FE'
 		})
-		return { text, data, session: this.session(10) }
+		return { text, data, session: await this.customSession(12) }
 	}
 
 	/**图形验证码**/
@@ -58,7 +58,7 @@ export class AlicloudService {
 	/**发送手机验证码**/
 	public async fetchMobile(props: Core.IMobile, size?: number) {
 		try {
-			const code = this.session(size ?? 6)
+			const code = await this.customSession(6)
 			await this.redis.setStore(props.mobile, code, 300)
 			return await this.aliCloud
 				.request(
