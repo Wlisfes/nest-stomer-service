@@ -9,7 +9,7 @@ import * as Core from './core.interface'
 @Injectable()
 export class AlicloudService {
 	protected readonly aliCloud: AliCloud
-	protected readonly customSession = Nanoid.customAlphabet('123456789')
+	public readonly customSession = Nanoid.customAlphabet('123456789')
 	constructor(private readonly config: ConfigService, private readonly redis: RedisService) {
 		this.aliCloud = new AliCloud({
 			accessKeyId: this.config.get('ALIYUN_ACCESSKEYID'),
