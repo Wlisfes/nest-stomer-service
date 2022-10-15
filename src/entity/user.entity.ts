@@ -2,7 +2,7 @@ import { Entity, Column, BeforeInsert } from 'typeorm'
 import { NEntity } from '@/entity/common.entity'
 import { hashSync } from 'bcryptjs'
 
-@Entity('user')
+@Entity('tb-user')
 export class UserEntity extends NEntity {
 	@BeforeInsert()
 	BeforeCreate() {

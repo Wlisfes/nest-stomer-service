@@ -15,9 +15,20 @@ export interface ICoreDator<T> {
 
 /********************************************************/
 export class ICaptcha {
-	size?: number
+	@ApiProperty({ description: 'size', required: false })
+	@IsOptional()
+	size: number
+
+	@ApiProperty({ description: 'fontSize', required: false })
+	@IsOptional()
 	fontSize?: number
+
+	@ApiProperty({ description: 'width', required: false })
+	@IsOptional()
 	width?: number
+
+	@ApiProperty({ description: 'height', required: false })
+	@IsOptional()
 	height?: number
 }
 export class AliCloud {

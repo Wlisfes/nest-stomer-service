@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Body, Response } from '@nestjs/common'
+import { Controller, Post, Get, Body, Query, Response } from '@nestjs/common'
 import { ApiTags, PickType } from '@nestjs/swagger'
 import { ApiCompute } from '@/decorator/compute.decorator'
 import { AlicloudService } from './alicloud.service'
@@ -15,8 +15,8 @@ export class CoreController {
 		operation: { summary: '图形验证码' },
 		response: { status: 200, description: 'OK' }
 	})
-	public async fetchCaptcha(@Response() response) {
-		const { data, session } = await this.alicloudService.fetchCaptcha()
+	public async fetchCaptcha(@Response() response, @Query() query: Core.ICaptcha) {
+		const { data, session } = await this.alicloudService.fetchCaptcha(query)
 		response.cookie('captcha', session, { maxAge: 180000, httpOnly: true })
 		response.type('svg')
 		response.send(data)
