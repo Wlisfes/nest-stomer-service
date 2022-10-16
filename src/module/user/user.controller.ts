@@ -1,5 +1,5 @@
-import { Controller, Post, Put, Get, Body, Query, Response, Request } from '@nestjs/common'
-import { ApiTags, PickType } from '@nestjs/swagger'
+import { Controller, Post, Body, Request } from '@nestjs/common'
+import { ApiTags } from '@nestjs/swagger'
 import { ApiCompute } from '@/decorator/compute.decorator'
 import { UserService } from './user.service'
 import * as User from './user.interface'
@@ -23,9 +23,7 @@ export class UserController {
 		operation: { summary: '登录' },
 		response: { status: 200, description: 'OK' }
 	})
-	public async httpLogin(@Body() body: User.ILogin, @Response() response, @Request() request) {
-		const { session, seconds } = await this.userService.httpLogin(body, request.cookies.captcha)
-		response.cookie('session', session, { maxAge: seconds, httpOnly: true })
-		response.send({ session, seconds })
+	public async httpLogin(@Body() body: User.ILogin, @Request() request) {
+		return await this.userService.httpLogin(body, request.cookies.captcha)
 	}
 }
