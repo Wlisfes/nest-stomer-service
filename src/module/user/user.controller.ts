@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Request } from '@nestjs/common'
+import { Controller, Post, Body, Request, Response } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
 import { ApiCompute } from '@/decorator/compute.decorator'
 import { UserService } from './user.service'
@@ -23,7 +23,9 @@ export class UserController {
 		operation: { summary: '登录' },
 		response: { status: 200, description: 'OK' }
 	})
-	public async httpLogin(@Body() body: User.ILogin, @Request() request) {
-		return await this.userService.httpLogin(body, request.cookies.captcha)
+	public async httpLogin(@Body() body: User.ILogin, @Request() request, @Response() response) {
+		const { session, seconds } = await this.userService.httpLogin(body, request.cookies.captcha)
+		response.cookie('AUTH-SID', session, { maxAge: seconds, httpOnly: true, path: '/' })
+		response.send({ data: { session, seconds } })
 	}
 }
