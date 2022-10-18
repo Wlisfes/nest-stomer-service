@@ -8,16 +8,25 @@ import { AlicloudService } from './alicloud.service'
 //entity
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { UserEntity } from '@/entity/user.entity'
-
+import { WhiteEntity } from '@/entity/white.entity'
+import { RouterEntity } from '@/entity/router.entity'
 //module
 import { QueueModule } from '@/module/queue/queue.module'
 import { DispatchModule } from '@/module/dispatch/dispatch.module'
 import { WeChatModule } from '@/module/we-chat/we-chat.module'
 import { UserModule } from '@/module/user/user.module'
+import { WhiteModule } from '@/module/white/white.module'
 
 @Global()
 @Module({
-	imports: [TypeOrmModule.forFeature([UserEntity]), QueueModule, DispatchModule, WeChatModule, UserModule],
+	imports: [
+		TypeOrmModule.forFeature([UserEntity, WhiteEntity, RouterEntity]),
+		QueueModule,
+		DispatchModule,
+		WeChatModule,
+		UserModule,
+		WhiteModule
+	],
 	providers: [CoreService, EntityService, RedisService, AlicloudService],
 	controllers: [CoreController],
 	exports: [CoreService, EntityService, RedisService, AlicloudService]
