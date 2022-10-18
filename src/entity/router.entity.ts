@@ -1,4 +1,4 @@
-import { Entity, Column, BeforeInsert } from 'typeorm'
+import { Entity, Column } from 'typeorm'
 import { NEntity } from '@/entity/common.entity'
 
 @Entity('tb-router')

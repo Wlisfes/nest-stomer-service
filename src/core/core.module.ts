@@ -14,6 +14,7 @@ import { QueueModule } from '@/module/queue/queue.module'
 import { DispatchModule } from '@/module/dispatch/dispatch.module'
 import { WeChatModule } from '@/module/we-chat/we-chat.module'
 import { UserModule } from '@/module/user/user.module'
+import { RouterModule } from '@/module/router/router.module'
 
 @Global()
 @Module({
@@ -22,7 +23,8 @@ import { UserModule } from '@/module/user/user.module'
 		QueueModule,
 		DispatchModule,
 		WeChatModule,
-		UserModule
+		UserModule,
+		RouterModule
 	],
 	providers: [CoreService, EntityService, RedisService, AlicloudService],
 	controllers: [CoreController],
