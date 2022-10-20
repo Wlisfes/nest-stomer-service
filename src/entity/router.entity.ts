@@ -3,6 +3,9 @@ import { NEntity } from '@/entity/common.entity'
 
 @Entity('tb-router')
 export class RouterEntity extends NEntity {
+	@Column({ comment: '基础路由菜单', default: 0, nullable: false })
+	base: number
+
 	@Column({ comment: '节点类型: 1.目录 2.菜单', default: 1, nullable: false })
 	type: number
 

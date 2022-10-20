@@ -39,7 +39,10 @@ export class IRouter extends PickType(ICommon, ['id', 'status']) {
 	@Type(() => Number)
 	parent: number
 }
-export class RRouter extends IntersectionType(IRouter, PickType(RCommon, ['createTime', 'updateTime'])) {}
+export class RRouter extends IntersectionType(IRouter, PickType(RCommon, ['createTime', 'updateTime'])) {
+	@ApiProperty({ description: '基础路由菜单', enum: [0, 1], example: 0 })
+	base: number
+}
 
 export class ICreate extends OmitType(IRouter, ['id']) {}
 export class IUpdate extends OmitType(IRouter, []) {}
