@@ -19,12 +19,12 @@ export class RouterController {
 		return await this.routerService.httpCreate(body)
 	}
 
-	@Get('/column-dynamic')
+	@Get('/dynamic')
 	@ApiCompute({
 		operation: { summary: '动态路由节点' },
-		response: { status: 200, description: 'OK', type: Inter.IColumn }
+		response: { status: 200, description: 'OK', type: Inter.IDynamic }
 	})
-	public async httpColumnDynamic() {
-		return await this.routerService.httpColumnDynamic()
+	public async httpDynamic() {
+		return await this.routerService.httpDynamic()
 	}
 }

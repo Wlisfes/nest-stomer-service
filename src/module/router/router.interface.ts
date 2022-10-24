@@ -50,3 +50,4 @@ export class IColumn extends PickType(RCommon, ['page', 'size', 'total']) {
 	@ApiProperty({ description: '列表', type: [RRouter], example: [] })
 	list: RRouter[]
 }
+export class IDynamic extends IColumn {}

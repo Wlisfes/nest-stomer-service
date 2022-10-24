@@ -41,7 +41,7 @@ export class RouterService extends CoreService {
 	}
 
 	/**动态路由节点**/
-	public async httpColumnDynamic() {
+	public async httpDynamic() {
 		try {
 			const list = await this.entity.routerModel.find({ where: { status: 1 } })
 			return { list }
