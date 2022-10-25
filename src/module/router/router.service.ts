@@ -49,4 +49,14 @@ export class RouterService extends CoreService {
 			throw new HttpException(e.message || e.toString(), HttpStatus.BAD_REQUEST)
 		}
 	}
+
+	/**路由列表**/
+	public async httpColumn() {
+		try {
+			const list = await this.entity.routerModel.find({ where: { status: 1 } })
+			return { list }
+		} catch (e) {
+			throw new HttpException(e.message || e.toString(), HttpStatus.BAD_REQUEST)
+		}
+	}
 }

@@ -19,6 +19,15 @@ export class RouterController {
 		return await this.routerService.httpCreate(body)
 	}
 
+	@Get('/column')
+	@ApiCompute({
+		operation: { summary: '路由列表' },
+		response: { status: 200, description: 'OK', type: Inter.IColumn }
+	})
+	public async httpColumn() {
+		return await this.routerService.httpColumn()
+	}
+
 	@Get('/dynamic')
 	@ApiCompute({
 		operation: { summary: '动态路由节点' },
