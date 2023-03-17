@@ -42,11 +42,9 @@ export class UserService extends CoreService {
 	}
 
 	/**登录**/
-	public async httpLogin(props: User.ILogin, captcha: string) {
+	public async httpLogin(props: User.ILogin, code: string) {
 		try {
-			const code = await this.redis.getStore(captcha)
 			if (code !== props.code) {
-				await this.redis.delStore(captcha)
 				throw new HttpException('验证码错误', HttpStatus.BAD_REQUEST)
 			}
 			await this.validator({
@@ -69,7 +67,6 @@ export class UserService extends CoreService {
 			const session = await this.aliCloud.customSession()
 			const seconds = 5 * 60 * 60
 			await this.redis.setStore(session, node, seconds)
-			await this.redis.delStore(captcha)
 			return { session, seconds }
 		} catch (e) {
 			throw new HttpException(e.message || e.toString(), HttpStatus.BAD_REQUEST)

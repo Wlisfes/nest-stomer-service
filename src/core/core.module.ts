@@ -5,6 +5,7 @@ import { CoreService } from './core.service'
 import { EntityService } from './entity.service'
 import { RedisService } from './redis.service'
 import { AlicloudService } from './alicloud.service'
+
 //entity
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { UserEntity } from '@/entity/user.entity'

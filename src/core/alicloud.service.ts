@@ -19,9 +19,9 @@ export class AlicloudService {
 		})
 	}
 
-	/**创建验证码**/
-	public async httpCaptcha(props?: Core.ICaptcha) {
-		const { text, data } = create({
+	/**图形验证码**/
+	public async fetchCaptcha(props: Core.ICaptcha) {
+		return create({
 			size: props?.size ?? 4,
 			fontSize: props?.fontSize ?? 38,
 			color: true,
@@ -32,14 +32,6 @@ export class AlicloudService {
 			charPreset: '123456789',
 			background: '#E8F0FE'
 		})
-		return { text, data, session: await this.customSession(12) }
-	}
-
-	/**图形验证码**/
-	public async fetchCaptcha(props: Core.ICaptcha) {
-		const { text, data, session } = await this.httpCaptcha(props)
-		await this.redis.setStore(session, text, 180)
-		return { data, text, session }
 	}
 
 	/**验证图形验证码**/

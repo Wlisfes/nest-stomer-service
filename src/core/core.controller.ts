@@ -16,8 +16,8 @@ export class CoreController {
 		response: { status: 200, description: 'OK' }
 	})
 	public async fetchCaptcha(@Response() response, @Query() query: Core.ICaptcha) {
-		const { data, session } = await this.alicloudService.fetchCaptcha(query)
-		response.cookie('captcha', session, { maxAge: 180000, httpOnly: true })
+		const { data, text } = await this.alicloudService.fetchCaptcha(query)
+		response.cookie('captcha', text, { maxAge: 180000, httpOnly: true })
 		response.type('svg')
 		response.send(data)
 	}

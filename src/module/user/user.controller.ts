@@ -26,9 +26,9 @@ export class UserController {
 	})
 	public async httpLogin(@Body() body: User.ILogin, @Request() request, @Response() response) {
 		const { session, seconds } = await this.userService.httpLogin(body, request.cookies.captcha)
-		response.cookie('AUTH-SESSION', session, { maxAge: seconds, httpOnly: true, path: '/' })
+		// response.cookie('AUTH-SESSION', session, { maxAge: seconds, httpOnly: true, path: '/' })
 		response.send({
-			data: { session, seconds },
+			data: {},
 			code: 200,
 			message: '请求成功',
 			timestamp: moment().format('YYYY-MM-DD HH:mm:ss')
