@@ -27,6 +27,7 @@ export class UserController {
 	public async httpLogin(@Body() body: User.ILogin, @Request() request, @Response() response) {
 		const { session, seconds } = await this.userService.httpLogin(body, request.cookies.captcha)
 		// response.cookie('AUTH-SESSION', session, { maxAge: seconds, httpOnly: true, path: '/' })
+
 		response.send({
 			data: {},
 			code: 200,

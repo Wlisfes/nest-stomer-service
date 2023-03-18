@@ -4,12 +4,15 @@ import { CoreService } from '@/core/core.service'
 import { EntityService } from '@/core/entity.service'
 import { RedisService } from '@/core/redis.service'
 import { AlicloudService } from '@/core/alicloud.service'
+import { I18nService } from 'nestjs-i18n'
+import { I18nTranslations } from '@/i18n/i18n.interface'
 import { compareSync } from 'bcryptjs'
 import * as User from './user.interface'
 
 @Injectable()
 export class UserService extends CoreService {
 	constructor(
+		private readonly i18n: I18nService<I18nTranslations>,
 		private readonly entity: EntityService,
 		private readonly redis: RedisService,
 		private readonly aliCloud: AlicloudService
@@ -45,7 +48,8 @@ export class UserService extends CoreService {
 	public async httpLogin(props: User.ILogin, code: string) {
 		try {
 			if (code !== props.code) {
-				throw new HttpException('验证码错误', HttpStatus.BAD_REQUEST)
+				console.log(this.i18n.translate('user.100100'))
+				throw new HttpException(this.i18n.translate('user.100100'), HttpStatus.BAD_REQUEST)
 			}
 			await this.validator({
 				model: this.entity.userModel,
