@@ -5,10 +5,10 @@ import { ICommon, RCommon } from '@/interface/common.interface'
 import { Repository, FindOneOptions } from 'typeorm'
 
 export interface ICoreDator<T> {
-	message: string //模型描述名称
-	empty?: boolean //是否验证为空
-	delete?: boolean //是否判断已删除
-	close?: boolean //是否判断已关闭
+	name: string //模型名称
+	empty?: { value: boolean; message?: string } //是否验证为空
+	delete?: { value: boolean; message?: string } //是否判断已删除
+	close?: { value: boolean; message?: string } //是否判断已关闭
 	model: Repository<T>
 	options?: FindOneOptions<T>
 }

@@ -1,3 +1,6 @@
 {
-	"101000": "Verification code error"
+	"101000": "Verification code error",
+	"101001": "Mobile number is registered",
+	"101002": "Wrong password",
+	"101003": "Account"
 }

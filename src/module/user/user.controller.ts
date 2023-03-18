@@ -25,13 +25,12 @@ export class UserController {
 		response: { status: 200, description: 'OK' }
 	})
 	public async httpLogin(@Body() body: User.ILogin, @Request() request, @Response() response) {
-		const { session, seconds } = await this.userService.httpLogin(body, request.cookies.captcha)
-		// response.cookie('AUTH-SESSION', session, { maxAge: seconds, httpOnly: true, path: '/' })
-
+		const { session, seconds, message } = await this.userService.httpLogin(body, request.cookies.captcha)
+		response.cookie('AUTH-SESSION', session, { maxAge: seconds, httpOnly: true, path: '/' })
 		response.send({
-			data: {},
+			data: { session, seconds, message },
 			code: 200,
-			message: '请求成功',
+			message: 'OK',
 			timestamp: moment().format('YYYY-MM-DD HH:mm:ss')
 		})
 	}

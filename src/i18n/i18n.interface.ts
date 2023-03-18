@@ -3,10 +3,18 @@
 import { Path } from "nestjs-i18n";
 export type I18nTranslations = {
     "common": {
+        "100200": string;
+        "100201": string;
         "100500": string;
+        "NOT_EXIST": string;
+        "NOT_CLOSE": string;
+        "NOT_DELETE": string;
     };
     "user": {
         "101000": string;
+        "101001": string;
+        "101002": string;
+        "101003": string;
     };
 };
 export type I18nPath = Path<I18nTranslations>;

@@ -1,3 +1,9 @@
 {
-	"100500": "The server is down"
+	"100200": "login successful",
+	"100201": "registration success",
+	"100500": "The server is down",
+
+	"NOT_EXIST": "{name} does not exist",
+	"NOT_CLOSE": "{name} closed",
+	"NOT_DELETE": "{name} deleted"
 }
