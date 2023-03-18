@@ -33,23 +33,23 @@ export class HttpExceptionFilter<T> implements ExceptionFilter {
 				query: request.query,
 				params: request.params,
 				code: (exception as any).response.statusCode || (exception as any).status,
-				message: message
+				message: message,
+				error
 			})
 		)
 
+		const status = exception instanceof HttpException ? exception.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR
 		const errorResponse = {
-			data: {
-				error: error //全部错误消息
-			},
+			data: (exception as any)?.response ?? null,
+			message,
+			code: status,
 			timestamp: day().format('YYYY-MM-DD HH:mm:ss'),
-			message: message,
-			code: (exception as any).response.statusCode || (exception as any).status, //错误状态码
-			url: request.url, // 错误的url地址
+			url: request.url,
 			method: request.method
 		}
-		const status = exception instanceof HttpException ? exception.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR
+
 		// 设置返回的状态码、请求头、发送错误信息
-		response.status(status)
+		response.status(HttpStatus.OK)
 		response.header('Content-Type', 'application/json; charset=utf-8')
 		response.send(errorResponse)
 	}
