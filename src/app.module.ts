@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { RedisModule } from '@nestjs-modules/ioredis'
-import { I18nModule, QueryResolver, HeaderResolver, AcceptLanguageResolver, CookieResolver } from 'nestjs-i18n'
+import { I18nModule, HeaderResolver, I18nJsonLoader } from 'nestjs-i18n'
 import { APP_INTERCEPTOR, APP_FILTER } from '@nestjs/core'
 import { TransformInterceptor } from '@/interceptor/transform.interceptor'
 import { HttpExceptionFilter } from '@/filter/http-exception.filter'
@@ -16,21 +16,14 @@ import * as path from 'path'
 		ConfigModule.forRoot({ isGlobal: true }),
 		I18nModule.forRoot({
 			fallbackLanguage: 'cn',
-			fallbacks: {
-				cn: 'cn',
-				en: 'en'
-			},
+			loader: I18nJsonLoader,
+			fallbacks: { n: 'cn', en: 'en' },
 			loaderOptions: {
 				path: path.join(__dirname, '/i18n/'),
 				watch: true
 			},
 			typesOutputPath: path.join(__dirname, '../src/i18n/i18n.interface.ts'),
-			resolvers: [
-				new QueryResolver(['locale']),
-				new HeaderResolver(['x-locale']),
-				new CookieResolver(['locale']),
-				AcceptLanguageResolver
-			]
+			resolvers: [new HeaderResolver(['x-locale'])]
 		}),
 		TypeOrmModule.forRootAsync({
 			inject: [ConfigService],
