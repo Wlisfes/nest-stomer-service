@@ -20,6 +20,7 @@ export class UserService extends CoreService {
 
 	/**注册用户**/
 	public async httpRegister(props: User.IRegister) {
+		const i18n = usuCurrent()
 		try {
 			if (await this.entity.userModel.findOne({ where: { mobile: props.mobile } })) {
 				throw new HttpException('手机号已注册', HttpStatus.BAD_REQUEST)
@@ -38,16 +39,16 @@ export class UserService extends CoreService {
 			await this.entity.userModel.save(node)
 			return { message: '注册成功' }
 		} catch (e) {
-			throw new HttpException(e.message || e.toString(), HttpStatus.BAD_REQUEST)
+			throw new HttpException(e.message || i18n.t('common.100500'), HttpStatus.BAD_REQUEST)
 		}
 	}
 
 	/**登录**/
 	public async httpLogin(props: User.ILogin, code: string) {
+		const i18n = usuCurrent()
 		try {
-			const i18n = usuCurrent()
 			if (code !== props.code) {
-				throw new HttpException(i18n.translate('user.100100'), HttpStatus.BAD_REQUEST)
+				throw new HttpException(i18n.translate('user.101000'), HttpStatus.BAD_REQUEST)
 			}
 			await this.validator({
 				model: this.entity.userModel,
@@ -71,7 +72,7 @@ export class UserService extends CoreService {
 			await this.redis.setStore(session, node, seconds)
 			return { session, seconds }
 		} catch (e) {
-			throw new HttpException(e.message || e.toString(), HttpStatus.BAD_REQUEST)
+			throw new HttpException(e.message || i18n.t('common.100500'), HttpStatus.BAD_REQUEST)
 		}
 	}
 }

@@ -2,8 +2,11 @@
 
 import { Path } from "nestjs-i18n";
 export type I18nTranslations = {
+    "common": {
+        "100500": string;
+    };
     "user": {
-        "100100": string;
+        "101000": string;
     };
 };
 export type I18nPath = Path<I18nTranslations>;
