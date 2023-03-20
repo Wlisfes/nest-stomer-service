@@ -10,6 +10,21 @@ export class RouterService extends CoreService {
 		super()
 	}
 
+	public formaterTree(data: Array<Object>) {
+		const map: Record<string, any> = {}
+		const tree: Array<any> = []
+		data.forEach((node: any) => {
+			map[node.id] = node
+			node.children = []
+			if (node.parent) {
+				map[node.parent].children.push(node)
+			} else {
+				tree.push(node)
+			}
+		})
+		return tree
+	}
+
 	/**新增路由**/
 	public async httpCreate(props: Inter.ICreate) {
 		try {
@@ -48,8 +63,8 @@ export class RouterService extends CoreService {
 	/**路由列表**/
 	public async httpColumn() {
 		try {
-			const list = await this.entity.routerModel.find({ where: { status: 1 } })
-			return { list }
+			const list = await this.entity.routerModel.find()
+			return { list: this.formaterTree(list) }
 		} catch (e) {
 			throw new HttpException(e.message || e.toString(), HttpStatus.BAD_REQUEST)
 		}
