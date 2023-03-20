@@ -14,10 +14,7 @@ export class RouterService extends CoreService {
 	public async httpCreate(props: Inter.ICreate) {
 		try {
 			const route = await this.entity.routerModel.findOne({
-				where: [
-					{ name: props.name, status: In([0, 1]) },
-					{ path: props.path, status: In([0, 1]) }
-				]
+				where: [{ path: props.path, status: In([0, 1]) }]
 			})
 			if (route) {
 				throw new HttpException('路由已存在', HttpStatus.BAD_REQUEST)
@@ -25,10 +22,8 @@ export class RouterService extends CoreService {
 			const node = await this.entity.routerModel.create({
 				type: props.type,
 				title: props.title,
-				name: props.name,
 				status: props.status ?? 1,
 				path: props.path,
-				component: props.component,
 				redirect: props.redirect,
 				icon: props.icon || null,
 				parent: props.parent || null

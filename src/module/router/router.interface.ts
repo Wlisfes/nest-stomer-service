@@ -14,17 +14,9 @@ export class IRouter extends PickType(ICommon, ['id', 'status']) {
 	@IsNotEmpty({ message: '节点title 必填' })
 	title: string
 
-	@ApiProperty({ description: '节点name', example: 'System' })
-	@IsNotEmpty({ message: '节点name 必填' })
-	name: string
-
 	@ApiProperty({ description: '页面路径', example: '/manager/system' })
 	@IsNotEmpty({ message: '页面路径 必填' })
 	path: string
-
-	@ApiProperty({ description: '组件路径', example: 'Layout' })
-	@IsNotEmpty({ message: '组件路径 必填' })
-	component: string
 
 	@ApiProperty({ description: '重定向地址', required: false, example: '/manager/system/user' })
 	@IsOptional()
