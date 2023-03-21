@@ -1,6 +1,7 @@
 # compiled output
 /dist
 /node_modules
+/src/i18n/i18n.interface.ts
 
 # Logs
 logs
