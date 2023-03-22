@@ -51,22 +51,21 @@ export class AlicloudService {
 	public async fetchMobile(props: Core.IMobile, size?: number) {
 		try {
 			const code = await this.customSession(6)
-			await this.redis.setStore(props.mobile, code, 300)
-			return await this.aliCloud
-				.request(
-					'SendSms',
-					{
-						PhoneNumbers: props.mobile,
-						SignName: '妖雨录',
-						TemplateCode: 'SMS_254570125',
-						TemplateParam: JSON.stringify({ code })
-					},
-					{ method: 'POST' }
-				)
-				.then(
-					response => ({ message: '发送成功' }),
-					e => new HttpException(e.data?.Message ?? '发送失败', HttpStatus.BAD_REQUEST)
-				)
+			//prettier-ignore
+			await this.aliCloud.request('SendSms',{
+					PhoneNumbers: props.mobile,
+					SignName: '妖雨录',
+					TemplateCode: 'SMS_254570125',
+					TemplateParam: JSON.stringify({ code })
+				},
+				{ method: 'POST' }
+			).catch(e => {
+				throw new HttpException(e.data?.Message ?? '发送失败', HttpStatus.BAD_REQUEST)
+			})
+
+			return await this.redis.setStore(props.mobile, code, 300).then(() => {
+				return { message: '发送成功' }
+			})
 		} catch (e) {
 			throw new HttpException(e.message || e.toString(), HttpStatus.BAD_REQUEST)
 		}
