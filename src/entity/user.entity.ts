@@ -1,4 +1,4 @@
-import { Entity, Column, BeforeInsert } from 'typeorm'
+import { Entity, Column } from 'typeorm'
 import { NEntity } from '@/entity/common.entity'
 import { hashSync } from 'bcryptjs'
 
@@ -18,6 +18,9 @@ export class UserEntity extends NEntity {
 
 	@Column({ comment: 'OpenID', nullable: true, default: null })
 	openid: string
+
+	@Column({ comment: '状态: 禁用-disable、启用-enable、删除-delete', default: 'enable', nullable: false })
+	status: string
 
 	@Column({ charset: 'utf8mb4', comment: '备注', nullable: true })
 	comment: string | null

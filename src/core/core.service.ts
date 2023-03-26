@@ -16,12 +16,12 @@ export class CoreService {
 					i18n.t('common.NOT_EXIST', { args: { name: props.empty.message ?? props.name } }),
 					HttpStatus.BAD_REQUEST
 				)
-			} else if (props.close && (node as any).status === 0) {
+			} else if (props.close && (node as any).status === 'disable') {
 				throw new HttpException(
 					i18n.t('common.NOT_CLOSE', { args: { name: props.close.message ?? props.name } }),
 					HttpStatus.BAD_REQUEST
 				)
-			} else if (props.delete && (node as any).status === 2) {
+			} else if (props.delete && (node as any).status === 'delete') {
 				throw new HttpException(
 					i18n.t('common.NOT_DELETE', { args: { name: props.delete.message ?? props.name } }),
 					HttpStatus.BAD_REQUEST
