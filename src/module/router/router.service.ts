@@ -37,7 +37,7 @@ export class RouterService extends CoreService {
 			const node = await this.entity.routerModel.create({
 				type: props.type,
 				title: props.title,
-				status: props.status ?? 1,
+				status: props.status ?? 'enable',
 				path: props.path,
 				redirect: props.redirect,
 				icon: props.icon || null,

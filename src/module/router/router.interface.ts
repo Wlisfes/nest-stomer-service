@@ -5,10 +5,14 @@ import { IsOptional } from '@/decorator/common.decorator'
 import { ICommon, RCommon } from '@/interface/common.interface'
 
 export class IRouter extends PickType(ICommon, ['id', 'status']) {
-	@ApiProperty({ description: '节点类型: 1.目录 2.菜单', enum: [1, 2], example: 1 })
+	@ApiProperty({
+		description: '节点类型: 目录-directory、菜单-menu',
+		enum: ['directory', 'menu'],
+		example: 'directory'
+	})
 	@IsNotEmpty({ message: '节点类型 必填' })
-	@Type(() => Number)
-	type: number
+	@Type(() => String)
+	type: string
 
 	@ApiProperty({ description: '节点title', example: '系统设置' })
 	@IsNotEmpty({ message: '节点title 必填' })

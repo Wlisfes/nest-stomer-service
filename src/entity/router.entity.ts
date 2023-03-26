@@ -3,14 +3,14 @@ import { NEntity } from '@/entity/common.entity'
 
 @Entity('tb-router')
 export class RouterEntity extends NEntity {
-	@Column({ comment: '节点类型: 1.目录 2.菜单', default: 1, nullable: false })
-	type: number
+	@Column({ comment: '节点类型: 目录-directory、菜单-menu', default: 'directory', nullable: false })
+	type: string
 
 	@Column({ comment: '节点title', nullable: false })
 	title: string
 
-	@Column({ comment: '状态: 0.禁用 1.启用 2.删除', default: 1, nullable: false })
-	status: number
+	@Column({ comment: '状态: 禁用-disable、启用-enable、删除-delete', default: 'enable', nullable: false })
+	status: string
 
 	@Column({ comment: '页面路径', nullable: false })
 	path: string

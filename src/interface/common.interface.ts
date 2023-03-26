@@ -37,11 +37,10 @@ export class ICommon {
 	@Type(type => Number)
 	size: number
 
-	@ApiProperty({ description: '状态', example: 1 })
+	@ApiProperty({ description: '状态: 禁用-disable、启用-enable、删除-delete', example: 'enable' })
 	@IsNotEmpty({ message: 'status 必填' })
-	@IsNumber({}, { message: 'status 必须是数字' })
-	@Type(type => Number)
-	status: number
+	@Type(type => String)
+	status: string
 }
 
 export class RCommon {
@@ -63,8 +62,8 @@ export class RCommon {
 	@ApiProperty({ description: '分页数量', example: 10 })
 	size: number
 
-	@ApiProperty({ description: '状态', example: 1 })
-	status: number
+	@ApiProperty({ description: '状态: 禁用-disable、启用-enable、删除-delete', example: 'enable' })
+	status: string
 
 	@ApiProperty({ description: '总数', example: 0 })
 	total: number
