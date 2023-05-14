@@ -10,22 +10,25 @@ import { AlicloudService } from './alicloud.service'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { UserEntity } from '@/entity/user.entity'
 import { RouterEntity } from '@/entity/router.entity'
+import { ChacterEntity } from '@/entity/chacter.entity'
 //module
 import { QueueModule } from '@/module/queue/queue.module'
 import { DispatchModule } from '@/module/dispatch/dispatch.module'
 import { WeChatModule } from '@/module/we-chat/we-chat.module'
 import { UserModule } from '@/module/user/user.module'
 import { RouterModule } from '@/module/router/router.module'
+import { ChacterModule } from '@/module/chacter/chacter.module'
 
 @Global()
 @Module({
 	imports: [
-		TypeOrmModule.forFeature([UserEntity, RouterEntity]),
+		TypeOrmModule.forFeature([UserEntity, RouterEntity, ChacterEntity]),
 		QueueModule,
 		DispatchModule,
 		WeChatModule,
 		UserModule,
-		RouterModule
+		RouterModule,
+		ChacterModule
 	],
 	providers: [CoreService, EntityService, RedisService, AlicloudService],
 	controllers: [CoreController],
