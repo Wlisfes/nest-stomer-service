@@ -13,17 +13,17 @@ export class CoreService {
 				return node
 			} else if (!node) {
 				throw new HttpException(
-					i18n.t('common.NOT_EXIST', { args: { name: props.empty.message ?? props.name } }),
+					i18n.t('common.NOT_EXIST_MERGE', { args: { name: props.empty.message ?? props.name } }),
 					HttpStatus.BAD_REQUEST
 				)
 			} else if (props.close && (node as any).status === 'disable') {
 				throw new HttpException(
-					i18n.t('common.NOT_CLOSE', { args: { name: props.close.message ?? props.name } }),
+					i18n.t('common.NOT_CLOSE_MERGE', { args: { name: props.close.message ?? props.name } }),
 					HttpStatus.BAD_REQUEST
 				)
 			} else if (props.delete && (node as any).status === 'delete') {
 				throw new HttpException(
-					i18n.t('common.NOT_DELETE', { args: { name: props.delete.message ?? props.name } }),
+					i18n.t('common.NOT_DELETE_MERGE', { args: { name: props.delete.message ?? props.name } }),
 					HttpStatus.BAD_REQUEST
 				)
 			}

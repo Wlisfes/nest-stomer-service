@@ -17,7 +17,7 @@ import * as path from 'path'
 		I18nModule.forRoot({
 			fallbackLanguage: 'cn',
 			loader: I18nJsonLoader,
-			fallbacks: { n: 'cn', en: 'en' },
+			fallbacks: { cn: 'cn', en: 'en' },
 			loaderOptions: {
 				path: path.join(__dirname, '/i18n/'),
 				watch: true

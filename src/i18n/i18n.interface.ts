@@ -2,13 +2,22 @@
 
 import { Path } from "nestjs-i18n";
 export type I18nTranslations = {
+    "chacter": {
+        "NAME": string;
+    };
     "common": {
         "100200": string;
         "100201": string;
         "100500": string;
-        "NOT_EXIST": string;
-        "NOT_CLOSE": string;
-        "NOT_DELETE": string;
+        "HAS_EXITTED_MERGE": string;
+        "NOT_EXIST_MERGE": string;
+        "NOT_CLOSE_MERGE": string;
+        "NOT_DELETE_MERGE": string;
+        "NOT_ENABLE_MERGE": string;
+        "NOT_DISABLE_MERGE": string;
+        "NOTICE_CREATE": string;
+        "NOTICE_UPDATE": string;
+        "NOTICE_DELETE": string;
     };
     "user": {
         "101000": string;

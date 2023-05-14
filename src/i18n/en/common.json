@@ -3,7 +3,13 @@
 	"100201": "registration success",
 	"100500": "The server is down",
 
-	"NOT_EXIST": "{name} does not exist",
-	"NOT_CLOSE": "{name} closed",
-	"NOT_DELETE": "{name} deleted"
+	"HAS_EXITTED_MERGE": "{name} existed",
+	"NOT_EXIST_MERGE": "{name} does not exist",
+	"NOT_CLOSE_MERGE": "{name} closed",
+	"NOT_DELETE_MERGE": "{name} deleted",
+	"NOT_ENABLE_MERGE": "{name} enabled",
+	"NOT_DISABLE_MERGE": "{name} disabled",
+	"NOTICE_CREATE": "created successfully",
+	"NOTICE_UPDATE": "edited successfully",
+	"NOTICE_DELETE": "deleted successfully"
 }

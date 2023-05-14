@@ -3,7 +3,13 @@
 	"100201": "注册成功",
 	"100500": "服务器开小差了",
 
-	"NOT_EXIST": "{name}不存在",
-	"NOT_CLOSE": "{name}已关闭",
-	"NOT_DELETE": "{name}已删除"
+	"HAS_EXITTED_MERGE": "{name}已存在",
+	"NOT_EXIST_MERGE": "{name}不存在",
+	"NOT_CLOSE_MERGE": "{name}已关闭",
+	"NOT_DELETE_MERGE": "{name}已删除",
+	"NOT_ENABLE_MERGE": "{name}已启用",
+	"NOT_DISABLE_MERGE": "{name}已禁用",
+	"NOTICE_CREATE": "创建成功",
+	"NOTICE_UPDATE": "编辑成功",
+	"NOTICE_DELETE": "删除成功"
 }

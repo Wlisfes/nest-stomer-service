@@ -71,3 +71,8 @@ export class RCommon {
 	@ApiProperty({ description: 'message', example: '接口提示' })
 	message: string
 }
+
+export class RNotice {
+	@ApiProperty({ description: 'message', example: '接口提示' })
+	message: string
+}
