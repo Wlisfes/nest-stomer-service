@@ -27,4 +27,13 @@ export class ChacterController {
 	public async httpColumn(@Query() query: Inter.IColumn) {
 		return await this.chacterService.httpColumn(query)
 	}
+
+	@Get('/one')
+	@ApiCompute({
+		operation: { summary: '字典详情' },
+		response: { status: 200, description: 'OK', type: Inter.RColumn }
+	})
+	public async httpOne(@Query() query) {
+		return await this.chacterService.httpColumn(query)
+	}
 }
