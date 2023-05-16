@@ -2,7 +2,7 @@ import { Injectable, HttpException, HttpStatus } from '@nestjs/common'
 import { In } from 'typeorm'
 import { CoreService } from '@/core/core.service'
 import { EntityService } from '@/core/entity.service'
-import * as Inter from './router.interface'
+import * as http from './router.interface'
 
 @Injectable()
 export class RouterService extends CoreService {
@@ -26,7 +26,7 @@ export class RouterService extends CoreService {
 	}
 
 	/**新增路由**/
-	public async httpCreate(props: Inter.ICreate) {
+	public async httpCreate(props: http.ICreate) {
 		try {
 			const route = await this.entity.routerModel.findOne({
 				where: [{ path: props.path, status: In([0, 1]) }]

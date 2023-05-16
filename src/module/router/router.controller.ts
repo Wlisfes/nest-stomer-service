@@ -3,7 +3,7 @@ import { ApiTags, PickType } from '@nestjs/swagger'
 import { ApiCompute } from '@/decorator/compute.decorator'
 import { RCommon } from '@/interface/common.interface'
 import { RouterService } from './router.service'
-import * as Inter from './router.interface'
+import * as http from './router.interface'
 
 @ApiTags('路由模块')
 @Controller('router')
@@ -15,14 +15,14 @@ export class RouterController {
 		operation: { summary: '新增路由' },
 		response: { status: 200, description: 'OK', type: [PickType(RCommon, ['message'])] }
 	})
-	public async httpCreate(@Body() body: Inter.ICreate) {
+	public async httpCreate(@Body() body: http.ICreate) {
 		return await this.routerService.httpCreate(body)
 	}
 
 	@Get('/column')
 	@ApiCompute({
 		operation: { summary: '路由列表' },
-		response: { status: 200, description: 'OK', type: Inter.IColumn }
+		response: { status: 200, description: 'OK', type: http.IColumn }
 	})
 	public async httpColumn() {
 		return await this.routerService.httpColumn()
@@ -31,7 +31,7 @@ export class RouterController {
 	@Get('/dynamic')
 	@ApiCompute({
 		operation: { summary: '动态路由节点' },
-		response: { status: 200, description: 'OK', type: Inter.IDynamic }
+		response: { status: 200, description: 'OK', type: http.IDynamic }
 	})
 	public async httpDynamic() {
 		return await this.routerService.httpDynamic()
