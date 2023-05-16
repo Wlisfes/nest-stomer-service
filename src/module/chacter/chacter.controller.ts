@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Put, Body, Query } from '@nestjs/common'
+import { Controller, Post, Get, Put, Delete, Body, Query } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
 import { ApiCompute } from '@/decorator/compute.decorator'
 import { RNotice } from '@/interface/common.interface'
@@ -35,5 +35,14 @@ export class ChacterController {
 	})
 	public async httpColumn(@Query() query: http.IColumn) {
 		return await this.chacterService.httpColumn(query)
+	}
+
+	@Delete('/delete')
+	@ApiCompute({
+		operation: { summary: '删除字典' },
+		response: { status: 200, description: 'OK', type: RNotice }
+	})
+	public async httpDelete(@Query() query: http.IOnter) {
+		return await this.chacterService.httpDelete(query)
 	}
 }

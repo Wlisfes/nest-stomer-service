@@ -41,7 +41,7 @@ export class ChacterService extends CoreService {
 		try {
 			const i18n = usuCurrent()
 			return await this.isOnter({
-				model: this.entity.userModel,
+				model: this.entity.chacterModel,
 				name: i18n.t('chacter.NAME'),
 				empty: { value: true },
 				options: { where: { id: props.id } }
@@ -68,6 +68,24 @@ export class ChacterService extends CoreService {
 				.take(props.size)
 				.getManyAndCount()
 			return { size: props.size, page: props.page, total, list }
+		} catch (e) {
+			throw new HttpException(e.message || e.toString(), HttpStatus.BAD_REQUEST)
+		}
+	}
+
+	/**删除字典**/
+	public async httpDelete(props: http.IOnter) {
+		try {
+			const i18n = usuCurrent()
+			await this.isOnter({
+				model: this.entity.chacterModel,
+				name: i18n.t('chacter.NAME'),
+				empty: { value: true },
+				options: { where: { id: props.id } }
+			})
+			return await this.entity.chacterModel.delete(props.id).then(() => {
+				return { message: i18n.t('common.NOTICE_DELETE') }
+			})
 		} catch (e) {
 			throw new HttpException(e.message || e.toString(), HttpStatus.BAD_REQUEST)
 		}
