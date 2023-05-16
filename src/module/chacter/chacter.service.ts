@@ -4,7 +4,7 @@ import { isEmpty } from 'class-validator'
 import { CoreService } from '@/core/core.service'
 import { EntityService } from '@/core/entity.service'
 import { usuCurrent } from '@/i18n'
-import * as Inter from './chacter.interface'
+import * as http from './chacter.interface'
 
 @Injectable()
 export class ChacterService extends CoreService {
@@ -13,7 +13,7 @@ export class ChacterService extends CoreService {
 	}
 
 	/**新增字典**/
-	public async httpCreate(props: Inter.ICreate) {
+	public async httpCreate(props: http.ICreate) {
 		try {
 			const i18n = usuCurrent()
 			if (await this.entity.chacterModel.findOne({ where: { command: props.command } })) {
@@ -36,8 +36,23 @@ export class ChacterService extends CoreService {
 		}
 	}
 
+	/**字典详情**/
+	public async httpOnter(props: http.IOnter) {
+		try {
+			const i18n = usuCurrent()
+			return await this.isOnter({
+				model: this.entity.userModel,
+				name: i18n.t('chacter.NAME'),
+				empty: { value: true },
+				options: { where: { id: props.id } }
+			})
+		} catch (e) {
+			throw new HttpException(e.message || e.toString(), HttpStatus.BAD_REQUEST)
+		}
+	}
+
 	/**字典列表**/
-	public async httpColumn(props: Inter.IColumn) {
+	public async httpColumn(props: http.IColumn) {
 		try {
 			const [list = [], total = 0] = await this.entity.chacterModel
 				.createQueryBuilder('t')

@@ -22,8 +22,23 @@ export class IChacter extends PickType(ICommon, ['id']) {
 	en: string
 }
 
+export class RChacter extends PickType(ICommon, ['id', 'createTime', 'updateTime']) {
+	@ApiProperty({ description: '字典标识', example: 'enable' })
+	command: string
+
+	@ApiProperty({ description: '备注', example: 'enable' })
+	comment: string
+
+	@ApiProperty({ description: '字典中文', example: '启用' })
+	cn: string
+
+	@ApiProperty({ description: '字典英文', example: 'Enable' })
+	en: string
+}
+
 export class ICreate extends PickType(IChacter, ['command', 'cn', 'en', 'comment']) {}
 export class IUpdate extends PickType(IChacter, ['id', 'command', 'cn', 'en', 'comment']) {}
+export class IOnter extends PickType(IChacter, ['id']) {}
 export class IColumn extends PickType(ICommon, ['page', 'size']) {
 	@ApiProperty({ description: '字典标识', required: false, example: 'enable' })
 	command: string
