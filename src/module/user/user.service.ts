@@ -39,9 +39,9 @@ export class UserService extends CoreService {
 				mobile: props.mobile
 			})
 			await this.entity.userModel.save(node)
-			return { message: i18n.t('common.100201') }
+			return { message: i18n.t('http.HTTP_REGISTER_SUCCESS') }
 		} catch (e) {
-			throw new HttpException(e.message || i18n.t('common.100500'), HttpStatus.BAD_REQUEST)
+			throw new HttpException(e.message || i18n.t('http.HTTP_SERVICE_FAIL'), HttpStatus.BAD_REQUEST)
 		}
 	}
 
@@ -67,9 +67,9 @@ export class UserService extends CoreService {
 			const session = await this.aliCloud.customSession()
 			const seconds = 5 * 60 * 60
 			await this.redis.setStore(session, node, seconds)
-			return { session, seconds, message: i18n.t('common.100200') }
+			return { session, seconds, message: i18n.t('http.HTTP_LOGIN_SUCCESS') }
 		} catch (e) {
-			throw new HttpException(e.message || i18n.t('common.100500'), HttpStatus.BAD_REQUEST)
+			throw new HttpException(e.message || i18n.t('http.HTTP_SERVICE_FAIL'), HttpStatus.BAD_REQUEST)
 		}
 	}
 }

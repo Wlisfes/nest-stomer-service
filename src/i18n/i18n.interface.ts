@@ -19,6 +19,14 @@ export type I18nTranslations = {
         "NOTICE_UPDATE": string;
         "NOTICE_DELETE": string;
     };
+    "http": {
+        "HTTP_CREATE_SUCCESS": string;
+        "HTTP_UPDATE_SUCCESS": string;
+        "HTTP_DELETE_SUCCESS": string;
+        "HTTP_SERVICE_FAIL": string;
+        "HTTP_LOGIN_SUCCESS": string;
+        "HTTP_REGISTER_SUCCESS": string;
+    };
     "user": {
         "101000": string;
         "101001": string;

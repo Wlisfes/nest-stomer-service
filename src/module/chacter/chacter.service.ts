@@ -14,8 +14,8 @@ export class ChacterService extends CoreService {
 
 	/**新增字典**/
 	public async httpCreate(props: http.ICreate) {
+		const i18n = usuCurrent()
 		try {
-			const i18n = usuCurrent()
 			if (await this.entity.chacterModel.findOne({ where: { command: props.command } })) {
 				throw new HttpException(
 					i18n.t('common.HAS_EXITTED_MERGE', { args: { name: i18n.t('chacter.NAME') } }),
@@ -29,17 +29,17 @@ export class ChacterService extends CoreService {
 				comment: props.comment
 			})
 			return await this.entity.chacterModel.save(node).then(() => {
-				return { message: i18n.t('common.NOTICE_CREATE') }
+				return { message: i18n.t('http.HTTP_CREATE_SUCCESS') }
 			})
 		} catch (e) {
-			throw new HttpException(e.message || e.toString(), HttpStatus.BAD_REQUEST)
+			throw new HttpException(e.message || i18n.t('http.HTTP_SERVICE_FAIL'), HttpStatus.BAD_REQUEST)
 		}
 	}
 
 	/**字典详情**/
 	public async httpOnter(props: http.IOnter) {
+		const i18n = usuCurrent()
 		try {
-			const i18n = usuCurrent()
 			return await this.isOnter({
 				model: this.entity.chacterModel,
 				name: i18n.t('chacter.NAME'),
@@ -47,12 +47,13 @@ export class ChacterService extends CoreService {
 				options: { where: { id: props.id } }
 			})
 		} catch (e) {
-			throw new HttpException(e.message || e.toString(), HttpStatus.BAD_REQUEST)
+			throw new HttpException(e.message || i18n.t('http.HTTP_SERVICE_FAIL'), HttpStatus.BAD_REQUEST)
 		}
 	}
 
 	/**字典列表**/
 	public async httpColumn(props: http.IColumn) {
+		const i18n = usuCurrent()
 		try {
 			const [list = [], total = 0] = await this.entity.chacterModel
 				.createQueryBuilder('t')
@@ -69,14 +70,14 @@ export class ChacterService extends CoreService {
 				.getManyAndCount()
 			return { size: props.size, page: props.page, total, list }
 		} catch (e) {
-			throw new HttpException(e.message || e.toString(), HttpStatus.BAD_REQUEST)
+			throw new HttpException(e.message || i18n.t('http.HTTP_SERVICE_FAIL'), HttpStatus.BAD_REQUEST)
 		}
 	}
 
 	/**删除字典**/
 	public async httpDelete(props: http.IOnter) {
+		const i18n = usuCurrent()
 		try {
-			const i18n = usuCurrent()
 			await this.isOnter({
 				model: this.entity.chacterModel,
 				name: i18n.t('chacter.NAME'),
@@ -84,10 +85,10 @@ export class ChacterService extends CoreService {
 				options: { where: { id: props.id } }
 			})
 			return await this.entity.chacterModel.delete(props.id).then(() => {
-				return { message: i18n.t('common.NOTICE_DELETE') }
+				return { message: i18n.t('http.HTTP_DELETE_SUCCESS') }
 			})
 		} catch (e) {
-			throw new HttpException(e.message || e.toString(), HttpStatus.BAD_REQUEST)
+			throw new HttpException(e.message || i18n.t('http.HTTP_SERVICE_FAIL'), HttpStatus.BAD_REQUEST)
 		}
 	}
 }

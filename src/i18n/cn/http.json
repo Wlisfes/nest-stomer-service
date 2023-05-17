@@ -1,5 +1,8 @@
 {
-	"HTTP_NOTICE_CREATE": "创建成功",
-	"HTTP_NOTICE_UPDATE": "编辑成功",
-	"HTTP_NOTICE_DELETE": "删除成功"
+	"HTTP_CREATE_SUCCESS": "创建成功",
+	"HTTP_UPDATE_SUCCESS": "编辑成功",
+	"HTTP_DELETE_SUCCESS": "删除成功",
+	"HTTP_SERVICE_FAIL": "服务器开小差了",
+	"HTTP_LOGIN_SUCCESS": "登录成功",
+	"HTTP_REGISTER_SUCCESS": "注册成功"
 }
