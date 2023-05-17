@@ -1,0 +1,5 @@
+{
+	"HTTP_NOTICE_CREATE": "创建成功",
+	"HTTP_NOTICE_UPDATE": "编辑成功",
+	"HTTP_NOTICE_DELETE": "删除成功"
+}
