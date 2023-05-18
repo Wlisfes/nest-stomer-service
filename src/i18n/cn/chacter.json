@@ -1,3 +1,15 @@
 {
-	"NAME": "字典"
+	"name": "字典",
+	"command": {
+		"value": "字典标识",
+		"required": "字典标识 必填"
+	},
+	"cn": {
+		"value": "字典中文",
+		"required": "字典中文 必填"
+	},
+	"en": {
+		"value": "字典英文",
+		"required": "字典英文 必填"
+	}
 }

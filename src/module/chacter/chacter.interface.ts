@@ -1,12 +1,13 @@
 import { ApiProperty, PickType, OmitType, IntersectionType } from '@nestjs/swagger'
 import { IsNotEmpty } from 'class-validator'
 import { Type } from 'class-transformer'
+import { at } from '@/i18n'
 import { IsOptional } from '@/decorator/common.decorator'
 import { ICommon, RCommon } from '@/interface/common.interface'
 
 export class IChacter extends PickType(ICommon, ['id']) {
 	@ApiProperty({ description: '字典标识', example: 'enable' })
-	@IsNotEmpty({ message: '字典标识 必填' })
+	@IsNotEmpty({ message: at('chacter.command.required') })
 	command: string
 
 	@ApiProperty({ description: '备注', required: false, example: 'enable' })
@@ -14,11 +15,11 @@ export class IChacter extends PickType(ICommon, ['id']) {
 	comment: string
 
 	@ApiProperty({ description: '字典中文', example: '启用' })
-	@IsNotEmpty({ message: '字典中文 必填' })
+	@IsNotEmpty({ message: at('chacter.cn.required') })
 	cn: string
 
 	@ApiProperty({ description: '字典英文', example: 'Enable' })
-	@IsNotEmpty({ message: '字典英文 必填' })
+	@IsNotEmpty({ message: at('chacter.en.required') })
 	en: string
 }
 

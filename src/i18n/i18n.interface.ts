@@ -3,6 +3,19 @@
 import { Path } from "nestjs-i18n";
 export type I18nTranslations = {
     "chacter": {
+        "name": string;
+        "command": {
+            "value": string;
+            "required": string;
+        };
+        "cn": {
+            "value": string;
+            "required": string;
+        };
+        "en": {
+            "value": string;
+            "required": string;
+        };
         "NAME": string;
     };
     "common": {
@@ -18,6 +31,7 @@ export type I18nTranslations = {
         "NOTICE_CREATE": string;
         "NOTICE_UPDATE": string;
         "NOTICE_DELETE": string;
+        "comment": string;
     };
     "http": {
         "HTTP_CREATE_SUCCESS": string;

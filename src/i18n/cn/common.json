@@ -11,5 +11,7 @@
 	"NOT_DISABLE_MERGE": "{name}已禁用",
 	"NOTICE_CREATE": "创建成功",
 	"NOTICE_UPDATE": "编辑成功",
-	"NOTICE_DELETE": "删除成功"
+	"NOTICE_DELETE": "删除成功",
+
+	"comment": "备注"
 }
