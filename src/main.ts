@@ -3,6 +3,7 @@ import { ValidationPipe } from '@nestjs/common'
 import { NestExpressApplication } from '@nestjs/platform-express'
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger'
 import { I18nValidationPipe } from 'nestjs-i18n'
+import { knife4jSetup } from 'nest-knife4j'
 import { AppModule } from './app.module'
 import * as express from 'express'
 import * as cookieParser from 'cookie-parser'
@@ -23,6 +24,14 @@ async function useSwagger(app: NestExpressApplication) {
 			filter: true
 		}
 	})
+	knife4jSetup(app, [
+		{
+			name: '2.X版本',
+			url: `/api-doc-json`,
+			swaggerVersion: '2.0',
+			location: `/api-doc-json`
+		}
+	])
 	return app
 }
 
@@ -47,13 +56,14 @@ async function bootstrap() {
 	app.useGlobalPipes(new ValidationPipe({ transform: true, whitelist: true }))
 	//全局注册i18n管道
 	app.useGlobalPipes(new I18nValidationPipe())
-	
+
 	//文档挂载
 	await useSwagger(app)
 
 	const port = process.env.PORT || 5001
 	await app.listen(port)
 	console.log(`http://localhost:${port}`)
+	console.log(`http://localhost:${port}/doc.html`)
 	console.log(`http://localhost:${port}/api-doc`)
 }
 bootstrap()
