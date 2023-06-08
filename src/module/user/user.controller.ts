@@ -2,7 +2,6 @@ import { Controller, Post, Body, Request, Response } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
 import { ApiCompute } from '@/decorator/compute.decorator'
 import { UserService } from './user.service'
-import * as moment from 'dayjs'
 import * as User from './user.interface'
 
 @ApiTags('用户模块')
@@ -25,13 +24,13 @@ export class UserController {
 		response: { status: 200, description: 'OK' }
 	})
 	public async httpLogin(@Body() body: User.ILogin, @Request() request, @Response() response) {
-		const { session, seconds, message } = await this.userService.httpLogin(body, request.cookies.captcha)
-		response.cookie('AUTH-SESSION', session, { maxAge: seconds, httpOnly: true, path: '/' })
-		response.send({
-			data: { session, seconds, message },
-			code: 200,
-			message: 'OK',
-			timestamp: moment().format('YYYY-MM-DD HH:mm:ss')
-		})
+		return await this.userService.httpLogin(body, request.cookies.AUTN_CAPTCHA)
+		// response.cookie('AUTH-SESSION', session, { maxAge: seconds, httpOnly: true, path: '/' })
+		// response.send({
+		// 	data: { session, seconds, message },
+		// 	code: 200,
+		// 	message: 'OK',
+		// 	timestamp: moment().format('YYYY-MM-DD HH:mm:ss')
+		// })
 	}
 }

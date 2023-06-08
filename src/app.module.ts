@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { RedisModule } from '@nestjs-modules/ioredis'
 import { I18nModule, HeaderResolver, I18nJsonLoader } from 'nestjs-i18n'
+import { SessionModule } from 'nestjs-session'
 import { APP_INTERCEPTOR, APP_FILTER } from '@nestjs/core'
 import { CoreMiddleware } from '@/middleware/core.middleware'
 import { TransformInterceptor } from '@/interceptor/transform.interceptor'
@@ -28,42 +29,50 @@ import * as path from 'path'
 		}),
 		TypeOrmModule.forRootAsync({
 			inject: [ConfigService],
-			useFactory: (config: ConfigService) => {
-				return {
-					type: config.get('ORM_TYPE'),
-					host: config.get('ORM_HOST'),
-					port: parseInt(config.get('ORM_PORT')),
-					username: config.get('ORM_USERNAME'),
-					password: config.get('ORM_PASSWORD'),
-					database: config.get('ORM_DATABASE'),
-					charset: config.get('ORM_CHARSET'),
-					synchronize: Boolean(JSON.parse(config.get('ORM_SYNCHRONIZE'))),
-					dateStrings: Boolean(JSON.parse(config.get('ORM_DATESTRINGS'))),
-					entities: ['dist/**/*.entity{.ts,.js}'],
-					extra: {
-						poolMax: 32,
-						poolMin: 16,
-						queueTimeout: 60000,
-						pollPingInterval: 60,
-						pollTimeout: 60
-					}
+			useFactory: (config: ConfigService) => ({
+				type: config.get('ORM_TYPE'),
+				host: config.get('ORM_HOST'),
+				port: parseInt(config.get('ORM_PORT')),
+				username: config.get('ORM_USERNAME'),
+				password: config.get('ORM_PASSWORD'),
+				database: config.get('ORM_DATABASE'),
+				charset: config.get('ORM_CHARSET'),
+				synchronize: Boolean(JSON.parse(config.get('ORM_SYNCHRONIZE'))),
+				dateStrings: Boolean(JSON.parse(config.get('ORM_DATESTRINGS'))),
+				entities: ['dist/**/*.entity{.ts,.js}'],
+				extra: {
+					poolMax: 32,
+					poolMin: 16,
+					queueTimeout: 60000,
+					pollPingInterval: 60,
+					pollTimeout: 60
 				}
-			}
+			})
 		}),
 		RedisModule.forRootAsync({
 			inject: [ConfigService],
-			useFactory: (config: ConfigService) => {
-				return {
-					config: {
-						host: config.get('REDIS_HOST'),
-						port: parseInt(config.get('REDIS_PORT')),
-						password: config.get('REDIS_PASSWORD'),
-						db: parseInt(config.get('REDIS_DB')),
-						keyPrefix: config.get('REDIS_KEYPREFIX'),
-						lazyConnect: true
+			useFactory: (config: ConfigService) => ({
+				config: {
+					host: config.get('REDIS_HOST'),
+					port: parseInt(config.get('REDIS_PORT')),
+					password: config.get('REDIS_PASSWORD'),
+					db: parseInt(config.get('REDIS_DB')),
+					keyPrefix: config.get('REDIS_KEYPREFIX'),
+					lazyConnect: true
+				}
+			})
+		}),
+		SessionModule.forRootAsync({
+			inject: [ConfigService],
+			useFactory: (config: ConfigService) => ({
+				session: {
+					secret: config.get('SESSION_SECRET'),
+					cookie: {
+						httpOnly: true,
+						maxAge: config.get('SESSION_EXPIRE')
 					}
 				}
-			}
+			})
 		}),
 		CoreModule
 	],

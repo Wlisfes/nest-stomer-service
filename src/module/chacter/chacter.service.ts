@@ -32,7 +32,7 @@ export class ChacterService extends CoreService {
 				return { message: i18n.t('http.HTTP_CREATE_SUCCESS') }
 			})
 		} catch (e) {
-			throw new HttpException(e.message || i18n.t('http.HTTP_SERVICE_FAIL'), HttpStatus.BAD_REQUEST)
+			throw new HttpException(e.message || i18n.t('http.HTTP_SERVICE_ERROR'), HttpStatus.BAD_REQUEST)
 		}
 	}
 
@@ -47,7 +47,7 @@ export class ChacterService extends CoreService {
 				options: { where: { id: props.id } }
 			})
 		} catch (e) {
-			throw new HttpException(e.message || i18n.t('http.HTTP_SERVICE_FAIL'), HttpStatus.BAD_REQUEST)
+			throw new HttpException(e.message || i18n.t('http.HTTP_SERVICE_ERROR'), HttpStatus.BAD_REQUEST)
 		}
 	}
 
@@ -70,7 +70,7 @@ export class ChacterService extends CoreService {
 				.getManyAndCount()
 			return { size: props.size, page: props.page, total, list }
 		} catch (e) {
-			throw new HttpException(e.message || i18n.t('http.HTTP_SERVICE_FAIL'), HttpStatus.BAD_REQUEST)
+			throw new HttpException(e.message || i18n.t('http.HTTP_SERVICE_ERROR'), HttpStatus.BAD_REQUEST)
 		}
 	}
 
@@ -88,7 +88,7 @@ export class ChacterService extends CoreService {
 				return { message: i18n.t('http.HTTP_DELETE_SUCCESS') }
 			})
 		} catch (e) {
-			throw new HttpException(e.message || i18n.t('http.HTTP_SERVICE_FAIL'), HttpStatus.BAD_REQUEST)
+			throw new HttpException(e.message || i18n.t('http.HTTP_SERVICE_ERROR'), HttpStatus.BAD_REQUEST)
 		}
 	}
 }

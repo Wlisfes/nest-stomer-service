@@ -48,7 +48,7 @@ export class RouterService extends CoreService {
 			await this.entity.routerModel.save(node)
 			return { message: i18n.t('http.HTTP_CREATE_SUCCESS') }
 		} catch (e) {
-			throw new HttpException(e.message || i18n.t('http.HTTP_SERVICE_FAIL'), HttpStatus.BAD_REQUEST)
+			throw new HttpException(e.message || i18n.t('http.HTTP_SERVICE_ERROR'), HttpStatus.BAD_REQUEST)
 		}
 	}
 
@@ -59,7 +59,7 @@ export class RouterService extends CoreService {
 			const list = await this.entity.routerModel.find({ where: { status: 'enable' } })
 			return { list }
 		} catch (e) {
-			throw new HttpException(e.message || i18n.t('http.HTTP_SERVICE_FAIL'), HttpStatus.BAD_REQUEST)
+			throw new HttpException(e.message || i18n.t('http.HTTP_SERVICE_ERROR'), HttpStatus.BAD_REQUEST)
 		}
 	}
 
@@ -70,7 +70,7 @@ export class RouterService extends CoreService {
 			const list = await this.entity.routerModel.find()
 			return { list: this.formaterTree(list) }
 		} catch (e) {
-			throw new HttpException(e.message || i18n.t('http.HTTP_SERVICE_FAIL'), HttpStatus.BAD_REQUEST)
+			throw new HttpException(e.message || i18n.t('http.HTTP_SERVICE_ERROR'), HttpStatus.BAD_REQUEST)
 		}
 	}
 }

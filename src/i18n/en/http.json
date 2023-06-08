@@ -1,8 +1,6 @@
 {
-	"HTTP_CREATE_SUCCESS": "created successfully",
-	"HTTP_UPDATE_SUCCESS": "edited successfully",
-	"HTTP_DELETE_SUCCESS": "deleted successfully",
-	"HTTP_SERVICE_FAIL": "The server is down",
-	"HTTP_LOGIN_SUCCESS": "login successfully",
-	"HTTP_REGISTER_SUCCESS": "registered successfully"
+	"HTTP_CREATE_SUCCESS": "创建成功",
+	"HTTP_UPDATESUCCESS": "编辑成功",
+	"HTTP_DELETE_SUCCESS": "删除成功",
+	"HTTP_SERVICE_ERROR": "服务器开小差了"
 }

@@ -37,15 +37,16 @@ export type I18nTranslations = {
         "HTTP_CREATE_SUCCESS": string;
         "HTTP_UPDATE_SUCCESS": string;
         "HTTP_DELETE_SUCCESS": string;
-        "HTTP_SERVICE_FAIL": string;
-        "HTTP_LOGIN_SUCCESS": string;
-        "HTTP_REGISTER_SUCCESS": string;
+        "HTTP_SERVICE_ERROR": string;
+        "HTTP_UPDATESUCCESS": string;
     };
     "user": {
-        "101000": string;
-        "101001": string;
-        "101002": string;
-        "101003": string;
+        "USER_LOGIN_SUCCESS": string;
+        "USER_REGISTER_SUCCESS": string;
+        "USER_CAPTCHA_ERROR": string;
+        "USER_ACCOUNT": string;
+        "USER_PASSWORD_ERROR": string;
+        "USER_MOBILE_EXIST": string;
     };
 };
 export type I18nPath = Path<I18nTranslations>;
