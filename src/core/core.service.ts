@@ -1,9 +1,18 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common'
 import { usuCurrent } from '@/i18n'
 import { ICoreDator } from './core.interface'
+import * as moment from 'dayjs'
 
 @Injectable()
 export class CoreService {
+	/**结果集合**/
+	public async createResult<T extends Record<string, unknown>>(props: T) {
+		return Object.assign(props, {
+			code: HttpStatus.OK,
+			timestamp: moment().format('YYYY-MM-DD HH:mm:ss')
+		})
+	}
+
 	/**验证数据模型是否有效**/
 	public async validator<T>(props: ICoreDator<T>): Promise<T> {
 		const i18n = usuCurrent()

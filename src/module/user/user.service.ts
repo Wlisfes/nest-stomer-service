@@ -1,4 +1,5 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
 import { Brackets } from 'typeorm'
 import { JwtService } from '@nestjs/jwt'
 import { CoreService } from '@/core/core.service'
@@ -8,6 +9,7 @@ import { AlicloudService } from '@/core/alicloud.service'
 import { usuCurrent } from '@/i18n'
 import { UserEntity } from '@/entity/user.entity'
 import { compareSync } from 'bcryptjs'
+import * as ms from 'ms'
 import * as uuid from 'uuid'
 import * as User from './user.interface'
 
@@ -17,27 +19,32 @@ export class UserService extends CoreService {
 		private readonly entity: EntityService,
 		private readonly redis: RedisService,
 		private readonly aliCloud: AlicloudService,
-		private readonly jwtService: JwtService
+		private readonly jwtService: JwtService,
+		private readonly configService: ConfigService
 	) {
 		super()
 	}
 
-	/**new token**/
-	public async newJwtToken(props: UserEntity) {
-		console.log(props)
-		const expire = 10 * 60 * 60
-		const token = await this.jwtService.sign(
-			{
-				uid: props.uid,
-				// password: props.password,
-				status: props.status
-			},
-			{ secret: 'secret' }
+	/**创建token、2小时有效期**/
+	public async newJwtToken(node: UserEntity) {
+		const expire = this.configService.get('JWT_EXPIRE')
+		const expireBig = this.configService.get('JWT_REFRESH_EXPIRE')
+		const secret = this.configService.get('JWT_SECRET')
+		/************************************************************/
+		const token = await this.jwtService.signAsync(
+			{ uid: node.uid, password: node.password, status: node.status },
+			{ secret, expiresIn: ms(expire) }
 		)
-		return { expire, token }
+		const refresh = await this.jwtService.signAsync(
+			{ uid: node.uid, password: node.password, status: node.status },
+			{ secret, expiresIn: ms(expireBig) }
+		)
+		await this.redis.setStore(`token_${node.uid}`, { token, value: node }, expire)
+		await this.redis.setStore(`token_refresh_${node.uid}`, refresh, expireBig)
+		return { expire, token, refresh }
 	}
 
-	/**untie token**/
+	/**解析token**/
 	public async untieJwtToken(token: string) {}
 
 	/**注册用户**/
@@ -89,13 +96,14 @@ export class UserService extends CoreService {
 				//密码错误
 				throw new HttpException(i18n.t('user.USER_PASSWORD_ERROR'), HttpStatus.BAD_REQUEST)
 			}
-
-			const { token, expire } = await this.newJwtToken(node)
-			console.log(token)
-			// await this.redis.setStore(node.uid, node, expire)
-			return { expire, token, message: i18n.t('user.USER_LOGIN_SUCCESS') }
+			const { token, expire, refresh } = await this.newJwtToken(node)
+			return {
+				expire,
+				token,
+				refresh,
+				message: i18n.t('user.USER_LOGIN_SUCCESS')
+			}
 		} catch (e) {
-			console.log(e)
 			throw new HttpException(e.message || i18n.t('http.HTTP_SERVICE_ERROR'), HttpStatus.BAD_REQUEST)
 		}
 	}

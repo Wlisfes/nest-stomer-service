@@ -20,7 +20,7 @@ export class CoreController {
 		const session = await this.aliCloud.customSession()
 		const { data, text } = await this.aliCloud.fetchCaptcha(query)
 		await this.redisService.setStore(session, text, 3 * 60)
-		// response.cookie('AUTN_CAPTCHA', session, { maxAge: 3 * 60 * 1000, httpOnly: true })
+		response.cookie('AUTN_CAPTCHA', session, { maxAge: 3 * 60 * 1000, httpOnly: true })
 		response.type('svg')
 		response.send(data)
 	}
