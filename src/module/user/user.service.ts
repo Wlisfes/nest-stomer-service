@@ -9,7 +9,6 @@ import { AlicloudService } from '@/core/alicloud.service'
 import { usuCurrent } from '@/i18n'
 import { UserEntity } from '@/entity/user.entity'
 import { compareSync } from 'bcryptjs'
-import * as ms from 'ms'
 import * as uuid from 'uuid'
 import * as User from './user.interface'
 
@@ -27,20 +26,16 @@ export class UserService extends CoreService {
 
 	/**创建token、2小时有效期**/
 	public async newJwtToken(node: UserEntity) {
-		const expire = this.configService.get('JWT_EXPIRE')
-		const expireBig = this.configService.get('JWT_REFRESH_EXPIRE')
+		const user = { uid: node.uid, nickname: node.nickname, password: node.password, status: node.status }
+		//jwt
+		const expire = Number(this.configService.get('JWT_EXPIRE') ?? 7200)
 		const secret = this.configService.get('JWT_SECRET')
-		/************************************************************/
-		const token = await this.jwtService.signAsync(
-			{ uid: node.uid, password: node.password, status: node.status },
-			{ secret, expiresIn: ms(expire) }
-		)
-		const refresh = await this.jwtService.signAsync(
-			{ uid: node.uid, password: node.password, status: node.status },
-			{ secret, expiresIn: ms(expireBig) }
-		)
-		await this.redis.setStore(`token_${node.uid}`, { token, value: node }, expire)
-		await this.redis.setStore(`token_refresh_${node.uid}`, refresh, expireBig)
+		const token = await this.jwtService.signAsync({ ...user, secret: uuid.v4() }, { secret })
+		const refresh = await this.jwtService.signAsync({ ...user, secret: uuid.v4() }, { secret })
+		//redis
+		await this.redis.setStore(`user_${node.uid}`, token, expire)
+		await this.redis.setStore(`user_token_${node.uid}`, token, expire)
+		await this.redis.setStore(`user_refresh_${node.uid}`, refresh, expire * 10)
 		return { expire, token, refresh }
 	}
 
@@ -90,7 +85,7 @@ export class UserService extends CoreService {
 				empty: { value: true },
 				close: { value: true },
 				delete: { value: true },
-				options: { where: { mobile: props.mobile }, select: ['id', 'uid', 'mobile', 'password'] }
+				options: { where: { mobile: props.mobile }, select: ['id', 'uid', 'mobile', 'password', 'nickname'] }
 			})
 			if (!compareSync(props.password, node.password)) {
 				//密码错误

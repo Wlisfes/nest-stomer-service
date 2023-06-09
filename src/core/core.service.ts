@@ -21,16 +21,19 @@ export class CoreService {
 			if (!props.empty?.value) {
 				return node
 			} else if (!node) {
+				//不存在
 				throw new HttpException(
 					i18n.t('common.NOT_EXIST_MERGE', { args: { name: props.empty.message ?? props.name } }),
 					HttpStatus.BAD_REQUEST
 				)
 			} else if (props.close && (node as any).status === 'disable') {
+				//已禁用
 				throw new HttpException(
 					i18n.t('common.NOT_CLOSE_MERGE', { args: { name: props.close.message ?? props.name } }),
 					HttpStatus.BAD_REQUEST
 				)
 			} else if (props.delete && (node as any).status === 'delete') {
+				//已删除
 				throw new HttpException(
 					i18n.t('common.NOT_DELETE_MERGE', { args: { name: props.delete.message ?? props.name } }),
 					HttpStatus.BAD_REQUEST
