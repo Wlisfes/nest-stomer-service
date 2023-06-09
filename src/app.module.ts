@@ -3,7 +3,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { RedisModule } from '@nestjs-modules/ioredis'
 import { I18nModule, HeaderResolver, I18nJsonLoader } from 'nestjs-i18n'
-import { SessionModule } from 'nestjs-session'
 import { APP_INTERCEPTOR, APP_FILTER } from '@nestjs/core'
 import { CoreMiddleware } from '@/middleware/core.middleware'
 import { TransformInterceptor } from '@/interceptor/transform.interceptor'
@@ -59,18 +58,6 @@ import * as path from 'path'
 					db: parseInt(config.get('REDIS_DB')),
 					keyPrefix: config.get('REDIS_KEYPREFIX'),
 					lazyConnect: true
-				}
-			})
-		}),
-		SessionModule.forRootAsync({
-			inject: [ConfigService],
-			useFactory: (config: ConfigService) => ({
-				session: {
-					secret: config.get('SESSION_SECRET'),
-					cookie: {
-						httpOnly: true,
-						maxAge: config.get('SESSION_EXPIRE')
-					}
 				}
 			})
 		}),
