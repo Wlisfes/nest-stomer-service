@@ -1,6 +1,6 @@
 import { Controller, Post, Get, Body, Query, Response } from '@nestjs/common'
 import { ApiTags, PickType } from '@nestjs/swagger'
-import { ApiCompute } from '@/decorator/compute.decorator'
+import { ApiDecorator } from '@/decorator/compute.decorator'
 import { AlicloudService } from './alicloud.service'
 import { RedisService } from './redis.service'
 import { RCommon } from '@/interface/common.interface'
@@ -12,7 +12,7 @@ export class CoreController {
 	constructor(private readonly aliCloud: AlicloudService, private readonly redisService: RedisService) {}
 
 	@Get('/fetch-captcha')
-	@ApiCompute({
+	@ApiDecorator({
 		operation: { summary: '图形验证码' },
 		response: { status: 200, description: 'OK' }
 	})
@@ -26,7 +26,7 @@ export class CoreController {
 	}
 
 	@Post('/fetch-mobile')
-	@ApiCompute({
+	@ApiDecorator({
 		operation: { summary: '发送手机验证码' },
 		response: { status: 200, description: 'OK', type: PickType(RCommon, ['message']) }
 	})

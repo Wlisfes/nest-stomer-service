@@ -1,6 +1,6 @@
 import { Controller, Post, Put, Get, Body, Query } from '@nestjs/common'
 import { ApiTags, PickType } from '@nestjs/swagger'
-import { ApiCompute } from '@/decorator/compute.decorator'
+import { ApiDecorator } from '@/decorator/compute.decorator'
 import { WeChatService } from './we-chat.service'
 import * as DTO from './we-chat.interface'
 
@@ -10,7 +10,7 @@ export class WeChatController {
 	constructor(private readonly weChatService: WeChatService) {}
 
 	@Get('/access-token')
-	@ApiCompute({
+	@ApiDecorator({
 		operation: { summary: '获取小程序凭证' },
 		response: { status: 200, description: 'OK', type: DTO.RToken }
 	})

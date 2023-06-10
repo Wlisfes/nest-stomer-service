@@ -1,6 +1,6 @@
 import { Controller, Post, Get, Put, Body, Query } from '@nestjs/common'
 import { ApiTags, PickType } from '@nestjs/swagger'
-import { ApiCompute } from '@/decorator/compute.decorator'
+import { ApiDecorator } from '@/decorator/compute.decorator'
 import { RCommon } from '@/interface/common.interface'
 import { RouterService } from './router.service'
 import * as http from './router.interface'
@@ -11,7 +11,7 @@ export class RouterController {
 	constructor(private readonly routerService: RouterService) {}
 
 	@Post('/create')
-	@ApiCompute({
+	@ApiDecorator({
 		operation: { summary: '新增路由' },
 		response: { status: 200, description: 'OK', type: [PickType(RCommon, ['message'])] }
 	})
@@ -20,7 +20,7 @@ export class RouterController {
 	}
 
 	@Get('/column')
-	@ApiCompute({
+	@ApiDecorator({
 		operation: { summary: '路由列表' },
 		response: { status: 200, description: 'OK', type: http.IColumn }
 	})
@@ -29,7 +29,7 @@ export class RouterController {
 	}
 
 	@Get('/dynamic')
-	@ApiCompute({
+	@ApiDecorator({
 		operation: { summary: '动态路由节点' },
 		response: { status: 200, description: 'OK', type: http.IDynamic }
 	})

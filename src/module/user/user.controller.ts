@@ -1,6 +1,6 @@
 import { Controller, Post, Body, Request, Response } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
-import { ApiCompute } from '@/decorator/compute.decorator'
+import { ApiDecorator } from '@/decorator/compute.decorator'
 import { CoreService } from '@/core/core.service'
 import { UserService } from './user.service'
 import * as User from './user.interface'
@@ -11,7 +11,7 @@ export class UserController {
 	constructor(private readonly userService: UserService, private readonly coreService: CoreService) {}
 
 	@Post('/register')
-	@ApiCompute({
+	@ApiDecorator({
 		operation: { summary: '注册用户' },
 		response: { status: 200, description: 'OK' }
 	})
@@ -20,7 +20,7 @@ export class UserController {
 	}
 
 	@Post('/login')
-	@ApiCompute({
+	@ApiDecorator({
 		operation: { summary: '登录' },
 		response: { status: 200, description: 'OK' }
 	})

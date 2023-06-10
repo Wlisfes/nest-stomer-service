@@ -12,7 +12,7 @@ interface Option {
  * @param option
  * @returns
  */
-export function ApiCompute(option?: Option) {
+export function ApiDecorator(option?: Option) {
 	const decorator: Array<ClassDecorator | MethodDecorator | PropertyDecorator> = [
 		ApiOperation(option.operation),
 		ApiConsumes('application/x-www-form-urlencoded', 'application/json'),

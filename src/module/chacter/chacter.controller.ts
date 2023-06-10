@@ -1,6 +1,6 @@
 import { Controller, Post, Get, Put, Delete, Body, Query } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
-import { ApiCompute } from '@/decorator/compute.decorator'
+import { ApiDecorator } from '@/decorator/compute.decorator'
 import { RNotice } from '@/interface/common.interface'
 import { ChacterService } from './chacter.service'
 import * as http from './chacter.interface'
@@ -11,7 +11,7 @@ export class ChacterController {
 	constructor(private readonly chacterService: ChacterService) {}
 
 	@Get()
-	@ApiCompute({
+	@ApiDecorator({
 		operation: { summary: '字典详情' },
 		response: { status: 200, description: 'OK', type: http.RChacter }
 	})
@@ -20,7 +20,7 @@ export class ChacterController {
 	}
 
 	@Post('/create')
-	@ApiCompute({
+	@ApiDecorator({
 		operation: { summary: '新增字典' },
 		response: { status: 200, description: 'OK', type: RNotice }
 	})
@@ -29,7 +29,7 @@ export class ChacterController {
 	}
 
 	@Get('/column')
-	@ApiCompute({
+	@ApiDecorator({
 		operation: { summary: '字典列表' },
 		response: { status: 200, description: 'OK', type: http.RColumn }
 	})
@@ -38,7 +38,7 @@ export class ChacterController {
 	}
 
 	@Delete('/delete')
-	@ApiCompute({
+	@ApiDecorator({
 		operation: { summary: '删除字典' },
 		response: { status: 200, description: 'OK', type: RNotice }
 	})
