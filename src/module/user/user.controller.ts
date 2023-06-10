@@ -1,6 +1,7 @@
-import { Controller, Post, Body, Request, Response } from '@nestjs/common'
+import { Controller, Post, Get, Body, Request } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
 import { ApiDecorator } from '@/decorator/compute.decorator'
+import { ApiBearer } from '@/guard/auth.guard'
 import { CoreService } from '@/core/core.service'
 import { UserService } from './user.service'
 import * as User from './user.interface'
@@ -24,13 +25,17 @@ export class UserController {
 		operation: { summary: '登录' },
 		response: { status: 200, description: 'OK' }
 	})
-	public async httpLogin(@Body() body: User.ILogin, @Request() request, @Response() response) {
-		const { token, refresh, expire, message } = await this.userService.httpLogin(body, request.cookies.AUTN_CAPTCHA)
-		return response.send(
-			await this.coreService.createResult({
-				data: { token, refresh, expire },
-				message
-			})
-		)
+	public async httpLogin(@Body() body: User.ILogin, @Request() request) {
+		return await this.userService.httpLogin(body, request.cookies.AUTN_CAPTCHA)
+	}
+
+	@Get('/base')
+	@ApiBearer({ decorator: true })
+	@ApiDecorator({
+		operation: { summary: '用户信息' },
+		response: { status: 200, description: 'OK' }
+	})
+	public async httpBaseUser(@Request() request: { user: User.IUser }) {
+		return await this.userService.httpBaseUser(request.user.uid)
 	}
 }

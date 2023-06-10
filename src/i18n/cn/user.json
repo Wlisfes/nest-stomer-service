@@ -1,4 +1,5 @@
 {
+	"USER_LOGIN_NOT": "账号未登录",
 	"USER_LOGIN_SUCCESS": "登录成功",
 	"USER_REGISTER_SUCCESS": "注册成功",
 	"USER_CAPTCHA_ERROR": "验证码错误",

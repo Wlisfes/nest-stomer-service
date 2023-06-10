@@ -16,7 +16,7 @@ import * as User from './user.interface'
 export class UserService extends CoreService {
 	constructor(
 		private readonly entity: EntityService,
-		private readonly redis: RedisService,
+		private readonly redisService: RedisService,
 		private readonly aliCloud: AlicloudService,
 		private readonly jwtService: JwtService,
 		private readonly configService: ConfigService
@@ -33,14 +33,21 @@ export class UserService extends CoreService {
 		const token = await this.jwtService.signAsync({ ...user, secret: uuid.v4() }, { secret })
 		const refresh = await this.jwtService.signAsync({ ...user, secret: uuid.v4() }, { secret })
 		//redis
-		await this.redis.setStore(`user_${node.uid}`, token, expire)
-		await this.redis.setStore(`user_token_${node.uid}`, token, expire)
-		await this.redis.setStore(`user_refresh_${node.uid}`, refresh, expire * 10)
+		await this.redisService.setStore(`user_token_${node.uid}`, token, expire)
+		await this.redisService.setStore(`user_refresh_${node.uid}`, refresh, expire * 10)
 		return { expire, token, refresh }
 	}
 
 	/**解析token**/
-	public async untieJwtToken(token: string) {}
+	public async untieJwtToken(token: string): Promise<UserEntity> {
+		const i18n = usuCurrent()
+		try {
+			const secret = this.configService.get('JWT_SECRET')
+			return await this.jwtService.verifyAsync(token, { secret })
+		} catch (e) {
+			throw new HttpException(i18n.t('user.USER_LOGIN_NOT'), HttpStatus.UNAUTHORIZED)
+		}
+	}
 
 	/**注册用户**/
 	public async httpRegister(props: User.IRegister) {
@@ -51,7 +58,7 @@ export class UserService extends CoreService {
 				throw new HttpException(i18n.t('user.USER_MOBILE_EXIST'), HttpStatus.BAD_REQUEST)
 			}
 
-			const code = await this.redis.getStore(props.mobile)
+			const code = await this.redisService.getStore(props.mobile)
 			if (props.code !== code) {
 				//验证码错误
 				throw new HttpException(i18n.t('user.USER_CAPTCHA_ERROR'), HttpStatus.BAD_REQUEST)
@@ -74,7 +81,7 @@ export class UserService extends CoreService {
 	public async httpLogin(props: User.ILogin, AUTN_CAPTCHA: string) {
 		const i18n = usuCurrent()
 		try {
-			const code = await this.redis.getStore(AUTN_CAPTCHA)
+			const code = await this.redisService.getStore(AUTN_CAPTCHA)
 			if (code !== props.code) {
 				//验证码错误
 				throw new HttpException(i18n.translate('user.USER_CAPTCHA_ERROR'), HttpStatus.BAD_REQUEST)
@@ -97,6 +104,31 @@ export class UserService extends CoreService {
 				token,
 				refresh,
 				message: i18n.t('user.USER_LOGIN_SUCCESS')
+			}
+		} catch (e) {
+			throw new HttpException(e.message || i18n.t('http.HTTP_SERVICE_ERROR'), HttpStatus.BAD_REQUEST)
+		}
+	}
+
+	/**获取用户信息**/
+	public async httpBaseUser(uid: string, cache: boolean = true) {
+		const i18n = usuCurrent()
+		try {
+			if (cache) {
+				//读取redis缓存
+				const node = await this.redisService.getStore(`user_cache_${uid}`)
+				return node || (await this.httpBaseUser(uid, false))
+			} else {
+				const node = await this.validator({
+					model: this.entity.userModel,
+					name: i18n.t('user.USER_ACCOUNT'), //账号
+					empty: { value: true },
+					close: { value: true },
+					delete: { value: true },
+					options: { where: { uid } }
+				})
+				await this.redisService.setStore(`user_cache_${uid}`, node)
+				return node
 			}
 		} catch (e) {
 			throw new HttpException(e.message || i18n.t('http.HTTP_SERVICE_ERROR'), HttpStatus.BAD_REQUEST)

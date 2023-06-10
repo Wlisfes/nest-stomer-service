@@ -3,7 +3,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { RedisModule } from '@nestjs-modules/ioredis'
 import { I18nModule, HeaderResolver, I18nJsonLoader } from 'nestjs-i18n'
-import { APP_INTERCEPTOR, APP_FILTER } from '@nestjs/core'
+import { APP_INTERCEPTOR, APP_FILTER, APP_GUARD } from '@nestjs/core'
+import { AuthGuard } from '@/guard/auth.guard'
 import { CoreMiddleware } from '@/middleware/core.middleware'
 import { TransformInterceptor } from '@/interceptor/transform.interceptor'
 import { HttpExceptionFilter } from '@/filter/http-exception.filter'
@@ -66,6 +67,7 @@ import * as path from 'path'
 	controllers: [AppController],
 	providers: [
 		AppService,
+		{ provide: APP_GUARD, useClass: AuthGuard },
 		{ provide: APP_INTERCEPTOR, useClass: TransformInterceptor },
 		{ provide: APP_FILTER, useClass: HttpExceptionFilter }
 	]

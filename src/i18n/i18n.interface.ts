@@ -41,6 +41,7 @@ export type I18nTranslations = {
         "HTTP_UPDATESUCCESS": string;
     };
     "user": {
+        "USER_LOGIN_NOT": string;
         "USER_LOGIN_SUCCESS": string;
         "USER_REGISTER_SUCCESS": string;
         "USER_CAPTCHA_ERROR": string;
