@@ -7,7 +7,6 @@ export class HttpExceptionFilter implements ExceptionFilter {
 		const ctx = host.switchToHttp()
 		const response = ctx.getResponse()
 		const request = ctx.getRequest()
-		const { statusCode, message, error } = exception.response
 
 		Logger.error({
 			referer: request.headers.referer,
@@ -17,15 +16,15 @@ export class HttpExceptionFilter implements ExceptionFilter {
 			body: request.body,
 			query: request.query,
 			params: request.params,
-			code: statusCode,
-			message: message,
-			error
+			code: exception.status,
+			message: exception.message,
+			error: exception
 		})
 
-		const errorResponse = {
-			data: exception.response ?? null,
-			message: Array.isArray(message) ? message[0] : message,
-			code: statusCode,
+		const Result = {
+			data: exception ?? null,
+			message: exception.message,
+			code: exception.status,
 			timestamp: day().format('YYYY-MM-DD HH:mm:ss'),
 			url: request.url,
 			method: request.method
@@ -34,6 +33,6 @@ export class HttpExceptionFilter implements ExceptionFilter {
 		// 设置返回的状态码、请求头、发送错误信息
 		response.status(HttpStatus.OK)
 		response.header('Content-Type', 'application/json; charset=utf-8')
-		response.send(errorResponse)
+		response.send(Result)
 	}
 }
