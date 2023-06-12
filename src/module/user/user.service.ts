@@ -6,7 +6,6 @@ import { CoreService } from '@/core/core.service'
 import { EntityService } from '@/core/entity.service'
 import { RedisService } from '@/core/redis.service'
 import { AlicloudService } from '@/core/alicloud.service'
-import { usuCurrent } from '@/i18n'
 import { UserEntity } from '@/entity/user.entity'
 import { compareSync } from 'bcryptjs'
 import * as uuid from 'uuid'
@@ -26,27 +25,27 @@ export class UserService extends CoreService {
 
 	/**创建token、2小时有效期**/
 	public async newJwtToken(node: UserEntity) {
-		const user = { uid: node.uid, nickname: node.nickname, password: node.password, status: node.status }
-		//jwt
-		const expire = Number(this.configService.get('JWT_EXPIRE') ?? 7200)
-		const secret = this.configService.get('JWT_SECRET')
-		const token = await this.jwtService.signAsync({ ...user, secret: uuid.v4() }, { secret })
-		const refresh = await this.jwtService.signAsync({ ...user, secret: uuid.v4() }, { secret })
-		//redis
-		await this.redisService.setStore(`user_token_${node.uid}`, token, expire)
-		await this.redisService.setStore(`user_refresh_${node.uid}`, refresh, expire * 10)
-		return { expire, token, refresh }
+		return this.RunCatch(async i18n => {
+			const user = { uid: node.uid, nickname: node.nickname, password: node.password, status: node.status }
+			//jwt
+			const expire = Number(this.configService.get('JWT_EXPIRE') ?? 7200)
+			const secret = this.configService.get('JWT_SECRET')
+			const token = await this.jwtService.signAsync({ ...user, secret: uuid.v4() }, { secret })
+			const refresh = await this.jwtService.signAsync({ ...user, secret: uuid.v4() }, { secret })
+			//redis
+			await this.redisService.setStore(`user_token_${node.uid}`, token, expire)
+			return await this.redisService.setStore(`user_refresh_${node.uid}`, refresh, expire * 10).then(() => {
+				return { expire, token, refresh }
+			})
+		})
 	}
 
 	/**解析token**/
 	public async untieJwtToken(token: string): Promise<UserEntity> {
-		const i18n = usuCurrent()
-		try {
+		return this.RunCatch(async i18n => {
 			const secret = this.configService.get('JWT_SECRET')
 			return await this.jwtService.verifyAsync(token, { secret })
-		} catch (e) {
-			throw new HttpException(i18n.t('user.USER_LOGIN_NOT'), HttpStatus.UNAUTHORIZED)
-		}
+		})
 	}
 
 	/**注册用户**/
@@ -78,8 +77,7 @@ export class UserService extends CoreService {
 
 	/**登录**/
 	public async httpAuthorize(props: User.RequestAuthorize, AUTN_CAPTCHA: string) {
-		const i18n = usuCurrent()
-		try {
+		return this.RunCatch(async i18n => {
 			const code = await this.redisService.getStore(AUTN_CAPTCHA)
 			if (code !== props.code) {
 				//验证码错误
@@ -97,22 +95,20 @@ export class UserService extends CoreService {
 				//密码错误
 				throw new HttpException(i18n.t('user.USER_PASSWORD_ERROR'), HttpStatus.BAD_REQUEST)
 			}
-			const { token, expire, refresh } = await this.newJwtToken(node)
-			return {
-				expire,
-				token,
-				refresh,
-				message: i18n.t('user.USER_LOGIN_SUCCESS')
-			}
-		} catch (e) {
-			throw new HttpException(e.message || i18n.t('http.HTTP_SERVICE_ERROR'), HttpStatus.BAD_REQUEST)
-		}
+			return await this.newJwtToken(node).then(({ token, expire, refresh }) => {
+				return {
+					expire,
+					token,
+					refresh,
+					message: i18n.t('user.USER_LOGIN_SUCCESS')
+				}
+			})
+		})
 	}
 
 	/**获取用户信息**/
 	public async httpBasicUser(uid: string, cache: boolean = true) {
-		const i18n = usuCurrent()
-		try {
+		return this.RunCatch(async i18n => {
 			if (cache) {
 				//读取redis缓存
 				const node = await this.redisService.getStore(`user_cache_${uid}`)
@@ -120,17 +116,14 @@ export class UserService extends CoreService {
 			} else {
 				const node = await this.validator({
 					model: this.entity.userModel,
-					name: i18n.t('user.USER_ACCOUNT'), //账号
+					name: i18n.t('user.USER_ACCOUNT'),
 					empty: { value: true },
-					close: { value: true },
-					delete: { value: true },
 					options: { where: { uid } }
 				})
-				await this.redisService.setStore(`user_cache_${uid}`, node)
-				return node
+				return await this.redisService.setStore(`user_cache_${uid}`, node).then(() => {
+					return node
+				})
 			}
-		} catch (e) {
-			throw new HttpException(e.message || i18n.t('http.HTTP_SERVICE_ERROR'), HttpStatus.BAD_REQUEST)
-		}
+		})
 	}
 }

@@ -33,8 +33,9 @@ export class RuleService extends CoreService {
 				status: props.status,
 				parent: parent
 			})
-			await this.entity.ruleModel.save(node)
-			return { message: i18n.t('http.HTTP_CREATE_SUCCESS') }
+			return await this.entity.ruleModel.save(node).then(() => {
+				return { message: i18n.t('http.HTTP_CREATE_SUCCESS') }
+			})
 		})
 	}
 
@@ -55,7 +56,8 @@ export class RuleService extends CoreService {
 				empty: { value: true },
 				options: { where: { id: props.parent } }
 			})
-			await this.entity.ruleModel.update(
+			//prettier-ignore
+			return await this.entity.ruleModel.update(
 				{ id: props.id },
 				{
 					path: props.path ?? node.path,
@@ -64,8 +66,9 @@ export class RuleService extends CoreService {
 					status: props.status ?? node.status,
 					parent: parent
 				}
-			)
-			return { message: i18n.t('http.HTTP_UPDATE_SUCCESS') }
+			).then(() => {
+				return { message: i18n.t('http.HTTP_UPDATE_SUCCESS') }
+			})
 		})
 	}
 
@@ -78,8 +81,9 @@ export class RuleService extends CoreService {
 				empty: { value: true },
 				options: { where: { id: props.id } }
 			})
-			await this.entity.ruleModel.update({ id: props.id }, { status: props.status })
-			return { message: i18n.t('http.HTTP_UPDATE_SUCCESS') }
+			return await this.entity.ruleModel.update({ id: props.id }, { status: props.status }).then(() => {
+				return { message: i18n.t('http.HTTP_UPDATE_SUCCESS') }
+			})
 		})
 	}
 }

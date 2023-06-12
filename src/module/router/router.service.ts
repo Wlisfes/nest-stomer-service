@@ -27,8 +27,9 @@ export class RouterService extends CoreService {
 				icon: props.icon || null,
 				parent: props.parent || null
 			})
-			await this.entity.routerModel.save(node)
-			return { message: i18n.t('http.HTTP_CREATE_SUCCESS') }
+			return await this.entity.routerModel.save(node).then(() => {
+				return { message: i18n.t('http.HTTP_CREATE_SUCCESS') }
+			})
 		})
 	}
 
