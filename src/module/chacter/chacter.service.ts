@@ -1,9 +1,7 @@
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import { Brackets } from 'typeorm'
-import { isEmpty } from 'class-validator'
 import { CoreService } from '@/core/core.service'
 import { EntityService } from '@/core/entity.service'
-import { usuCurrent } from '@/i18n'
 import * as http from './chacter.interface'
 
 @Injectable()
@@ -14,14 +12,12 @@ export class ChacterService extends CoreService {
 
 	/**新增字典**/
 	public async httpCreate(props: http.ICreate) {
-		const i18n = usuCurrent()
-		try {
-			if (await this.entity.chacterModel.findOne({ where: { command: props.command } })) {
-				throw new HttpException(
-					i18n.t('common.HAS_EXITTED_MERGE', { args: { name: i18n.t('chacter.NAME') } }),
-					HttpStatus.BAD_REQUEST
-				)
-			}
+		return this.RunCatch(async i18n => {
+			await this.haveCreate({
+				model: this.entity.ruleModel,
+				name: i18n.t('chacter.name'),
+				options: { where: { command: props.command } }
+			})
 			const node = await this.entity.chacterModel.create({
 				command: props.command,
 				cn: props.cn,
@@ -31,30 +27,24 @@ export class ChacterService extends CoreService {
 			return await this.entity.chacterModel.save(node).then(() => {
 				return { message: i18n.t('http.HTTP_CREATE_SUCCESS') }
 			})
-		} catch (e) {
-			throw new HttpException(e.message || i18n.t('http.HTTP_SERVICE_ERROR'), HttpStatus.BAD_REQUEST)
-		}
+		})
 	}
 
 	/**字典详情**/
 	public async httpOnter(props: http.IOnter) {
-		const i18n = usuCurrent()
-		try {
-			return await this.isOnter({
+		return this.RunCatch(async i18n => {
+			return await this.validator({
 				model: this.entity.chacterModel,
-				name: i18n.t('chacter.NAME'),
+				name: i18n.t('chacter.name'),
 				empty: { value: true },
 				options: { where: { id: props.id } }
 			})
-		} catch (e) {
-			throw new HttpException(e.message || i18n.t('http.HTTP_SERVICE_ERROR'), HttpStatus.BAD_REQUEST)
-		}
+		})
 	}
 
 	/**字典列表**/
 	public async httpColumn(props: http.IColumn) {
-		const i18n = usuCurrent()
-		try {
+		return this.RunCatch(async i18n => {
 			const [list = [], total = 0] = await this.entity.chacterModel
 				.createQueryBuilder('t')
 				.where(
@@ -69,26 +59,21 @@ export class ChacterService extends CoreService {
 				.take(props.size)
 				.getManyAndCount()
 			return { size: props.size, page: props.page, total, list }
-		} catch (e) {
-			throw new HttpException(e.message || i18n.t('http.HTTP_SERVICE_ERROR'), HttpStatus.BAD_REQUEST)
-		}
+		})
 	}
 
 	/**删除字典**/
 	public async httpDelete(props: http.IOnter) {
-		const i18n = usuCurrent()
-		try {
-			await this.isOnter({
+		return this.RunCatch(async i18n => {
+			await this.validator({
 				model: this.entity.chacterModel,
-				name: i18n.t('chacter.NAME'),
+				name: i18n.t('chacter.name'),
 				empty: { value: true },
 				options: { where: { id: props.id } }
 			})
 			return await this.entity.chacterModel.delete(props.id).then(() => {
 				return { message: i18n.t('http.HTTP_DELETE_SUCCESS') }
 			})
-		} catch (e) {
-			throw new HttpException(e.message || i18n.t('http.HTTP_SERVICE_ERROR'), HttpStatus.BAD_REQUEST)
-		}
+		})
 	}
 }

@@ -16,7 +16,6 @@ export type I18nTranslations = {
             "value": string;
             "required": string;
         };
-        "NAME": string;
     };
     "common": {
         "100200": string;

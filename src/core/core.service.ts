@@ -77,25 +77,6 @@ export class CoreService {
 		}
 	}
 
-	/**验证数据模型是否有效**/
-	public async isOnter<T>(props: ICoreDator<T>): Promise<T> {
-		const i18n = usuCurrent()
-		try {
-			const node = await props.model.findOne(props.options)
-			if (!props.empty?.value) {
-				return node
-			} else if (!node) {
-				throw new HttpException(
-					i18n.t('common.NOT_EXIST_MERGE', { args: { name: props.empty.message ?? props.name } }),
-					HttpStatus.BAD_REQUEST
-				)
-			}
-			return node
-		} catch (e) {
-			throw new HttpException(e.message || i18n.t('http.HTTP_SERVICE_ERROR'), HttpStatus.BAD_REQUEST)
-		}
-	}
-
 	/**创建时、验证数据模型是否已经存在**/
 	public async haveCreate<T>(props: ICoreDator<T>): Promise<T> {
 		const i18n = await this.usuCurrent()
