@@ -47,4 +47,22 @@ export class RouterController {
 	public async httpRuleCreate(@Body() body: http1.RequestCreateRule) {
 		return await this.ruleService.httpRuleCreate(body)
 	}
+
+	@Put('/update/rule')
+	@ApiDecorator({
+		operation: { summary: '编辑接口规则' },
+		response: { status: 200, description: 'OK', type: RNotice }
+	})
+	public async httpRuleUpdate(@Body() body: http1.RequestUpdateRule) {
+		return await this.ruleService.httpRuleUpdate(body)
+	}
+
+	@Put('/transfer/rule')
+	@ApiDecorator({
+		operation: { summary: '编辑接口规则状态' },
+		response: { status: 200, description: 'OK', type: RNotice }
+	})
+	public async httpRuleTransfer(@Body() body: http1.RequestTransferRule) {
+		return await this.ruleService.httpRuleTransfer(body)
+	}
 }

@@ -24,3 +24,5 @@ export class RequestRule extends PickType(ICommon, ['id', 'status']) {
 }
 
 export class RequestCreateRule extends PickType(RequestRule, ['path', 'name', 'method', 'status', 'parent']) {}
+export class RequestUpdateRule extends PickType(RequestRule, ['id', 'path', 'name', 'method', 'status', 'parent']) {}
+export class RequestTransferRule extends PickType(RequestRule, ['id', 'status']) {}

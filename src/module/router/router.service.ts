@@ -2,7 +2,6 @@ import { Injectable, HttpException, HttpStatus } from '@nestjs/common'
 import { In } from 'typeorm'
 import { CoreService } from '@/core/core.service'
 import { EntityService } from '@/core/entity.service'
-import { usuCurrent } from '@/i18n'
 import * as http from './router.interface'
 
 @Injectable()
@@ -11,31 +10,15 @@ export class RouterService extends CoreService {
 		super()
 	}
 
-	public formaterTree(data: Array<Object>) {
-		const map: Record<string, any> = {}
-		const tree: Array<any> = []
-		data.forEach((node: any) => {
-			map[node.id] = node
-			node.children = []
-			if (node.parent) {
-				map[node.parent].children.push(node)
-			} else {
-				tree.push(node)
-			}
-		})
-		return tree
-	}
-
 	/**新增路由**/
 	public async httpCreate(props: http.RequestCreateRouter) {
-		const i18n = usuCurrent()
+		const i18n = await this.usuCurrent()
 		try {
-			const route = await this.entity.routerModel.findOne({
-				where: [{ path: props.path, status: In([0, 1]) }]
+			await this.haveCreate({
+				model: this.entity.routerModel,
+				name: i18n.t('router.name'),
+				options: { where: { path: props.path, status: In(['disable', 'enable']) } }
 			})
-			if (route) {
-				throw new HttpException('路由已存在', HttpStatus.BAD_REQUEST)
-			}
 			const node = await this.entity.routerModel.create({
 				type: props.type,
 				title: props.title,
@@ -54,7 +37,7 @@ export class RouterService extends CoreService {
 
 	/**动态路由节点**/
 	public async httpDynamic() {
-		const i18n = usuCurrent()
+		const i18n = await this.usuCurrent()
 		try {
 			const list = await this.entity.routerModel.find({ where: { status: 'enable' } })
 			return { list }
@@ -65,10 +48,13 @@ export class RouterService extends CoreService {
 
 	/**路由列表**/
 	public async httpColumn() {
-		const i18n = usuCurrent()
+		const i18n = await this.usuCurrent()
 		try {
-			const list = await this.entity.routerModel.find()
-			return { list: this.formaterTree(list) }
+			const list = await this.entity.routerModel.find({
+				relations: ['rule'],
+				order: { id: 'DESC' }
+			})
+			return { list: this.listToTree(list) }
 		} catch (e) {
 			throw new HttpException(e.message || i18n.t('http.HTTP_SERVICE_ERROR'), HttpStatus.BAD_REQUEST)
 		}

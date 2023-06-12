@@ -38,7 +38,6 @@ export type I18nTranslations = {
         "HTTP_UPDATE_SUCCESS": string;
         "HTTP_DELETE_SUCCESS": string;
         "HTTP_SERVICE_ERROR": string;
-        "HTTP_UPDATESUCCESS": string;
     };
     "router": {
         "name": string;
