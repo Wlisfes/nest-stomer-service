@@ -39,9 +39,7 @@ export class AuthGuard implements CanActivate {
 				}
 			} else {
 				const user = await this.userService.httpBasicUser(node.uid)
-
 				request.user = user
-				console.log({ cache })
 			}
 		}
 

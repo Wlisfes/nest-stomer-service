@@ -39,19 +39,21 @@ export class RouterService extends CoreService {
 	/**动态路由节点**/
 	public async httpRouterDynamic() {
 		return this.RunCatch(async i18n => {
-			const list = await this.entity.routerModel.find({ where: { status: 'enable' } })
-			return { list }
+			const [list = [], total = 0] = await this.entity.routerModel.findAndCount({
+				where: { status: 'enable' }
+			})
+			return { list, total }
 		})
 	}
 
 	/**路由列表**/
 	public async httpRouterColumn() {
 		return this.RunCatch(async i18n => {
-			const list = await this.entity.routerModel.find({
+			const [list = [], total = 0] = await this.entity.routerModel.findAndCount({
 				relations: ['rule'],
 				order: { id: 'DESC' }
 			})
-			return { list: this.listToTree(list) }
+			return { total, list: this.listToTree(list) }
 		})
 	}
 }
