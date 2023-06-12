@@ -18,6 +18,15 @@ export class CoreService {
 		})
 	}
 
+	public async RunCatch<T extends Object>(callback: (i18n: ReturnType<typeof usuCurrent>) => Promise<T>) {
+		const i18n = await this.usuCurrent()
+		try {
+			return callback(i18n)
+		} catch (e) {
+			throw new HttpException(e.message || i18n.t('http.HTTP_SERVICE_ERROR'), HttpStatus.BAD_REQUEST)
+		}
+	}
+
 	/**数组转树结构**/
 	public listToTree<T extends Record<string, any>>(data: Array<T>) {
 		const tree: Array<T> = []

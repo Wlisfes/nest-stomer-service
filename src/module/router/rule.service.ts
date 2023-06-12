@@ -1,4 +1,4 @@
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import { In } from 'typeorm'
 import { CoreService } from '@/core/core.service'
 import { EntityService } from '@/core/entity.service'
@@ -12,8 +12,7 @@ export class RuleService extends CoreService {
 
 	/**新增接口规则**/
 	public async httpRuleCreate(props: http.RequestCreateRule) {
-		const i18n = await this.usuCurrent()
-		try {
+		return this.RunCatch(async i18n => {
 			await this.haveCreate({
 				model: this.entity.ruleModel,
 				name: i18n.t('rule.name'),
@@ -36,15 +35,12 @@ export class RuleService extends CoreService {
 			})
 			await this.entity.ruleModel.save(node)
 			return { message: i18n.t('http.HTTP_CREATE_SUCCESS') }
-		} catch (e) {
-			throw new HttpException(e.message || i18n.t('http.HTTP_SERVICE_ERROR'), HttpStatus.BAD_REQUEST)
-		}
+		})
 	}
 
 	/**编辑接口规则**/
 	public async httpRuleUpdate(props: http.RequestUpdateRule) {
-		const i18n = await this.usuCurrent()
-		try {
+		return this.RunCatch(async i18n => {
 			const node = await this.haveUpdate(
 				{
 					model: this.entity.ruleModel,
@@ -70,15 +66,12 @@ export class RuleService extends CoreService {
 				}
 			)
 			return { message: i18n.t('http.HTTP_UPDATE_SUCCESS') }
-		} catch (e) {
-			throw new HttpException(e.message || i18n.t('http.HTTP_SERVICE_ERROR'), HttpStatus.BAD_REQUEST)
-		}
+		})
 	}
 
 	/**编辑接口规则状态**/
 	public async httpRuleTransfer(props: http.RequestTransferRule) {
-		const i18n = await this.usuCurrent()
-		try {
+		return this.RunCatch(async i18n => {
 			await this.validator({
 				model: this.entity.roleModel,
 				name: i18n.t('rule.name'),
@@ -87,8 +80,6 @@ export class RuleService extends CoreService {
 			})
 			await this.entity.ruleModel.update({ id: props.id }, { status: props.status })
 			return { message: i18n.t('http.HTTP_UPDATE_SUCCESS') }
-		} catch (e) {
-			throw new HttpException(e.message || i18n.t('http.HTTP_SERVICE_ERROR'), HttpStatus.BAD_REQUEST)
-		}
+		})
 	}
 }

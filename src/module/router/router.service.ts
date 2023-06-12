@@ -1,4 +1,4 @@
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import { In } from 'typeorm'
 import { CoreService } from '@/core/core.service'
 import { EntityService } from '@/core/entity.service'
@@ -11,9 +11,8 @@ export class RouterService extends CoreService {
 	}
 
 	/**新增路由**/
-	public async httpCreate(props: http.RequestCreateRouter) {
-		const i18n = await this.usuCurrent()
-		try {
+	public async httpRouterCreate(props: http.RequestCreateRouter) {
+		return this.RunCatch(async i18n => {
 			await this.haveCreate({
 				model: this.entity.routerModel,
 				name: i18n.t('router.name'),
@@ -30,33 +29,28 @@ export class RouterService extends CoreService {
 			})
 			await this.entity.routerModel.save(node)
 			return { message: i18n.t('http.HTTP_CREATE_SUCCESS') }
-		} catch (e) {
-			throw new HttpException(e.message || i18n.t('http.HTTP_SERVICE_ERROR'), HttpStatus.BAD_REQUEST)
-		}
+		})
 	}
 
+	/**编辑路由**/
+	public async httpRouterUpdate(props: http.RequestUpdateRouter) {}
+
 	/**动态路由节点**/
-	public async httpDynamic() {
-		const i18n = await this.usuCurrent()
-		try {
+	public async httpRouterDynamic() {
+		return this.RunCatch(async i18n => {
 			const list = await this.entity.routerModel.find({ where: { status: 'enable' } })
 			return { list }
-		} catch (e) {
-			throw new HttpException(e.message || i18n.t('http.HTTP_SERVICE_ERROR'), HttpStatus.BAD_REQUEST)
-		}
+		})
 	}
 
 	/**路由列表**/
-	public async httpColumn() {
-		const i18n = await this.usuCurrent()
-		try {
+	public async httpRouterColumn() {
+		return this.RunCatch(async i18n => {
 			const list = await this.entity.routerModel.find({
 				relations: ['rule'],
 				order: { id: 'DESC' }
 			})
 			return { list: this.listToTree(list) }
-		} catch (e) {
-			throw new HttpException(e.message || i18n.t('http.HTTP_SERVICE_ERROR'), HttpStatus.BAD_REQUEST)
-		}
+		})
 	}
 }

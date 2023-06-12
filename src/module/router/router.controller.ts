@@ -1,5 +1,5 @@
 import { Controller, Post, Get, Put, Body, Query } from '@nestjs/common'
-import { ApiTags, PickType } from '@nestjs/swagger'
+import { ApiTags } from '@nestjs/swagger'
 import { ApiDecorator } from '@/decorator/compute.decorator'
 import { RNotice } from '@/interface/common.interface'
 import { RouterService } from './router.service'
@@ -17,8 +17,17 @@ export class RouterController {
 		operation: { summary: '新增路由' },
 		response: { status: 200, description: 'OK', type: RNotice }
 	})
-	public async httpCreate(@Body() body: http.RequestCreateRouter) {
-		return await this.routerService.httpCreate(body)
+	public async httpRouterCreate(@Body() body: http.RequestCreateRouter) {
+		return await this.routerService.httpRouterCreate(body)
+	}
+
+	@Put('/update')
+	@ApiDecorator({
+		operation: { summary: '编辑路由' },
+		response: { status: 200, description: 'OK', type: RNotice }
+	})
+	public async httpRouterUpdate(@Body() body: http.RequestUpdateRouter) {
+		return await this.routerService.httpRouterUpdate(body)
 	}
 
 	@Get('/column')
@@ -26,8 +35,8 @@ export class RouterController {
 		operation: { summary: '路由列表' },
 		response: { status: 200, description: 'OK', type: http.ResultColumnRouter }
 	})
-	public async httpColumn() {
-		return await this.routerService.httpColumn()
+	public async httpRouterColumn() {
+		return await this.routerService.httpRouterColumn()
 	}
 
 	@Get('/dynamic')
@@ -35,8 +44,8 @@ export class RouterController {
 		operation: { summary: '动态路由节点' },
 		response: { status: 200, description: 'OK', type: http.ResultDynamicRouter }
 	})
-	public async httpDynamic() {
-		return await this.routerService.httpDynamic()
+	public async httpRouterDynamic() {
+		return await this.routerService.httpRouterDynamic()
 	}
 
 	@Post('/create/rule')
