@@ -3,12 +3,14 @@ import { ApiTags, PickType } from '@nestjs/swagger'
 import { ApiDecorator } from '@/decorator/compute.decorator'
 import { RCommon } from '@/interface/common.interface'
 import { RouterService } from './router.service'
+import { RuleService } from './rule.service'
 import * as http from './router.interface'
+import * as http1 from './rule.interface'
 
 @ApiTags('路由模块')
 @Controller('router')
 export class RouterController {
-	constructor(private readonly routerService: RouterService) {}
+	constructor(private readonly routerService: RouterService, private readonly ruleService: RuleService) {}
 
 	@Post('/create')
 	@ApiDecorator({
@@ -36,4 +38,11 @@ export class RouterController {
 	public async httpDynamic() {
 		return await this.routerService.httpDynamic()
 	}
+
+	@Post('/create/rule')
+	@ApiDecorator({
+		operation: { summary: '新增接口规则' },
+		response: { status: 200, description: 'OK', type: [PickType(RCommon, ['message'])] }
+	})
+	public async httpRuleCreate(@Body() body: http1.RuleCreate) {}
 }

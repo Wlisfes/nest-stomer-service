@@ -13,9 +13,14 @@ export class CoreService {
 		})
 	}
 
+	/**创建国际化实例**/
+	public async usuCurrent() {
+		return usuCurrent()
+	}
+
 	/**验证数据模型是否有效**/
 	public async validator<T>(props: ICoreDator<T>): Promise<T> {
-		const i18n = usuCurrent()
+		const i18n = await this.usuCurrent()
 		try {
 			const node = await props.model.findOne(props.options)
 			if (!props.empty?.value) {
