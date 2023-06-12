@@ -1,5 +1,6 @@
-import { Entity, Column } from 'typeorm'
+import { Entity, Column, OneToMany } from 'typeorm'
 import { NEntity } from '@/entity/common.entity'
+import { RuleEntity } from '@/entity/rule.entity'
 
 @Entity('tb-router')
 export class RouterEntity extends NEntity {
@@ -23,4 +24,7 @@ export class RouterEntity extends NEntity {
 
 	@Column({ comment: '父级节点ID', nullable: true, default: null })
 	parent: number
+
+	@OneToMany(type => RuleEntity, rule => rule.parent)
+	rule: RuleEntity[]
 }
