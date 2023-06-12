@@ -32,5 +32,5 @@ export class IUser extends PickType(ICommon, ['id', 'uid']) {
 	code: string
 }
 
-export class IRegister extends PickType(IUser, ['nickname', 'password', 'mobile', 'code']) {}
-export class ILogin extends PickType(IUser, ['mobile', 'password', 'code']) {}
+export class RequestRegister extends PickType(IUser, ['nickname', 'password', 'mobile', 'code']) {}
+export class RequestAuthorize extends PickType(IUser, ['mobile', 'password', 'code']) {}

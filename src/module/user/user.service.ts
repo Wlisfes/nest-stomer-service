@@ -50,35 +50,34 @@ export class UserService extends CoreService {
 	}
 
 	/**注册用户**/
-	public async httpRegister(props: User.IRegister) {
-		const i18n = usuCurrent()
-		try {
-			if (await this.entity.userModel.findOne({ where: { mobile: props.mobile } })) {
-				//手机号已注册
-				throw new HttpException(i18n.t('user.USER_MOBILE_EXIST'), HttpStatus.BAD_REQUEST)
-			}
+	public async httpRegister(props: User.RequestRegister) {
+		return this.RunCatch(async i18n => {
+			await this.haveCreate({
+				model: this.entity.userModel,
+				name: i18n.t('user.USER_MOBILE_EXIST'),
+				message: i18n.t('user.USER_MOBILE_EXIST'),
+				options: { where: { mobile: props.mobile } }
+			})
 
 			const code = await this.redisService.getStore(props.mobile)
 			if (props.code !== code) {
 				//验证码错误
 				throw new HttpException(i18n.t('user.USER_CAPTCHA_ERROR'), HttpStatus.BAD_REQUEST)
 			}
-
 			const node = await this.entity.userModel.create({
 				uid: uuid.v4(),
 				nickname: props.nickname,
 				password: props.password,
 				mobile: props.mobile
 			})
-			await this.entity.userModel.save(node)
-			return { message: i18n.t('user.USER_REGISTER_SUCCESS') }
-		} catch (e) {
-			throw new HttpException(e.message || i18n.t('http.HTTP_SERVICE_ERROR'), HttpStatus.BAD_REQUEST)
-		}
+			return await this.entity.userModel.save(node).then(() => {
+				return { message: i18n.t('user.USER_REGISTER_SUCCESS') }
+			})
+		})
 	}
 
 	/**登录**/
-	public async httpLogin(props: User.ILogin, AUTN_CAPTCHA: string) {
+	public async httpAuthorize(props: User.RequestAuthorize, AUTN_CAPTCHA: string) {
 		const i18n = usuCurrent()
 		try {
 			const code = await this.redisService.getStore(AUTN_CAPTCHA)
@@ -111,13 +110,13 @@ export class UserService extends CoreService {
 	}
 
 	/**获取用户信息**/
-	public async httpBaseUser(uid: string, cache: boolean = true) {
+	public async httpBasicUser(uid: string, cache: boolean = true) {
 		const i18n = usuCurrent()
 		try {
 			if (cache) {
 				//读取redis缓存
 				const node = await this.redisService.getStore(`user_cache_${uid}`)
-				return node || (await this.httpBaseUser(uid, false))
+				return node || (await this.httpBasicUser(uid, false))
 			} else {
 				const node = await this.validator({
 					model: this.entity.userModel,

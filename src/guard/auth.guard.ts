@@ -38,7 +38,7 @@ export class AuthGuard implements CanActivate {
 					throw new HttpException(i18n.t('user.USER_LOGIN_NOT'), HttpStatus.UNAUTHORIZED)
 				}
 			} else {
-				const user = await this.userService.httpBaseUser(node.uid)
+				const user = await this.userService.httpBasicUser(node.uid)
 
 				request.user = user
 				console.log({ cache })

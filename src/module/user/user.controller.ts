@@ -4,7 +4,8 @@ import { ApiDecorator } from '@/decorator/compute.decorator'
 import { ApiBearer } from '@/guard/auth.guard'
 import { CoreService } from '@/core/core.service'
 import { UserService } from './user.service'
-import * as User from './user.interface'
+import { RNotice } from '@/interface/common.interface'
+import * as http from './user.interface'
 
 @ApiTags('用户模块')
 @Controller('user')
@@ -14,9 +15,9 @@ export class UserController {
 	@Post('/register')
 	@ApiDecorator({
 		operation: { summary: '注册用户' },
-		response: { status: 200, description: 'OK' }
+		response: { status: 200, description: 'OK', type: RNotice }
 	})
-	public async httpRegister(@Body() body: User.IRegister) {
+	public async httpRegister(@Body() body: http.RequestRegister) {
 		return await this.userService.httpRegister(body)
 	}
 
@@ -25,17 +26,17 @@ export class UserController {
 		operation: { summary: '登录' },
 		response: { status: 200, description: 'OK' }
 	})
-	public async httpLogin(@Body() body: User.ILogin, @Request() request) {
-		return await this.userService.httpLogin(body, request.cookies.AUTN_CAPTCHA)
+	public async httpAuthorize(@Body() body: http.RequestAuthorize, @Request() request) {
+		return await this.userService.httpAuthorize(body, request.cookies.AUTN_CAPTCHA)
 	}
 
-	@Get('/base')
+	@Get('/basic')
 	@ApiBearer({ decorator: true })
 	@ApiDecorator({
 		operation: { summary: '用户信息' },
-		response: { status: 200, description: 'OK' }
+		response: { status: 200, description: 'OK', type: http.IUser }
 	})
-	public async httpBaseUser(@Request() request: { user: User.IUser }) {
-		return await this.userService.httpBaseUser(request.user.uid)
+	public async httpBasicUser(@Request() request: { user: http.IUser }) {
+		return await this.userService.httpBasicUser(request.user.uid)
 	}
 }

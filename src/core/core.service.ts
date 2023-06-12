@@ -84,7 +84,7 @@ export class CoreService {
 			const node = await props.model.findOne(props.options)
 			if (node) {
 				throw new HttpException(
-					i18n.t('common.HAS_EXITTED_MERGE', { args: { name: props.name } }),
+					props.message ?? i18n.t('common.HAS_EXITTED_MERGE', { args: { name: props.name } }),
 					HttpStatus.BAD_REQUEST
 				)
 			}
