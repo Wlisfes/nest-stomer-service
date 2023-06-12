@@ -17,14 +17,14 @@ export class RouterController {
 		operation: { summary: '新增路由' },
 		response: { status: 200, description: 'OK', type: [PickType(RCommon, ['message'])] }
 	})
-	public async httpCreate(@Body() body: http.ICreate) {
+	public async httpCreate(@Body() body: http.RequestCreateRouter) {
 		return await this.routerService.httpCreate(body)
 	}
 
 	@Get('/column')
 	@ApiDecorator({
 		operation: { summary: '路由列表' },
-		response: { status: 200, description: 'OK', type: http.IColumn }
+		response: { status: 200, description: 'OK', type: http.ResultColumnRouter }
 	})
 	public async httpColumn() {
 		return await this.routerService.httpColumn()
@@ -33,7 +33,7 @@ export class RouterController {
 	@Get('/dynamic')
 	@ApiDecorator({
 		operation: { summary: '动态路由节点' },
-		response: { status: 200, description: 'OK', type: http.IDynamic }
+		response: { status: 200, description: 'OK', type: http.ResultDynamicRouter }
 	})
 	public async httpDynamic() {
 		return await this.routerService.httpDynamic()

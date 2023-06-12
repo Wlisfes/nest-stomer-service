@@ -27,7 +27,7 @@ export class RouterService extends CoreService {
 	}
 
 	/**新增路由**/
-	public async httpCreate(props: http.ICreate) {
+	public async httpCreate(props: http.RequestCreateRouter) {
 		const i18n = usuCurrent()
 		try {
 			const route = await this.entity.routerModel.findOne({
