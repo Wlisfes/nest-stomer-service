@@ -46,7 +46,7 @@ export class CoreService {
 			}
 			return node
 		} catch (e) {
-			throw new HttpException(e.message || i18n.t('common.100500'), HttpStatus.BAD_REQUEST)
+			throw new HttpException(e.message || i18n.t('http.HTTP_SERVICE_ERROR'), HttpStatus.BAD_REQUEST)
 		}
 	}
 
@@ -65,7 +65,24 @@ export class CoreService {
 			}
 			return node
 		} catch (e) {
-			throw new HttpException(e.message || i18n.t('common.100500'), HttpStatus.BAD_REQUEST)
+			throw new HttpException(e.message || i18n.t('http.HTTP_SERVICE_ERROR'), HttpStatus.BAD_REQUEST)
+		}
+	}
+
+	/**创建时验证数据模型是否已经存在**/
+	public async haveCreate<T>(props: ICoreDator<T>): Promise<T> {
+		const i18n = await this.usuCurrent()
+		try {
+			const node = await props.model.findOne(props.options)
+			if (node) {
+				throw new HttpException(
+					i18n.t('common.HAS_EXITTED_MERGE', { args: { name: props.name } }),
+					HttpStatus.BAD_REQUEST
+				)
+			}
+			return node
+		} catch (e) {
+			throw new HttpException(e.message || i18n.t('http.HTTP_SERVICE_ERROR'), HttpStatus.BAD_REQUEST)
 		}
 	}
 }

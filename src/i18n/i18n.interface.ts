@@ -40,6 +40,12 @@ export type I18nTranslations = {
         "HTTP_SERVICE_ERROR": string;
         "HTTP_UPDATESUCCESS": string;
     };
+    "router": {
+        "name": string;
+    };
+    "rule": {
+        "name": string;
+    };
     "user": {
         "USER_LOGIN_NOT": string;
         "USER_LOGIN_SUCCESS": string;

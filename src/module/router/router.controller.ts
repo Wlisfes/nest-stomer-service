@@ -1,7 +1,7 @@
 import { Controller, Post, Get, Put, Body, Query } from '@nestjs/common'
 import { ApiTags, PickType } from '@nestjs/swagger'
 import { ApiDecorator } from '@/decorator/compute.decorator'
-import { RCommon } from '@/interface/common.interface'
+import { RNotice } from '@/interface/common.interface'
 import { RouterService } from './router.service'
 import { RuleService } from './rule.service'
 import * as http from './router.interface'
@@ -15,7 +15,7 @@ export class RouterController {
 	@Post('/create')
 	@ApiDecorator({
 		operation: { summary: '新增路由' },
-		response: { status: 200, description: 'OK', type: [PickType(RCommon, ['message'])] }
+		response: { status: 200, description: 'OK', type: RNotice }
 	})
 	public async httpCreate(@Body() body: http.RequestCreateRouter) {
 		return await this.routerService.httpCreate(body)
@@ -42,7 +42,9 @@ export class RouterController {
 	@Post('/create/rule')
 	@ApiDecorator({
 		operation: { summary: '新增接口规则' },
-		response: { status: 200, description: 'OK', type: [PickType(RCommon, ['message'])] }
+		response: { status: 200, description: 'OK', type: RNotice }
 	})
-	public async httpRuleCreate(@Body() body: http1.RuleCreate) {}
+	public async httpRuleCreate(@Body() body: http1.RequestCreateRule) {
+		return await this.ruleService.httpRuleCreate(body)
+	}
 }

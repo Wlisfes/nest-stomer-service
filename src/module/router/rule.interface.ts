@@ -4,7 +4,7 @@ import { Type } from 'class-transformer'
 import { IsOptional } from '@/decorator/common.decorator'
 import { ICommon, RCommon } from '@/interface/common.interface'
 
-export class IRule extends PickType(ICommon, ['id', 'status']) {
+export class RequestRule extends PickType(ICommon, ['id', 'status']) {
 	@ApiProperty({ description: '接口地址', example: '/api/xxx' })
 	@IsNotEmpty({ message: '接口地址 必填' })
 	path: string
@@ -23,4 +23,4 @@ export class IRule extends PickType(ICommon, ['id', 'status']) {
 	parent: number
 }
 
-export class RuleCreate extends PickType(IRule, ['path', 'name', 'method', 'status', 'parent']) {}
+export class RequestCreateRule extends PickType(RequestRule, ['path', 'name', 'method', 'status', 'parent']) {}
