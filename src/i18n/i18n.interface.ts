@@ -18,25 +18,21 @@ export type I18nTranslations = {
         };
     };
     "common": {
-        "100200": string;
-        "100201": string;
-        "100500": string;
         "HAS_EXITTED_MERGE": string;
         "NOT_EXIST_MERGE": string;
         "NOT_CLOSE_MERGE": string;
         "NOT_DELETE_MERGE": string;
         "NOT_ENABLE_MERGE": string;
         "NOT_DISABLE_MERGE": string;
-        "NOTICE_CREATE": string;
-        "NOTICE_UPDATE": string;
-        "NOTICE_DELETE": string;
-        "comment": string;
+        "comment": {
+            "value": string;
+        };
     };
     "http": {
-        "HTTP_CREATE_SUCCESS": string;
-        "HTTP_UPDATE_SUCCESS": string;
-        "HTTP_DELETE_SUCCESS": string;
-        "HTTP_SERVICE_ERROR": string;
+        "CREATE_SUCCESS": string;
+        "UPDATE_SUCCESS": string;
+        "DELETE_SUCCESS": string;
+        "SERVICE_ERROR": string;
     };
     "router": {
         "name": string;
@@ -45,13 +41,39 @@ export type I18nTranslations = {
         "name": string;
     };
     "user": {
-        "USER_LOGIN_NOT": string;
-        "USER_LOGIN_SUCCESS": string;
-        "USER_REGISTER_SUCCESS": string;
-        "USER_CAPTCHA_ERROR": string;
-        "USER_ACCOUNT": string;
-        "USER_PASSWORD_ERROR": string;
-        "USER_MOBILE_EXIST": string;
+        "name": string;
+        "notice": {
+            "LOGIN_NOT": string;
+            "LOGIN_SUCCESS": string;
+            "REGISTER_SUCCESS": string;
+        };
+        "nickname": {
+            "value": string;
+        };
+        "email": {
+            "value": string;
+        };
+        "avatar": {
+            "value": string;
+        };
+        "openid": {
+            "value": string;
+        };
+        "mobile": {
+            "value": string;
+            "required": string;
+            "register": string;
+        };
+        "password": {
+            "value": string;
+            "required": string;
+            "error": string;
+        };
+        "code": {
+            "value": string;
+            "required": string;
+            "error": string;
+        };
     };
 };
 export type I18nPath = Path<I18nTranslations>;

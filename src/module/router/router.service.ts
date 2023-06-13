@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { In } from 'typeorm'
+import { Brackets, In } from 'typeorm'
 import { CoreService } from '@/core/core.service'
 import { EntityService } from '@/core/entity.service'
 import * as http from './router.interface'
@@ -28,7 +28,7 @@ export class RouterService extends CoreService {
 				parent: props.parent || null
 			})
 			return await this.entity.routerModel.save(node).then(() => {
-				return { message: i18n.t('http.HTTP_CREATE_SUCCESS') }
+				return { message: i18n.t('http.CREATE_SUCCESS') }
 			})
 		})
 	}
@@ -49,10 +49,16 @@ export class RouterService extends CoreService {
 	/**路由列表**/
 	public async httpRouterColumn() {
 		return this.RunCatch(async i18n => {
-			const [list = [], total = 0] = await this.entity.routerModel.findAndCount({
-				relations: ['rule'],
-				order: { id: 'DESC' }
-			})
+			const [list = [], total = 0] = await this.entity.routerModel
+				.createQueryBuilder('t')
+				.leftJoinAndSelect('t.rule', 'rule', 'rule.status IN(:...status)', { status: ['enable', 'disable'] })
+				.where(
+					new Brackets(Q => {
+						Q.where('t.status IN(:...status)', { status: ['enable', 'disable'] })
+					})
+				)
+				.orderBy({ 't.id': 'DESC' })
+				.getManyAndCount()
 			return { total, list: this.listToTree(list) }
 		})
 	}

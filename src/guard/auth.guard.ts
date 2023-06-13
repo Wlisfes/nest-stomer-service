@@ -28,18 +28,25 @@ export class AuthGuard implements CanActivate {
 		/**验证登录**/
 		if (bearer && bearer.decorator) {
 			const token = request.headers[APP_AUTH_TOKEN]
-			const node = await this.userService.untieJwtToken(token)
-			const cache = await this.redisService.getStore(`user_token_${node.uid}`)
-
-			if (!cache || cache !== token) {
-				//token未存储在redis中、或者redis中存储的token不一致，都是未登录
+			if (!token) {
+				//未携带token
 				if (!bearer.transfer) {
 					//transfer为true时无需抛出错误
-					throw new HttpException(i18n.t('user.USER_LOGIN_NOT'), HttpStatus.UNAUTHORIZED)
+					throw new HttpException(i18n.t('user.notice.LOGIN_NOT'), HttpStatus.UNAUTHORIZED)
 				}
 			} else {
-				const user = await this.userService.httpBasicUser(node.uid)
-				request.user = user
+				const node = await this.userService.untieJwtToken(token)
+				const cache = await this.redisService.getStore(`user_token_${node.uid}`)
+				if (!cache || cache !== token) {
+					//token未存储在redis中、或者redis中存储的token不一致，都是未登录
+					if (!bearer.transfer) {
+						//transfer为true时无需抛出错误
+						throw new HttpException(i18n.t('user.notice.LOGIN_NOT'), HttpStatus.UNAUTHORIZED)
+					}
+				} else {
+					const user = await this.userService.httpBasicUser(node.uid)
+					request.user = user
+				}
 			}
 		}
 

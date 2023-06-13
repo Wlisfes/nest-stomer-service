@@ -25,7 +25,7 @@ export class ChacterService extends CoreService {
 				comment: props.comment
 			})
 			return await this.entity.chacterModel.save(node).then(() => {
-				return { message: i18n.t('http.HTTP_CREATE_SUCCESS') }
+				return { message: i18n.t('http.CREATE_SUCCESS') }
 			})
 		})
 	}
@@ -72,7 +72,7 @@ export class ChacterService extends CoreService {
 				options: { where: { id: props.id } }
 			})
 			return await this.entity.chacterModel.delete(props.id).then(() => {
-				return { message: i18n.t('http.HTTP_DELETE_SUCCESS') }
+				return { message: i18n.t('http.DELETE_SUCCESS') }
 			})
 		})
 	}

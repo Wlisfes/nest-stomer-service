@@ -34,7 +34,7 @@ export class RuleService extends CoreService {
 				parent: parent
 			})
 			return await this.entity.ruleModel.save(node).then(() => {
-				return { message: i18n.t('http.HTTP_CREATE_SUCCESS') }
+				return { message: i18n.t('http.CREATE_SUCCESS') }
 			})
 		})
 	}
@@ -67,7 +67,7 @@ export class RuleService extends CoreService {
 					parent: parent
 				}
 			).then(() => {
-				return { message: i18n.t('http.HTTP_UPDATE_SUCCESS') }
+				return { message: i18n.t('http.UPDATE_SUCCESS') }
 			})
 		})
 	}
@@ -82,7 +82,7 @@ export class RuleService extends CoreService {
 				options: { where: { id: props.id } }
 			})
 			return await this.entity.ruleModel.update({ id: props.id }, { status: props.status }).then(() => {
-				return { message: i18n.t('http.HTTP_UPDATE_SUCCESS') }
+				return { message: i18n.t('http.UPDATE_SUCCESS') }
 			})
 		})
 	}

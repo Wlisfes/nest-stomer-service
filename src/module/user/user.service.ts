@@ -53,15 +53,15 @@ export class UserService extends CoreService {
 		return this.RunCatch(async i18n => {
 			await this.haveCreate({
 				model: this.entity.userModel,
-				name: i18n.t('user.USER_MOBILE_EXIST'),
-				message: i18n.t('user.USER_MOBILE_EXIST'),
+				name: i18n.t('user.mobile.value'),
+				message: i18n.t('user.mobile.register'),
 				options: { where: { mobile: props.mobile } }
 			})
 
 			const code = await this.redisService.getStore(props.mobile)
 			if (props.code !== code) {
 				//验证码错误
-				throw new HttpException(i18n.t('user.USER_CAPTCHA_ERROR'), HttpStatus.BAD_REQUEST)
+				throw new HttpException(i18n.t('user.code.error'), HttpStatus.BAD_REQUEST)
 			}
 			const node = await this.entity.userModel.create({
 				uid: uuid.v4(),
@@ -70,7 +70,7 @@ export class UserService extends CoreService {
 				mobile: props.mobile
 			})
 			return await this.entity.userModel.save(node).then(() => {
-				return { message: i18n.t('user.USER_REGISTER_SUCCESS') }
+				return { message: i18n.t('user.notice.REGISTER_SUCCESS') }
 			})
 		})
 	}
@@ -81,11 +81,11 @@ export class UserService extends CoreService {
 			const code = await this.redisService.getStore(AUTN_CAPTCHA)
 			if (code !== props.code) {
 				//验证码错误
-				throw new HttpException(i18n.translate('user.USER_CAPTCHA_ERROR'), HttpStatus.BAD_REQUEST)
+				throw new HttpException(i18n.translate('user.code.error'), HttpStatus.BAD_REQUEST)
 			}
 			const node = await this.validator({
 				model: this.entity.userModel,
-				name: i18n.t('user.USER_ACCOUNT'), //账号
+				name: i18n.t('user.name'), //账号
 				empty: { value: true },
 				close: { value: true },
 				delete: { value: true },
@@ -93,14 +93,14 @@ export class UserService extends CoreService {
 			})
 			if (!compareSync(props.password, node.password)) {
 				//密码错误
-				throw new HttpException(i18n.t('user.USER_PASSWORD_ERROR'), HttpStatus.BAD_REQUEST)
+				throw new HttpException(i18n.t('user.password.error'), HttpStatus.BAD_REQUEST)
 			}
 			return await this.newJwtToken(node).then(({ token, expire, refresh }) => {
 				return {
 					expire,
 					token,
 					refresh,
-					message: i18n.t('user.USER_LOGIN_SUCCESS')
+					message: i18n.t('user.notice.LOGIN_SUCCESS')
 				}
 			})
 		})
@@ -116,7 +116,7 @@ export class UserService extends CoreService {
 			} else {
 				const node = await this.validator({
 					model: this.entity.userModel,
-					name: i18n.t('user.USER_ACCOUNT'),
+					name: i18n.t('user.name'),
 					empty: { value: true },
 					options: { where: { uid } }
 				})

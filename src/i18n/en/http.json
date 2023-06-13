@@ -1,6 +1,6 @@
 {
-	"HTTP_CREATE_SUCCESS": "创建成功",
-	"HTTP_UPDATE_SUCCESS": "编辑成功",
-	"HTTP_DELETE_SUCCESS": "删除成功",
-	"HTTP_SERVICE_ERROR": "服务器开小差了"
+	"CREATE_SUCCESS": "创建成功",
+	"UPDATE_SUCCESS": "编辑成功",
+	"DELETE_SUCCESS": "删除成功",
+	"SERVICE_ERROR": "服务器开小差了"
 }
