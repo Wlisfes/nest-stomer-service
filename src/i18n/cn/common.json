@@ -1,10 +1,4 @@
 {
-	"HAS_EXITTED_MERGE": "{name}已存在",
-	"NOT_EXIST_MERGE": "{name}不存在",
-	"NOT_CLOSE_MERGE": "{name}已关闭",
-	"NOT_DELETE_MERGE": "{name}已删除",
-	"NOT_ENABLE_MERGE": "{name}已启用",
-	"NOT_DISABLE_MERGE": "{name}已禁用",
 	"comment": {
 		"value": "备注"
 	}

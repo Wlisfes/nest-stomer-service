@@ -55,19 +55,19 @@ export class CoreService {
 			} else if (!node) {
 				//不存在
 				throw new HttpException(
-					i18n.t('common.NOT_EXIST_MERGE', { args: { name: props.empty.message ?? props.name } }),
+					i18n.t('http.NOT_DONE', { args: { name: props.empty.message ?? props.name } }),
 					HttpStatus.BAD_REQUEST
 				)
 			} else if (props.close && (node as any).status === 'disable') {
 				//已禁用
 				throw new HttpException(
-					i18n.t('common.NOT_CLOSE_MERGE', { args: { name: props.close.message ?? props.name } }),
+					i18n.t('http.NOT_CLOSE', { args: { name: props.close.message ?? props.name } }),
 					HttpStatus.BAD_REQUEST
 				)
 			} else if (props.delete && (node as any).status === 'delete') {
 				//已删除
 				throw new HttpException(
-					i18n.t('common.NOT_DELETE_MERGE', { args: { name: props.delete.message ?? props.name } }),
+					i18n.t('http.NOT_DELETE', { args: { name: props.delete.message ?? props.name } }),
 					HttpStatus.BAD_REQUEST
 				)
 			}
@@ -77,6 +77,14 @@ export class CoreService {
 		}
 	}
 
+	/**批量验证数据模型是否有效**/
+	public async batchValidator<T>(props: ICoreDator<T>): Promise<{ list: Array<T>; total: number }> {
+		return await this.RunCatch(async i18n => {
+			const [list = [], total = 0] = await props.model.findAndCount(props.options)
+			return { list, total }
+		})
+	}
+
 	/**创建时、验证数据模型是否已经存在**/
 	public async haveCreate<T>(props: ICoreDator<T>): Promise<T> {
 		const i18n = await this.usuCurrent()
@@ -84,7 +92,7 @@ export class CoreService {
 			const node = await props.model.findOne(props.options)
 			if (node) {
 				throw new HttpException(
-					props.message ?? i18n.t('common.HAS_EXITTED_MERGE', { args: { name: props.name } }),
+					props.message ?? i18n.t('http.NOT_HAS', { args: { name: props.name } }),
 					HttpStatus.BAD_REQUEST
 				)
 			}
@@ -100,10 +108,7 @@ export class CoreService {
 		try {
 			const node = await props.model.findOne(props.options)
 			if (node && handler(node)) {
-				throw new HttpException(
-					i18n.t('common.HAS_EXITTED_MERGE', { args: { name: props.name } }),
-					HttpStatus.BAD_REQUEST
-				)
+				throw new HttpException(i18n.t('http.NOT_HAS', { args: { name: props.name } }), HttpStatus.BAD_REQUEST)
 			}
 			return node
 		} catch (e) {

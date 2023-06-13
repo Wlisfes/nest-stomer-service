@@ -48,3 +48,14 @@ export function IsCustomize(option: {
 		}
 	})
 }
+
+/**数字转化**/
+export function TransferNumber({ value }) {
+	if (value && Array.isArray(value)) {
+		return value
+	} else if (value && typeof value === 'string') {
+		return value.split(',').map(k => Number(k)) || []
+	} else {
+		return []
+	}
+}

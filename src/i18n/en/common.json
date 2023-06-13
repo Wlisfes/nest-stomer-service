@@ -1,10 +1,4 @@
 {
-	"HAS_EXITTED_MERGE": "{name} existed",
-	"NOT_EXIST_MERGE": "{name} does not exist",
-	"NOT_CLOSE_MERGE": "{name} closed",
-	"NOT_DELETE_MERGE": "{name} deleted",
-	"NOT_ENABLE_MERGE": "{name} enabled",
-	"NOT_DISABLE_MERGE": "{name} disabled",
 	"comment": {
 		"value": "备注"
 	}

@@ -18,12 +18,6 @@ export type I18nTranslations = {
         };
     };
     "common": {
-        "HAS_EXITTED_MERGE": string;
-        "NOT_EXIST_MERGE": string;
-        "NOT_CLOSE_MERGE": string;
-        "NOT_DELETE_MERGE": string;
-        "NOT_ENABLE_MERGE": string;
-        "NOT_DISABLE_MERGE": string;
         "comment": {
             "value": string;
         };
@@ -33,6 +27,19 @@ export type I18nTranslations = {
         "UPDATE_SUCCESS": string;
         "DELETE_SUCCESS": string;
         "SERVICE_ERROR": string;
+        "NOT_HAS": string;
+        "NOT_DONE": string;
+        "NOT_CLOSE": string;
+        "NOT_DELETE": string;
+        "NOT_ENABLE": string;
+        "NOT_DISABLE": string;
+        "NOT_ISSUE": string;
+    };
+    "role": {
+        "name": string;
+        "bucket": {
+            "value": string;
+        };
     };
     "router": {
         "name": string;
