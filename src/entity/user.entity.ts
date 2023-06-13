@@ -1,5 +1,6 @@
-import { Entity, Column } from 'typeorm'
+import { Entity, Column, ManyToMany, JoinTable } from 'typeorm'
 import { NEntity } from '@/entity/common.entity'
+import { RoleEntity } from '@/entity/role.entity'
 import { hashSync } from 'bcryptjs'
 
 @Entity('tb-user')
@@ -38,4 +39,8 @@ export class UserEntity extends NEntity {
 		transformer: { from: value => value, to: value => (value ? hashSync(value) : null) }
 	})
 	password: string
+
+	@ManyToMany(type => RoleEntity, { cascade: true })
+	@JoinTable({ name: 'tb-user_roles' })
+	roles: RoleEntity[]
 }

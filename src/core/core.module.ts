@@ -19,6 +19,7 @@ import { DispatchModule } from '@/module/dispatch/dispatch.module'
 import { WeChatModule } from '@/module/we-chat/we-chat.module'
 import { UserModule } from '@/module/user/user.module'
 import { RouterModule } from '@/module/router/router.module'
+import { RoleModule } from '@/module/role/role.module'
 import { ChacterModule } from '@/module/chacter/chacter.module'
 
 @Global()
@@ -30,6 +31,7 @@ import { ChacterModule } from '@/module/chacter/chacter.module'
 		WeChatModule,
 		UserModule,
 		RouterModule,
+		RoleModule,
 		ChacterModule
 	],
 	providers: [CoreService, EntityService, RedisService, AlicloudService],
