@@ -76,7 +76,7 @@ export class RuleService extends CoreService {
 	public async httpRuleTransfer(props: http.RequestTransferRule) {
 		return await this.RunCatch(async i18n => {
 			await this.validator({
-				model: this.entity.roleModel,
+				model: this.entity.ruleModel,
 				name: i18n.t('rule.name'),
 				empty: { value: true },
 				options: { where: { id: props.id } }

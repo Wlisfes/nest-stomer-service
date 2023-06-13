@@ -1,4 +1,4 @@
-import { ApiProperty, PickType } from '@nestjs/swagger'
+import { ApiProperty, PickType, IntersectionType } from '@nestjs/swagger'
 import { IsNotEmpty, IsNumber } from 'class-validator'
 import { Type, Transform } from 'class-transformer'
 import { IsOptional, TransferNumber } from '@/decorator/common.decorator'
@@ -25,3 +25,8 @@ export class IRole extends PickType(ICommon, ['id', 'status']) {
 }
 
 export class RequestCreateRole extends PickType(IRole, ['bucket', 'name', 'status', 'comment', 'rules']) {}
+export class RequestUpdateRole extends PickType(IRole, ['id', 'name', 'status', 'comment', 'rules']) {}
+export class RequestBasicRole extends PickType(IRole, ['id']) {}
+export class RequestTransferRole extends PickType(IRole, ['id', 'status']) {}
+
+export class ResultBasicRole extends IntersectionType(IRole, PickType(ICommon, ['createTime', 'updateTime'])) {}

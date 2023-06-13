@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { In } from 'typeorm'
+import { Brackets, In } from 'typeorm'
 import { CoreService } from '@/core/core.service'
 import { EntityService } from '@/core/entity.service'
 import { RedisService } from '@/core/redis.service'
@@ -23,7 +23,7 @@ export class RoleService extends CoreService {
 				model: this.entity.ruleModel,
 				name: i18n.t('rule.name'),
 				ids: props.rules,
-				options: { where: { id: In(props.rules) } }
+				options: { where: { id: In(props.rules), status: In(['disable', 'enable']) } }
 			})
 			const node = await this.entity.roleModel.create({
 				bucket: props.bucket,
@@ -34,6 +34,84 @@ export class RoleService extends CoreService {
 			})
 			return await this.entity.roleModel.save(node).then(() => {
 				return { message: i18n.t('http.CREATE_SUCCESS') }
+			})
+		})
+	}
+
+	/**编辑角色**/
+	public async httpRoleUpdate(props: http.RequestUpdateRole) {
+		return await this.RunCatch(async i18n => {
+			const node = await this.validator({
+				model: this.entity.roleModel,
+				name: i18n.t('role.name'),
+				empty: { value: true },
+				options: { where: { id: props.id }, relations: ['rules'] }
+			})
+			const batch = await this.batchValidator({
+				model: this.entity.ruleModel,
+				name: i18n.t('rule.name'),
+				ids: props.rules,
+				options: { where: { id: In(props.rules), status: In(['disable', 'enable', 'delete']) } }
+			})
+			await this.entity.roleModel
+				.createQueryBuilder()
+				.relation('rules')
+				.of(node)
+				.addAndRemove(
+					batch.list,
+					node.rules.map(x => x.id)
+				)
+
+			//prettier-ignore
+			return await this.entity.roleModel.update(
+				{ id: props.id },
+				{
+					name: props.name,
+					status: props.status,
+					comment: props.comment
+				}
+			).then(() => {
+				return { message: i18n.t('http.UPDATE_SUCCESS') }
+			})
+		})
+	}
+
+	/**角色信息**/
+	public async httpBasicRole(props: http.RequestBasicRole) {
+		return await this.RunCatch(async i18n => {
+			const node = await this.entity.roleModel
+				.createQueryBuilder('t')
+				.leftJoinAndSelect('t.rules', 'rules', 'rules.status IN(:...status)', { status: ['enable', 'disable'] })
+				.where(
+					new Brackets(Q => {
+						Q.where('t.id = :id', { id: props.id })
+						Q.andWhere('t.status IN(:...status)', { status: ['enable', 'disable'] })
+					})
+				)
+				.getOne()
+			return await this.nodeValidator(
+				node,
+				{
+					name: i18n.t('role.name'),
+					empty: { value: true },
+					delete: { value: true }
+				},
+				i18n
+			)
+		})
+	}
+
+	/**编辑角色状态**/
+	public async httpRoleTransfer(props: http.RequestTransferRole) {
+		return await this.RunCatch(async i18n => {
+			await this.validator({
+				model: this.entity.roleModel,
+				name: i18n.t('rule.name'),
+				empty: { value: true },
+				options: { where: { id: props.id } }
+			})
+			return await this.entity.roleModel.update({ id: props.id }, { status: props.status }).then(() => {
+				return { message: i18n.t('http.UPDATE_SUCCESS') }
 			})
 		})
 	}

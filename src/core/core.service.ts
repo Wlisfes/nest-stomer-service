@@ -48,36 +48,42 @@ export class CoreService {
 		return tree
 	}
 
+	/**数据验证处理**/
+	public async nodeValidator<T>(
+		node: T,
+		props: Pick<ICoreDator<T>, 'name' | 'message' | 'empty' | 'close' | 'delete'>,
+		i18n: ReturnType<typeof usuCurrent>
+	) {
+		if (!props.empty?.value) {
+			return node
+		} else if (!node) {
+			//不存在
+			throw new HttpException(
+				i18n.t('http.NOT_DONE', { args: { name: props.empty.message ?? props.name } }),
+				HttpStatus.BAD_REQUEST
+			)
+		} else if (props.close && (node as any).status === 'disable') {
+			//已禁用
+			throw new HttpException(
+				i18n.t('http.NOT_CLOSE', { args: { name: props.close.message ?? props.name } }),
+				HttpStatus.BAD_REQUEST
+			)
+		} else if (props.delete && (node as any).status === 'delete') {
+			//已删除
+			throw new HttpException(
+				i18n.t('http.NOT_DELETE', { args: { name: props.delete.message ?? props.name } }),
+				HttpStatus.BAD_REQUEST
+			)
+		}
+		return node
+	}
+
 	/**验证数据模型是否有效**/
 	public async validator<T>(props: ICoreDator<T>): Promise<T> {
-		const i18n = await this.usuCurrent()
-		try {
+		return await this.RunCatch(async i18n => {
 			const node = await props.model.findOne(props.options)
-			if (!props.empty?.value) {
-				return node
-			} else if (!node) {
-				//不存在
-				throw new HttpException(
-					i18n.t('http.NOT_DONE', { args: { name: props.empty.message ?? props.name } }),
-					HttpStatus.BAD_REQUEST
-				)
-			} else if (props.close && (node as any).status === 'disable') {
-				//已禁用
-				throw new HttpException(
-					i18n.t('http.NOT_CLOSE', { args: { name: props.close.message ?? props.name } }),
-					HttpStatus.BAD_REQUEST
-				)
-			} else if (props.delete && (node as any).status === 'delete') {
-				//已删除
-				throw new HttpException(
-					i18n.t('http.NOT_DELETE', { args: { name: props.delete.message ?? props.name } }),
-					HttpStatus.BAD_REQUEST
-				)
-			}
-			return node
-		} catch (e) {
-			throw new HttpException(e.message || i18n.t('http.SERVICE_ERROR'), HttpStatus.BAD_REQUEST)
-		}
+			return await this.nodeValidator(node, props, i18n)
+		})
 	}
 
 	/**批量验证数据模型是否有效**/
