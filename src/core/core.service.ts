@@ -21,9 +21,12 @@ export class CoreService {
 	public async RunCatch<T extends Object>(callback: (i18n: ReturnType<typeof usuCurrent>) => Promise<T>) {
 		const i18n = await this.usuCurrent()
 		try {
-			return callback(i18n)
+			return await callback(i18n)
 		} catch (e) {
-			throw new HttpException(e.message || i18n.t('http.SERVICE_ERROR'), HttpStatus.BAD_REQUEST)
+			throw new HttpException(
+				e.response || e.message || i18n.t('http.SERVICE_ERROR'),
+				e.status || HttpStatus.BAD_REQUEST
+			)
 		}
 	}
 
@@ -81,6 +84,15 @@ export class CoreService {
 	public async batchValidator<T>(props: ICoreDator<T>): Promise<{ list: Array<T>; total: number }> {
 		return await this.RunCatch(async i18n => {
 			const [list = [], total = 0] = await props.model.findAndCount(props.options)
+			if (props.ids?.length > 0 && props.ids.length !== total) {
+				throw new HttpException(
+					{
+						message: i18n.t('http.NOT_ISSUE', { args: { name: props.message ?? props.name } }),
+						errors: props.ids.filter(id => list.some((x: any) => x.id !== id))
+					},
+					HttpStatus.BAD_REQUEST
+				)
+			}
 			return { list, total }
 		})
 	}

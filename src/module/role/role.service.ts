@@ -19,13 +19,22 @@ export class RoleService extends CoreService {
 				name: i18n.t('role.name'),
 				options: { where: { bucket: props.bucket, status: In(['disable', 'enable']) } }
 			})
-			const rules = await this.batchValidator({
+			const batch = await this.batchValidator({
 				model: this.entity.ruleModel,
-				name: i18n.t('role.name'),
+				name: i18n.t('rule.name'),
+				ids: props.rules,
 				options: { where: { id: In(props.rules) } }
 			})
-			console.log(rules)
-			return { message: i18n.t('http.CREATE_SUCCESS') }
+			const node = await this.entity.roleModel.create({
+				bucket: props.bucket,
+				name: props.name,
+				status: props.status,
+				comment: props.comment,
+				rules: batch.list
+			})
+			return await this.entity.roleModel.save(node).then(() => {
+				return { message: i18n.t('http.CREATE_SUCCESS') }
+			})
 		})
 	}
 }
