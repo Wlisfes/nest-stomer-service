@@ -25,7 +25,7 @@ export class UserService extends CoreService {
 
 	/**创建token、2小时有效期**/
 	public async newJwtToken(node: UserEntity) {
-		return this.RunCatch(async i18n => {
+		return await this.RunCatch(async i18n => {
 			const user = { uid: node.uid, nickname: node.nickname, password: node.password, status: node.status }
 			//jwt
 			const expire = Number(this.configService.get('JWT_EXPIRE') ?? 7200)
@@ -42,7 +42,7 @@ export class UserService extends CoreService {
 
 	/**解析token**/
 	public async untieJwtToken(token: string): Promise<UserEntity> {
-		return this.RunCatch(async i18n => {
+		return await this.RunCatch(async i18n => {
 			const secret = this.configService.get('JWT_SECRET')
 			return await this.jwtService.verifyAsync(token, { secret })
 		})
@@ -50,7 +50,7 @@ export class UserService extends CoreService {
 
 	/**注册用户**/
 	public async httpRegister(props: User.RequestRegister) {
-		return this.RunCatch(async i18n => {
+		return await this.RunCatch(async i18n => {
 			await this.haveCreate({
 				model: this.entity.userModel,
 				name: i18n.t('user.mobile.value'),
@@ -82,7 +82,7 @@ export class UserService extends CoreService {
 
 	/**登录**/
 	public async httpAuthorize(props: User.RequestAuthorize, AUTN_CAPTCHA: string) {
-		return this.RunCatch(async i18n => {
+		return await this.RunCatch(async i18n => {
 			const code = await this.redisService.getStore(AUTN_CAPTCHA)
 			if (code !== props.code) {
 				//验证码错误、清除redis验证码
@@ -117,7 +117,7 @@ export class UserService extends CoreService {
 
 	/**获取用户信息**/
 	public async httpBasicUser(uid: string, cache: boolean = true) {
-		return this.RunCatch(async i18n => {
+		return await this.RunCatch(async i18n => {
 			if (cache) {
 				//读取redis缓存
 				const node = await this.redisService.getStore(`user_cache_${uid}`)

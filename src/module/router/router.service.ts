@@ -12,7 +12,7 @@ export class RouterService extends CoreService {
 
 	/**新增路由**/
 	public async httpRouterCreate(props: http.RequestCreateRouter) {
-		return this.RunCatch(async i18n => {
+		return await this.RunCatch(async i18n => {
 			await this.haveCreate({
 				model: this.entity.routerModel,
 				name: i18n.t('router.name'),
@@ -38,7 +38,7 @@ export class RouterService extends CoreService {
 
 	/**动态路由节点**/
 	public async httpRouterDynamic() {
-		return this.RunCatch(async i18n => {
+		return await this.RunCatch(async i18n => {
 			const [list = [], total = 0] = await this.entity.routerModel.findAndCount({
 				where: { status: 'enable' }
 			})
@@ -48,7 +48,7 @@ export class RouterService extends CoreService {
 
 	/**路由列表**/
 	public async httpRouterColumn() {
-		return this.RunCatch(async i18n => {
+		return await this.RunCatch(async i18n => {
 			const [list = [], total = 0] = await this.entity.routerModel
 				.createQueryBuilder('t')
 				.leftJoinAndSelect('t.rule', 'rule', 'rule.status IN(:...status)', { status: ['enable', 'disable'] })

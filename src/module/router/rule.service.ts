@@ -12,7 +12,7 @@ export class RuleService extends CoreService {
 
 	/**新增接口规则**/
 	public async httpRuleCreate(props: http.RequestCreateRule) {
-		return this.RunCatch(async i18n => {
+		return await this.RunCatch(async i18n => {
 			await this.haveCreate({
 				model: this.entity.ruleModel,
 				name: i18n.t('rule.name'),
@@ -41,7 +41,7 @@ export class RuleService extends CoreService {
 
 	/**编辑接口规则**/
 	public async httpRuleUpdate(props: http.RequestUpdateRule) {
-		return this.RunCatch(async i18n => {
+		return await this.RunCatch(async i18n => {
 			const node = await this.haveUpdate(
 				{
 					model: this.entity.ruleModel,
@@ -74,7 +74,7 @@ export class RuleService extends CoreService {
 
 	/**编辑接口规则状态**/
 	public async httpRuleTransfer(props: http.RequestTransferRule) {
-		return this.RunCatch(async i18n => {
+		return await this.RunCatch(async i18n => {
 			await this.validator({
 				model: this.entity.roleModel,
 				name: i18n.t('rule.name'),

@@ -12,7 +12,7 @@ export class ChacterService extends CoreService {
 
 	/**新增字典**/
 	public async httpCreate(props: http.ICreate) {
-		return this.RunCatch(async i18n => {
+		return await this.RunCatch(async i18n => {
 			await this.haveCreate({
 				model: this.entity.ruleModel,
 				name: i18n.t('chacter.name'),
@@ -32,7 +32,7 @@ export class ChacterService extends CoreService {
 
 	/**字典详情**/
 	public async httpOnter(props: http.IOnter) {
-		return this.RunCatch(async i18n => {
+		return await this.RunCatch(async i18n => {
 			return await this.validator({
 				model: this.entity.chacterModel,
 				name: i18n.t('chacter.name'),
@@ -44,7 +44,7 @@ export class ChacterService extends CoreService {
 
 	/**字典列表**/
 	public async httpColumn(props: http.IColumn) {
-		return this.RunCatch(async i18n => {
+		return await this.RunCatch(async i18n => {
 			const [list = [], total = 0] = await this.entity.chacterModel
 				.createQueryBuilder('t')
 				.where(
@@ -64,7 +64,7 @@ export class ChacterService extends CoreService {
 
 	/**删除字典**/
 	public async httpDelete(props: http.IOnter) {
-		return this.RunCatch(async i18n => {
+		return await this.RunCatch(async i18n => {
 			await this.validator({
 				model: this.entity.chacterModel,
 				name: i18n.t('chacter.name'),
