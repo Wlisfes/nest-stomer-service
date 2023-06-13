@@ -1,21 +1,22 @@
-import { ApiProperty, PickType, OmitType } from '@nestjs/swagger'
+import { ApiProperty, PickType } from '@nestjs/swagger'
 import { IsNotEmpty, Length } from 'class-validator'
 import { IsOptional, IsMobile } from '@/decorator/common.decorator'
-import { ICommon, RCommon } from '@/interface/common.interface'
+import { ICommon } from '@/interface/common.interface'
+import { at } from '@/i18n'
 
 export class IUser extends PickType(ICommon, ['id', 'uid']) {
-	@ApiProperty({ description: '昵称', example: '昵称' })
-	@IsNotEmpty({ message: '昵称 必填' })
+	@ApiProperty({ description: '昵称', example: '猪头' })
+	@IsNotEmpty({ message: at('user.nickname.required') })
 	nickname: string
 
 	@ApiProperty({ description: '手机号' })
-	@IsNotEmpty({ message: '手机号 必填' })
-	@IsMobile({ message: '手机号 错误' })
+	@IsNotEmpty({ message: at('user.mobile.required') })
+	@IsMobile({ message: at('user.mobile.format') })
 	mobile: string
 
 	@ApiProperty({ description: '密码' })
-	@IsNotEmpty({ message: '密码 必填' })
-	@Length(6, 18, { message: '密码 格式错误' })
+	@IsNotEmpty({ message: at('user.password.required') })
+	@Length(6, 18, { message: at('user.password.format') })
 	password: string
 
 	@ApiProperty({ description: '头像', required: false })
@@ -23,12 +24,12 @@ export class IUser extends PickType(ICommon, ['id', 'uid']) {
 	avatar: string
 
 	@ApiProperty({ description: 'OpenID' })
-	@IsNotEmpty({ message: 'OpenID 必填' })
+	@IsNotEmpty({ message: at('user.openid.required') })
 	openid: string
 
 	@ApiProperty({ description: '验证码' })
-	@IsNotEmpty({ message: '验证码 必填' })
-	@Length(4, 6, { message: '验证码 错误' })
+	@IsNotEmpty({ message: at('user.code.required') })
+	@Length(4, 6, { message: at('user.code.error') })
 	code: string
 }
 

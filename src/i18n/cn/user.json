@@ -1,12 +1,14 @@
 {
 	"name": "账号",
 	"notice": {
-		"LOGIN_NOT": "账号未登录",
+		"LOGIN_NOT": "未登录",
 		"LOGIN_SUCCESS": "登录成功",
-		"REGISTER_SUCCESS": "注册成功"
+		"REGISTER_SUCCESS": "注册成功",
+		"TOKEN_EXPIRE": "登录已失效"
 	},
 	"nickname": {
-		"value": "昵称"
+		"value": "昵称",
+		"required": "昵称 必填"
 	},
 	"email": {
 		"value": "邮箱"
@@ -15,21 +17,25 @@
 		"value": "头像"
 	},
 	"openid": {
-		"value": "OpenID"
+		"value": "OpenID",
+		"required": "OpenID 必填"
 	},
 	"mobile": {
 		"value": "手机号",
 		"required": "手机号 必填",
-		"register": "手机号已注册"
+		"register": "手机号已注册",
+		"format": "手机号格式错误"
 	},
 	"password": {
 		"value": "密码",
 		"required": "密码 必填",
-		"error": "密码错误"
+		"error": "密码错误",
+		"format": "密码格式错误"
 	},
 	"code": {
 		"value": "验证码",
 		"required": "验证码 必填",
-		"error": "验证码错误"
+		"error": "验证码错误",
+		"expire": "验证码已失效"
 	}
 }

@@ -34,19 +34,6 @@ export class AlicloudService {
 		})
 	}
 
-	/**验证图形验证码**/
-	public async isCtrCaptcha(props: { session: string; code: string }) {
-		try {
-			const code = await this.redis.getStore(props.session)
-			return {
-				compare: code === props.code,
-				done: () => this.redis.delStore(props.session)
-			}
-		} catch (e) {
-			throw new HttpException('验证码失效', HttpStatus.BAD_REQUEST)
-		}
-	}
-
 	/**发送手机验证码**/
 	public async fetchMobile(props: Core.IMobile, size?: number) {
 		try {
@@ -68,19 +55,6 @@ export class AlicloudService {
 			})
 		} catch (e) {
 			throw new HttpException(e.message || e.toString(), HttpStatus.BAD_REQUEST)
-		}
-	}
-
-	/**验证手机验证码**/
-	public async isCtrMobile(props: { mobile: string; code: string }) {
-		try {
-			const code = await this.redis.getStore(props.mobile)
-			return {
-				compare: code === props.code,
-				done: () => this.redis.delStore(props.mobile)
-			}
-		} catch (e) {
-			throw new HttpException('验证码失效', HttpStatus.BAD_REQUEST)
 		}
 	}
 }

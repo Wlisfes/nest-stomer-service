@@ -46,9 +46,11 @@ export type I18nTranslations = {
             "LOGIN_NOT": string;
             "LOGIN_SUCCESS": string;
             "REGISTER_SUCCESS": string;
+            "TOKEN_EXPIRE": string;
         };
         "nickname": {
             "value": string;
+            "required": string;
         };
         "email": {
             "value": string;
@@ -58,21 +60,25 @@ export type I18nTranslations = {
         };
         "openid": {
             "value": string;
+            "required": string;
         };
         "mobile": {
             "value": string;
             "required": string;
             "register": string;
+            "format": string;
         };
         "password": {
             "value": string;
             "required": string;
             "error": string;
+            "format": string;
         };
         "code": {
             "value": string;
             "required": string;
             "error": string;
+            "expire": string;
         };
     };
 };

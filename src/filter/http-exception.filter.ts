@@ -7,6 +7,8 @@ export class HttpExceptionFilter implements ExceptionFilter {
 		const ctx = host.switchToHttp()
 		const response = ctx.getResponse()
 		const request = ctx.getRequest()
+		const error = exception?.response?.hasOwnProperty('statusCode') ? exception.response ?? null : exception ?? null
+		const message = Array.isArray(exception.response?.message) ? exception.response.message[0] : exception.message
 
 		Logger.error({
 			referer: request.headers.referer,
@@ -17,13 +19,13 @@ export class HttpExceptionFilter implements ExceptionFilter {
 			query: request.query,
 			params: request.params,
 			code: exception.status,
-			message: exception.message,
-			error: exception
+			message,
+			error
 		})
 
 		const Result = {
-			data: exception ?? null,
-			message: exception.message,
+			data: error,
+			message,
 			code: exception.status,
 			timestamp: day().format('YYYY-MM-DD HH:mm:ss'),
 			url: request.url,

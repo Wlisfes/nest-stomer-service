@@ -59,7 +59,10 @@ export class UserService extends CoreService {
 			})
 
 			const code = await this.redisService.getStore(props.mobile)
-			if (props.code !== code) {
+			if (!code) {
+				//验证码失效
+				throw new HttpException(i18n.t('user.code.expire'), HttpStatus.BAD_REQUEST)
+			} else if (props.code !== code) {
 				//验证码错误
 				throw new HttpException(i18n.t('user.code.error'), HttpStatus.BAD_REQUEST)
 			}
@@ -69,7 +72,9 @@ export class UserService extends CoreService {
 				password: props.password,
 				mobile: props.mobile
 			})
-			return await this.entity.userModel.save(node).then(() => {
+			return await this.entity.userModel.save(node).then(async () => {
+				//登录成功、清除redis验证码
+				await this.redisService.delStore(props.mobile)
 				return { message: i18n.t('user.notice.REGISTER_SUCCESS') }
 			})
 		})
@@ -80,7 +85,8 @@ export class UserService extends CoreService {
 		return this.RunCatch(async i18n => {
 			const code = await this.redisService.getStore(AUTN_CAPTCHA)
 			if (code !== props.code) {
-				//验证码错误
+				//验证码错误、清除redis验证码
+				await this.redisService.delStore(AUTN_CAPTCHA)
 				throw new HttpException(i18n.translate('user.code.error'), HttpStatus.BAD_REQUEST)
 			}
 			const node = await this.validator({
@@ -92,10 +98,13 @@ export class UserService extends CoreService {
 				options: { where: { mobile: props.mobile }, select: ['id', 'uid', 'mobile', 'password', 'nickname'] }
 			})
 			if (!compareSync(props.password, node.password)) {
-				//密码错误
+				//密码错误、清除redis验证码
+				await this.redisService.delStore(AUTN_CAPTCHA)
 				throw new HttpException(i18n.t('user.password.error'), HttpStatus.BAD_REQUEST)
 			}
-			return await this.newJwtToken(node).then(({ token, expire, refresh }) => {
+			return await this.newJwtToken(node).then(async ({ token, expire, refresh }) => {
+				//登录成功、清除redis验证码
+				await this.redisService.delStore(AUTN_CAPTCHA)
 				return {
 					expire,
 					token,
