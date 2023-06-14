@@ -35,30 +35,14 @@ export class RequestRouter extends PickType(ICommon, ['id', 'status']) {
 	@Type(() => Number)
 	parent: number
 }
-export class ResultRouter extends IntersectionType(RequestRouter, PickType(RCommon, ['createTime', 'updateTime'])) {
-	@ApiProperty({ description: '基础路由菜单', enum: [0, 1], example: 0 })
-	base: number
-}
 
-export class RequestCreateRouter extends PickType(RequestRouter, [
-	'path',
-	'redirect',
-	'type',
-	'title',
-	'icon',
-	'parent',
-	'status'
-]) {}
-export class RequestUpdateRouter extends PickType(RequestRouter, [
-	'id',
-	'path',
-	'redirect',
-	'type',
-	'title',
-	'icon',
-	'parent',
-	'status'
-]) {}
+//prettier-ignore
+export class RequestCreateRouter extends PickType(RequestRouter, ['path', 'redirect', 'type', 'title', 'icon', 'parent', 'status']) {}
+//prettier-ignore
+export class RequestUpdateRouter extends PickType(RequestRouter, ['id', 'path', 'redirect', 'type', 'title', 'icon', 'parent', 'status']) {}
+export class RequestBasicRouter extends PickType(RequestRouter, ['id']) {}
+
+export class ResultRouter extends IntersectionType(RequestRouter, PickType(RCommon, ['createTime', 'updateTime'])) {}
 export class ResultColumnRouter extends PickType(RCommon, ['page', 'size', 'total']) {
 	@ApiProperty({ description: '列表', type: [ResultRouter], example: [] })
 	list: ResultRouter[]

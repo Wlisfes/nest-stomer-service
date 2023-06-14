@@ -36,6 +36,31 @@ export class RouterService extends CoreService {
 	/**编辑路由**/
 	public async httpRouterUpdate(props: http.RequestUpdateRouter) {}
 
+	/**路由信息**/
+	public async httpBasicRouter(props: http.RequestBasicRouter) {
+		return await this.RunCatch(async i18n => {
+			const node = await this.entity.routerModel
+				.createQueryBuilder('t')
+				.leftJoinAndSelect('t.rule', 'rule', 'rule.status IN(:...status)', { status: ['enable', 'disable'] })
+				.where(
+					new Brackets(Q => {
+						Q.where('t.id = :id', { id: props.id })
+						Q.andWhere('t.status IN(:...status)', { status: ['enable', 'disable'] })
+					})
+				)
+				.getOne()
+			return await this.nodeValidator(
+				node,
+				{
+					name: i18n.t('router.name'),
+					empty: { value: true },
+					delete: { value: true }
+				},
+				i18n
+			)
+		})
+	}
+
 	/**动态路由节点**/
 	public async httpRouterDynamic() {
 		return await this.RunCatch(async i18n => {

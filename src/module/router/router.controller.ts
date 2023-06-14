@@ -30,6 +30,15 @@ export class RouterController {
 		return await this.routerService.httpRouterUpdate(body)
 	}
 
+	@Get('/basic')
+	@ApiDecorator({
+		operation: { summary: '路由信息' },
+		response: { status: 200, description: 'OK', type: http.ResultRouter }
+	})
+	public async httpBasicRouter(@Query() query: http.RequestBasicRouter) {
+		return await this.routerService.httpBasicRouter(query)
+	}
+
 	@Get('/column')
 	@ApiDecorator({
 		operation: { summary: '路由列表' },
