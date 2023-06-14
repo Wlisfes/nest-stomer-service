@@ -50,13 +50,12 @@ export class RouterService extends CoreService {
 				)
 				.getOne()
 			return await this.nodeValidator(
-				node,
+				{ node, i18n },
 				{
 					name: i18n.t('router.name'),
 					empty: { value: true },
 					delete: { value: true }
-				},
-				i18n
+				}
 			)
 		})
 	}

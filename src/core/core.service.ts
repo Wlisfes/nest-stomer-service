@@ -50,10 +50,10 @@ export class CoreService {
 
 	/**数据验证处理**/
 	public async nodeValidator<T>(
-		node: T,
-		props: Pick<ICoreDator<T>, 'name' | 'message' | 'empty' | 'close' | 'delete'>,
-		i18n: ReturnType<typeof usuCurrent>
+		option: { node: T; i18n: ReturnType<typeof usuCurrent> },
+		props: Pick<ICoreDator<T>, 'name' | 'message' | 'empty' | 'close' | 'delete'>
 	) {
+		const { node, i18n } = option
 		if (!props.empty?.value) {
 			return node
 		} else if (!node) {
@@ -82,7 +82,7 @@ export class CoreService {
 	public async validator<T>(props: ICoreDator<T>): Promise<T> {
 		return await this.RunCatch(async i18n => {
 			const node = await props.model.findOne(props.options)
-			return await this.nodeValidator(node, props, i18n)
+			return await this.nodeValidator({ node, i18n }, props)
 		})
 	}
 

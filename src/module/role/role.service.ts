@@ -90,13 +90,12 @@ export class RoleService extends CoreService {
 				)
 				.getOne()
 			return await this.nodeValidator(
-				node,
+				{ node, i18n },
 				{
 					name: i18n.t('role.name'),
 					empty: { value: true },
 					delete: { value: true }
-				},
-				i18n
+				}
 			)
 		})
 	}
