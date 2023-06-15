@@ -46,7 +46,7 @@ export class AuthGuard implements CanActivate {
 				}
 
 				//读取redis用户信息挂载到request
-				const user = await this.userService.httpBasicUser(node.uid)
+				const user = await this.userService.httpBasicUser(node.uid, { cache: true, close: true, delete: true })
 				request.user = user
 			}
 		}

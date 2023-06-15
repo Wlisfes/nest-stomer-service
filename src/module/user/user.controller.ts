@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Body, Request } from '@nestjs/common'
+import { Controller, Post, Put, Get, Body, Request } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
 import { ApiDecorator } from '@/decorator/compute.decorator'
 import { ApiBearer } from '@/guard/auth.guard'
@@ -34,9 +34,19 @@ export class UserController {
 	@ApiBearer({ decorator: true })
 	@ApiDecorator({
 		operation: { summary: '用户信息' },
-		response: { status: 200, description: 'OK', type: http.IUser }
+		response: { status: 200, description: 'OK', type: http.RequestUser }
 	})
-	public async httpBasicUser(@Request() request: { user: http.IUser }) {
-		return await this.userService.httpBasicUser(request.user.uid)
+	public async httpBasicUser(@Request() request: { user: http.RequestUser }) {
+		return await this.userService.httpBasicUser(request.user.uid, { cache: true, close: false, delete: false })
+	}
+
+	@Put('/update/role')
+	@ApiBearer({ decorator: true })
+	@ApiDecorator({
+		operation: { summary: '修改用户角色' },
+		response: { status: 200, description: 'OK', type: RNotice }
+	})
+	public async httpUserUpdateRole(@Body() body: http.RequestUserRole) {
+		return await this.userService.httpUserUpdateRole(body)
 	}
 }

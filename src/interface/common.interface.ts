@@ -12,7 +12,7 @@ export class ICommon {
 
 	@ApiProperty({ description: 'UID', example: '9c82c871-4b00-4456-a452-f184c4621f91' })
 	@IsNotEmpty({ message: 'UID 必填' })
-	@Type(type => Number)
+	@Type(type => String)
 	uid: string
 
 	@ApiProperty({ description: '创建时间', example: '2022-04-10 23:33:27' })

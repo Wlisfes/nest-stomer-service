@@ -1,10 +1,11 @@
 import { ApiProperty, PickType } from '@nestjs/swagger'
-import { IsNotEmpty, Length } from 'class-validator'
-import { IsOptional, IsMobile } from '@/decorator/common.decorator'
+import { IsNotEmpty, Length, IsNumber } from 'class-validator'
+import { Type, Transform } from 'class-transformer'
+import { IsOptional, IsMobile, TransferNumber } from '@/decorator/common.decorator'
 import { ICommon } from '@/interface/common.interface'
 import { at } from '@/i18n'
 
-export class IUser extends PickType(ICommon, ['id', 'uid']) {
+export class RequestUser extends PickType(ICommon, ['id', 'uid']) {
 	@ApiProperty({ description: '昵称', example: '猪头' })
 	@IsNotEmpty({ message: at('user.nickname.required') })
 	nickname: string
@@ -33,5 +34,12 @@ export class IUser extends PickType(ICommon, ['id', 'uid']) {
 	code: string
 }
 
-export class RequestRegister extends PickType(IUser, ['nickname', 'password', 'mobile', 'code']) {}
-export class RequestAuthorize extends PickType(IUser, ['mobile', 'password', 'code']) {}
+export class RequestRegister extends PickType(RequestUser, ['nickname', 'password', 'mobile', 'code']) {}
+export class RequestAuthorize extends PickType(RequestUser, ['mobile', 'password', 'code']) {}
+export class RequestUserRole extends PickType(RequestUser, ['uid']) {
+	@ApiProperty({ description: '角色ID', type: [Number], example: [] })
+	@IsOptional({}, { string: true, number: true })
+	@Transform(type => TransferNumber(type), { toClassOnly: true })
+	@IsNumber({}, { each: true, message: '角色ID类型必须为Number数组' })
+	roles: number[]
+}

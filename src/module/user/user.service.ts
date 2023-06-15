@@ -1,6 +1,6 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import { Brackets } from 'typeorm'
+import { Brackets, In } from 'typeorm'
 import { JwtService } from '@nestjs/jwt'
 import { CoreService } from '@/core/core.service'
 import { EntityService } from '@/module/basic/entity.service'
@@ -9,7 +9,7 @@ import { AlicloudService } from '@/module/basic/alicloud.service'
 import { UserEntity } from '@/entity/user.entity'
 import { compareSync } from 'bcryptjs'
 import * as uuid from 'uuid'
-import * as User from './user.interface'
+import * as http from './user.interface'
 
 @Injectable()
 export class UserService extends CoreService {
@@ -49,7 +49,7 @@ export class UserService extends CoreService {
 	}
 
 	/**注册用户**/
-	public async httpRegister(props: User.RequestRegister) {
+	public async httpRegister(props: http.RequestRegister) {
 		return await this.RunCatch(async i18n => {
 			await this.haveCreate({
 				model: this.entity.userModel,
@@ -81,7 +81,7 @@ export class UserService extends CoreService {
 	}
 
 	/**登录**/
-	public async httpAuthorize(props: User.RequestAuthorize, AUTN_CAPTCHA: string) {
+	public async httpAuthorize(props: http.RequestAuthorize, AUTN_CAPTCHA: string) {
 		return await this.RunCatch(async i18n => {
 			const code = await this.redisService.getStore(AUTN_CAPTCHA)
 			if (code !== props.code) {
@@ -116,23 +116,55 @@ export class UserService extends CoreService {
 	}
 
 	/**获取用户信息**/
-	public async httpBasicUser(uid: string, cache: boolean = true) {
+	public async httpBasicUser(uid: string, props: { cache: boolean; close: boolean; delete: boolean }) {
 		return await this.RunCatch(async i18n => {
-			if (cache) {
+			if (props.cache) {
 				//读取redis缓存
 				const node = await this.redisService.getStore(`user_cache_${uid}`)
-				return node || (await this.httpBasicUser(uid, false))
+				return node || (await this.httpBasicUser(uid, { ...props, cache: false }))
 			} else {
 				const node = await this.validator({
 					model: this.entity.userModel,
 					name: i18n.t('user.name'),
 					empty: { value: true },
-					options: { where: { uid } }
+					close: { value: props.close },
+					delete: { value: props.delete },
+					options: { where: { uid }, relations: ['roles'] }
 				})
 				return await this.redisService.setStore(`user_cache_${uid}`, node).then(() => {
 					return node
 				})
 			}
+		})
+	}
+
+	/**修改用户角色**/
+	public async httpUserUpdateRole(props: http.RequestUserRole) {
+		return await this.RunCatch(async i18n => {
+			const node = await this.validator({
+				model: this.entity.userModel,
+				name: i18n.t('user.name'),
+				empty: { value: true },
+				options: { where: { uid: props.uid }, relations: ['roles'] }
+			})
+			const batch = await this.batchValidator({
+				model: this.entity.roleModel,
+				name: i18n.t('role.name'),
+				ids: props.roles,
+				options: { where: { id: In(props.roles), status: In(['disable', 'enable', 'delete']) } }
+			})
+			return await this.entity.userModel
+				.createQueryBuilder()
+				.relation('roles')
+				.of(node)
+				.addAndRemove(
+					batch.list,
+					node.roles.map(x => x.id)
+				)
+				.then(async () => {
+					await this.redisService.delStore(`user_cache_${props.uid}`)
+					return { message: i18n.t('http.UPDATE_SUCCESS') }
+				})
 		})
 	}
 }
