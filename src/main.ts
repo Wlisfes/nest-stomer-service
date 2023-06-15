@@ -5,6 +5,7 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger'
 import { I18nValidationPipe } from 'nestjs-i18n'
 import { knife4jSetup } from 'nest-knife4j'
 import { AppModule } from './app.module'
+import { join } from 'path'
 import * as express from 'express'
 import * as cookieParser from 'cookie-parser'
 
@@ -46,11 +47,10 @@ async function bootstrap() {
 	app.use(express.json())
 	app.use(express.urlencoded({ extended: true }))
 
-	//接口前缀
-	app.setGlobalPrefix('/api')
-
 	//静态资源
-	app.useStaticAssets('public')
+	app.useStaticAssets(join(__dirname, '..', 'public'))
+	app.setBaseViewsDir(join(__dirname, '..', 'public/views'))
+	app.setViewEngine('hbs')
 
 	//全局注册验证管道
 	app.useGlobalPipes(new ValidationPipe({ transform: true, whitelist: true }))
