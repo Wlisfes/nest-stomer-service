@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { In } from 'typeorm'
 import { CoreService } from '@/core/core.service'
-import { EntityService } from '@/core/entity.service'
+import { EntityService } from '@/module/basic/entity.service'
 import * as http from './rule.interface'
 
 @Injectable()

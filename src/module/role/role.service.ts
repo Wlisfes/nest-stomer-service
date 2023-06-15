@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common'
 import { Brackets, In } from 'typeorm'
 import { CoreService } from '@/core/core.service'
-import { EntityService } from '@/core/entity.service'
-import { RedisService } from '@/core/redis.service'
+import { EntityService } from '@/module/basic/entity.service'
+import { RedisService } from '@/module/basic/redis.service'
 import * as http from './role.interface'
 
 @Injectable()

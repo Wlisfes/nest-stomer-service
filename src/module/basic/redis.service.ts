@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { InjectRedis, Redis } from '@nestjs-modules/ioredis'
-import { Observer } from './core.observer'
+import { Observer } from './basic.observer'
 import * as IoRedis from 'ioredis'
 
 export type RCommand = string | ((x: string) => boolean)

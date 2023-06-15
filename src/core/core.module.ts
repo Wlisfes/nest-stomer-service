@@ -1,19 +1,7 @@
 import { Module, Global } from '@nestjs/common'
-import { CoreController } from './core.controller'
-//service
 import { CoreService } from './core.service'
-import { EntityService } from './entity.service'
-import { RedisService } from './redis.service'
-import { AlicloudService } from './alicloud.service'
-
-//entity
-import { TypeOrmModule } from '@nestjs/typeorm'
-import { UserEntity } from '@/entity/user.entity'
-import { RouteEntity } from '@/entity/route.entity'
-import { ChacterEntity } from '@/entity/chacter.entity'
-import { RoleEntity } from '@/entity/role.entity'
-import { RuleEntity } from '@/entity/rule.entity'
 //module
+import { BasicModule } from '@/module/basic/basic.module'
 import { QueueModule } from '@/module/queue/queue.module'
 import { DispatchModule } from '@/module/dispatch/dispatch.module'
 import { WeChatModule } from '@/module/we-chat/we-chat.module'
@@ -25,7 +13,7 @@ import { ChacterModule } from '@/module/chacter/chacter.module'
 @Global()
 @Module({
 	imports: [
-		TypeOrmModule.forFeature([UserEntity, RouteEntity, ChacterEntity, RoleEntity, RuleEntity]),
+		BasicModule,
 		QueueModule,
 		DispatchModule,
 		WeChatModule,
@@ -34,8 +22,7 @@ import { ChacterModule } from '@/module/chacter/chacter.module'
 		RoleModule,
 		ChacterModule
 	],
-	providers: [CoreService, EntityService, RedisService, AlicloudService],
-	controllers: [CoreController],
-	exports: [CoreService, EntityService, RedisService, AlicloudService]
+	providers: [CoreService],
+	exports: [CoreService]
 })
 export class CoreModule {}

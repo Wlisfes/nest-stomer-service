@@ -1,10 +1,10 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { create } from 'svg-captcha'
-import { RedisService } from '@/core/redis.service'
+import { RedisService } from './redis.service'
 import * as Nanoid from 'nanoid'
 import * as AliCloud from '@alicloud/pop-core'
-import * as Core from './core.interface'
+import * as ali from './alicloud.interface'
 
 @Injectable()
 export class AlicloudService {
@@ -20,7 +20,7 @@ export class AlicloudService {
 	}
 
 	/**图形验证码**/
-	public async fetchCaptcha(props: Core.ICaptcha) {
+	public async httpCaptcha(props: ali.RequestCaptcha) {
 		return create({
 			size: props?.size ?? 4,
 			fontSize: props?.fontSize ?? 38,
@@ -35,7 +35,7 @@ export class AlicloudService {
 	}
 
 	/**发送手机验证码**/
-	public async fetchMobile(props: Core.IMobile, size?: number) {
+	public async httpMobileCaptcha(props: ali.RequestMobileCaptcha, size?: number) {
 		try {
 			const code = await this.customSession(6)
 			//prettier-ignore
