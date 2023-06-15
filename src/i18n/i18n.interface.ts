@@ -41,7 +41,7 @@ export type I18nTranslations = {
             "value": string;
         };
     };
-    "router": {
+    "route": {
         "name": string;
     };
     "rule": {

@@ -1,6 +1,6 @@
 import { Entity, Column, ManyToOne } from 'typeorm'
 import { NEntity } from '@/entity/common.entity'
-import { RouterEntity } from '@/entity/router.entity'
+import { RouteEntity } from '@/entity/route.entity'
 
 @Entity('tb-rule')
 export class RuleEntity extends NEntity {
@@ -16,6 +16,6 @@ export class RuleEntity extends NEntity {
 	@Column({ comment: '状态: 禁用-disable、启用-enable、删除-delete', default: 'enable', nullable: false })
 	status: string
 
-	@ManyToOne(type => RouterEntity, router => router.rule)
-	parent: RouterEntity
+	@ManyToOne(type => RouteEntity, route => route.rule)
+	parent: RouteEntity
 }

@@ -19,8 +19,8 @@ export class RuleService extends CoreService {
 				options: { where: { path: props.path, status: In(['disable', 'enable']) } }
 			})
 			const parent = await this.validator({
-				model: this.entity.routerModel,
-				name: i18n.t('router.name'),
+				model: this.entity.routeModel,
+				name: i18n.t('route.name'),
 				empty: { value: true },
 				close: { value: true },
 				delete: { value: true },
@@ -51,8 +51,8 @@ export class RuleService extends CoreService {
 				rule => rule.id !== props.id
 			)
 			const parent = await this.validator({
-				model: this.entity.routerModel,
-				name: i18n.t('router.name'),
+				model: this.entity.routeModel,
+				name: i18n.t('route.name'),
 				empty: { value: true },
 				options: { where: { id: props.parent } }
 			})

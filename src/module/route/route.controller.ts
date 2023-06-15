@@ -2,23 +2,23 @@ import { Controller, Post, Get, Put, Body, Query } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
 import { ApiDecorator } from '@/decorator/compute.decorator'
 import { RNotice } from '@/interface/common.interface'
-import { RouterService } from './router.service'
+import { RouteService } from './route.service'
 import { RuleService } from './rule.service'
-import * as http from './router.interface'
+import * as http from './route.interface'
 import * as http1 from './rule.interface'
 
 @ApiTags('路由模块')
-@Controller('router')
-export class RouterController {
-	constructor(private readonly routerService: RouterService, private readonly ruleService: RuleService) {}
+@Controller('route')
+export class RouteController {
+	constructor(private readonly routeService: RouteService, private readonly ruleService: RuleService) {}
 
 	@Post('/create')
 	@ApiDecorator({
 		operation: { summary: '新增路由' },
 		response: { status: 200, description: 'OK', type: RNotice }
 	})
-	public async httpRouterCreate(@Body() body: http.RequestCreateRouter) {
-		return await this.routerService.httpRouterCreate(body)
+	public async httpRouteCreate(@Body() body: http.RequestCreateRoute) {
+		return await this.routeService.httpRouteCreate(body)
 	}
 
 	@Put('/update')
@@ -26,35 +26,35 @@ export class RouterController {
 		operation: { summary: '编辑路由' },
 		response: { status: 200, description: 'OK', type: RNotice }
 	})
-	public async httpRouterUpdate(@Body() body: http.RequestUpdateRouter) {
-		return await this.routerService.httpRouterUpdate(body)
+	public async httpRouteUpdate(@Body() body: http.RequestUpdateRoute) {
+		return await this.routeService.httpRouteUpdate(body)
 	}
 
 	@Get('/basic')
 	@ApiDecorator({
 		operation: { summary: '路由信息' },
-		response: { status: 200, description: 'OK', type: http.ResultRouter }
+		response: { status: 200, description: 'OK', type: http.ResultRoute }
 	})
-	public async httpBasicRouter(@Query() query: http.RequestBasicRouter) {
-		return await this.routerService.httpBasicRouter(query)
+	public async httpBasicRoute(@Query() query: http.RequestBasicRoute) {
+		return await this.routeService.httpBasicRoute(query)
 	}
 
 	@Get('/column')
 	@ApiDecorator({
 		operation: { summary: '路由列表' },
-		response: { status: 200, description: 'OK', type: http.ResultColumnRouter }
+		response: { status: 200, description: 'OK', type: http.ResultColumnRoute }
 	})
-	public async httpRouterColumn() {
-		return await this.routerService.httpRouterColumn()
+	public async httpRouteColumn() {
+		return await this.routeService.httpRouteColumn()
 	}
 
 	@Get('/dynamic')
 	@ApiDecorator({
 		operation: { summary: '动态路由节点' },
-		response: { status: 200, description: 'OK', type: http.ResultDynamicRouter }
+		response: { status: 200, description: 'OK', type: http.ResultDynamicRoute }
 	})
-	public async httpRouterDynamic() {
-		return await this.routerService.httpRouterDynamic()
+	public async httpRouteDynamic() {
+		return await this.routeService.httpRouteDynamic()
 	}
 
 	@Post('/create/rule')

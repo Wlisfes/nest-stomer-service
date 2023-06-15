@@ -4,7 +4,7 @@ import { Type } from 'class-transformer'
 import { IsOptional } from '@/decorator/common.decorator'
 import { ICommon, RCommon } from '@/interface/common.interface'
 
-export class RequestRouter extends PickType(ICommon, ['id', 'status']) {
+export class RequestRoute extends PickType(ICommon, ['id', 'status']) {
 	@ApiProperty({
 		description: '节点类型: 目录-directory、菜单-menu',
 		enum: ['directory', 'menu'],
@@ -37,14 +37,14 @@ export class RequestRouter extends PickType(ICommon, ['id', 'status']) {
 }
 
 //prettier-ignore
-export class RequestCreateRouter extends PickType(RequestRouter, ['path', 'redirect', 'type', 'title', 'icon', 'parent', 'status']) {}
+export class RequestCreateRoute extends PickType(RequestRoute, ['path', 'redirect', 'type', 'title', 'icon', 'parent', 'status']) {}
 //prettier-ignore
-export class RequestUpdateRouter extends PickType(RequestRouter, ['id', 'path', 'redirect', 'type', 'title', 'icon', 'parent', 'status']) {}
-export class RequestBasicRouter extends PickType(RequestRouter, ['id']) {}
+export class RequestUpdateRoute extends PickType(RequestRoute, ['id', 'path', 'redirect', 'type', 'title', 'icon', 'parent', 'status']) {}
+export class RequestBasicRoute extends PickType(RequestRoute, ['id']) {}
 
-export class ResultRouter extends IntersectionType(RequestRouter, PickType(RCommon, ['createTime', 'updateTime'])) {}
-export class ResultColumnRouter extends PickType(RCommon, ['page', 'size', 'total']) {
-	@ApiProperty({ description: '列表', type: [ResultRouter], example: [] })
-	list: ResultRouter[]
+export class ResultRoute extends IntersectionType(RequestRoute, PickType(RCommon, ['createTime', 'updateTime'])) {}
+export class ResultColumnRoute extends PickType(RCommon, ['page', 'size', 'total']) {
+	@ApiProperty({ description: '列表', type: [ResultRoute], example: [] })
+	list: ResultRoute[]
 }
-export class ResultDynamicRouter extends ResultColumnRouter {}
+export class ResultDynamicRoute extends ResultColumnRoute {}

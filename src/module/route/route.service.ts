@@ -2,23 +2,23 @@ import { Injectable } from '@nestjs/common'
 import { Brackets, In } from 'typeorm'
 import { CoreService } from '@/core/core.service'
 import { EntityService } from '@/core/entity.service'
-import * as http from './router.interface'
+import * as http from './route.interface'
 
 @Injectable()
-export class RouterService extends CoreService {
+export class RouteService extends CoreService {
 	constructor(private readonly entity: EntityService) {
 		super()
 	}
 
 	/**新增路由**/
-	public async httpRouterCreate(props: http.RequestCreateRouter) {
+	public async httpRouteCreate(props: http.RequestCreateRoute) {
 		return await this.RunCatch(async i18n => {
 			await this.haveCreate({
-				model: this.entity.routerModel,
-				name: i18n.t('router.name'),
+				model: this.entity.routeModel,
+				name: i18n.t('route.name'),
 				options: { where: { path: props.path, status: In(['disable', 'enable']) } }
 			})
-			const node = await this.entity.routerModel.create({
+			const node = await this.entity.routeModel.create({
 				type: props.type,
 				title: props.title,
 				status: props.status ?? 'enable',
@@ -27,19 +27,19 @@ export class RouterService extends CoreService {
 				icon: props.icon || null,
 				parent: props.parent || null
 			})
-			return await this.entity.routerModel.save(node).then(() => {
+			return await this.entity.routeModel.save(node).then(() => {
 				return { message: i18n.t('http.CREATE_SUCCESS') }
 			})
 		})
 	}
 
 	/**编辑路由**/
-	public async httpRouterUpdate(props: http.RequestUpdateRouter) {}
+	public async httpRouteUpdate(props: http.RequestUpdateRoute) {}
 
 	/**路由信息**/
-	public async httpBasicRouter(props: http.RequestBasicRouter) {
+	public async httpBasicRoute(props: http.RequestBasicRoute) {
 		return await this.RunCatch(async i18n => {
-			const node = await this.entity.routerModel
+			const node = await this.entity.routeModel
 				.createQueryBuilder('t')
 				.leftJoinAndSelect('t.rule', 'rule', 'rule.status IN(:...status)', { status: ['enable', 'disable'] })
 				.where(
@@ -52,7 +52,7 @@ export class RouterService extends CoreService {
 			return await this.nodeValidator(
 				{ node, i18n },
 				{
-					name: i18n.t('router.name'),
+					name: i18n.t('route.name'),
 					empty: { value: true },
 					delete: { value: true }
 				}
@@ -61,9 +61,9 @@ export class RouterService extends CoreService {
 	}
 
 	/**动态路由节点**/
-	public async httpRouterDynamic() {
+	public async httpRouteDynamic() {
 		return await this.RunCatch(async i18n => {
-			const [list = [], total = 0] = await this.entity.routerModel.findAndCount({
+			const [list = [], total = 0] = await this.entity.routeModel.findAndCount({
 				where: { status: 'enable' }
 			})
 			return { list, total }
@@ -71,9 +71,9 @@ export class RouterService extends CoreService {
 	}
 
 	/**路由列表**/
-	public async httpRouterColumn() {
+	public async httpRouteColumn() {
 		return await this.RunCatch(async i18n => {
-			const [list = [], total = 0] = await this.entity.routerModel
+			const [list = [], total = 0] = await this.entity.routeModel
 				.createQueryBuilder('t')
 				.leftJoinAndSelect('t.rule', 'rule', 'rule.status IN(:...status)', { status: ['enable', 'disable'] })
 				.where(
