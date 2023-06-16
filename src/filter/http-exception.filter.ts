@@ -1,4 +1,5 @@
-import { ArgumentsHost, Catch, ExceptionFilter, HttpStatus, Logger } from '@nestjs/common'
+import { ArgumentsHost, Catch, ExceptionFilter, HttpStatus } from '@nestjs/common'
+import { Logger } from '@/utils/utils-logger'
 import * as day from 'dayjs'
 
 @Catch()
@@ -10,18 +11,20 @@ export class HttpExceptionFilter implements ExceptionFilter {
 		const error = exception?.response?.hasOwnProperty('statusCode') ? exception.response ?? null : exception ?? null
 		const message = Array.isArray(exception.response?.message) ? exception.response.message[0] : exception.message
 
-		Logger.error({
-			referer: request.headers.referer,
-			ip: request.ip,
-			path: request.url,
-			method: request.method,
-			body: request.body,
-			query: request.query,
-			params: request.params,
-			code: exception.status,
-			message,
-			error
-		})
+		const logFormat = `>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+请求参数
+Referer: ${request.headers.referer},
+Request URL: ${request.originalUrl}
+Method: ${request.method}
+IP: ${request.ip}
+Status code: ${exception.status}
+Params: ${JSON.stringify(request.params)}
+Query: ${JSON.stringify(request.query)}
+Body: ${JSON.stringify(request.body)}
+Message: ${message}
+Error: ${error}
+\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n`
+		Logger.error(logFormat)
 
 		const Result = {
 			data: error,

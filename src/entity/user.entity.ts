@@ -40,7 +40,7 @@ export class UserEntity extends NEntity {
 	})
 	password: string
 
-	@ManyToMany(type => RoleEntity, { cascade: true })
+	@ManyToMany(type => RoleEntity, role => role.users, { cascade: true })
 	@JoinTable({ name: 'tb-user_roles' })
 	roles: RoleEntity[]
 }

@@ -13,7 +13,6 @@ export class CoreMiddleware implements NestMiddleware {
 	}
 
 	use(request: Request, response: Response, next: NextFunction) {
-		console.log('Request.....................................................')
 		next()
 	}
 }
