@@ -9,7 +9,7 @@ export const APP_AUTH_TOKEN = 'x-token'
 
 export class IBearer {
 	decorator: boolean
-	transfer: boolean
+	error: boolean
 	baseURL: string
 }
 
@@ -31,8 +31,8 @@ export class AuthGuard implements CanActivate {
 			const token = request.headers[APP_AUTH_TOKEN]
 			if (!token) {
 				//未携带token，未登录
-				if (bearer.transfer) {
-					//transfer为true时抛出错误
+				if (bearer.error) {
+					//error为true时抛出错误
 					throw new HttpException(i18n.t('user.notice.LOGIN_NOT'), HttpStatus.UNAUTHORIZED)
 				}
 			} else {
@@ -40,8 +40,8 @@ export class AuthGuard implements CanActivate {
 				const cache = await this.redisService.getStore(`user_token_${node.uid}`)
 				if (!cache || cache !== token) {
 					//token未存储在redis中、或者redis中存储的token不一致，登录已过期
-					if (bearer.transfer) {
-						//transfer为true时抛出错误
+					if (bearer.error) {
+						//error为true时抛出错误
 						throw new HttpException(i18n.t('user.notice.TOKEN_EXPIRE'), HttpStatus.UNAUTHORIZED)
 					}
 				}

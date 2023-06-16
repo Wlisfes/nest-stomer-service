@@ -31,7 +31,7 @@ export class UserController {
 	}
 
 	@Get('/basic')
-	@ApiBearer({ decorator: true, transfer: true, baseURL: '/api/user/basic' })
+	@ApiBearer({ decorator: true, error: true, baseURL: '/api/user/basic' })
 	@ApiDecorator({
 		operation: { summary: '用户信息' },
 		response: { status: 200, description: 'OK', type: http.RequestUser }
@@ -41,7 +41,7 @@ export class UserController {
 	}
 
 	@Put('/update/role')
-	@ApiBearer({ decorator: true, transfer: true, baseURL: '/api/user/update/role' })
+	@ApiBearer({ decorator: true, error: true, baseURL: '/api/user/update/role' })
 	@ApiDecorator({
 		operation: { summary: '修改用户角色' },
 		response: { status: 200, description: 'OK', type: RNotice }
