@@ -82,7 +82,7 @@ export class RedisService {
 	}
 
 	/**redis读取**/
-	public async getStore(key: string, value?: unknown) {
+	public async getStore<T>(key: string, value?: T): Promise<T> {
 		const data = await this.client.get(key)
 		return data ? JSON.parse(data) : value ?? undefined
 	}

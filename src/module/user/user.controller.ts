@@ -37,11 +37,11 @@ export class UserController {
 		response: { status: 200, description: 'OK', type: http.RequestUser }
 	})
 	public async httpBasicUser(@Request() request: { user: http.RequestUser }) {
-		return await this.userService.httpBasicUser(request.user.uid, { cache: true, close: false, delete: false })
+		return request.user
 	}
 
 	@Put('/update/role')
-	@ApiBearer({ decorator: true, error: true, baseURL: '/api/user/update/role' })
+	// @ApiBearer({ decorator: true, error: true, baseURL: '/api/user/update/role' })
 	@ApiDecorator({
 		operation: { summary: '修改用户角色' },
 		response: { status: 200, description: 'OK', type: RNotice }

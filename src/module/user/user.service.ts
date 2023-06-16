@@ -26,15 +26,16 @@ export class UserService extends CoreService {
 	/**创建token、2小时有效期**/
 	public async newJwtToken(node: UserEntity) {
 		return await this.RunCatch(async i18n => {
-			const user = { uid: node.uid, nickname: node.nickname, password: node.password, status: node.status }
-			//jwt
 			const expire = Number(this.configService.get('JWT_EXPIRE') ?? 7200)
 			const secret = this.configService.get('JWT_SECRET')
-			const token = await this.jwtService.signAsync({ ...user, secret: uuid.v4() }, { secret })
-			const refresh = await this.jwtService.signAsync({ ...user, secret: uuid.v4() }, { secret })
-			//redis
-			await this.redisService.setStore(`user_token_${node.uid}`, token, expire)
-			return await this.redisService.setStore(`user_refresh_${node.uid}`, refresh, expire * 10).then(() => {
+			const token = await this.jwtService.signAsync({ ...node, secret: uuid.v4() }, { secret })
+			const refresh = await this.jwtService.signAsync({ ...node, secret: uuid.v4() }, { secret })
+			//prettier-ignore
+			return await this.redisService.setStore(`authorize__${node.uid}`, {
+				token, 
+				refresh, 
+				expire: Date.now() + expire * 1000 
+			}, expire * 10).then(() => {
 				return { expire, token, refresh }
 			})
 		})
@@ -95,7 +96,7 @@ export class UserService extends CoreService {
 				empty: { value: true },
 				close: { value: true },
 				delete: { value: true },
-				options: { where: { mobile: props.mobile }, select: ['id', 'uid', 'mobile', 'password', 'nickname'] }
+				options: { where: { mobile: props.mobile }, select: ['id', 'uid', 'status', 'password'] }
 			})
 			if (!compareSync(props.password, node.password)) {
 				//密码错误、清除redis验证码
@@ -118,23 +119,31 @@ export class UserService extends CoreService {
 	/**获取用户信息**/
 	public async httpBasicUser(uid: string, props: { cache: boolean; close: boolean; delete: boolean }) {
 		return await this.RunCatch(async i18n => {
-			if (props.cache) {
-				//读取redis缓存
-				const node = await this.redisService.getStore(`user_cache_${uid}`)
-				return node || (await this.httpBasicUser(uid, { ...props, cache: false }))
-			} else {
-				const node = await this.validator({
-					model: this.entity.userModel,
+			const node = await this.entity.userModel
+				.createQueryBuilder('t')
+				.leftJoinAndSelect('t.roles', 'roles', 'roles.status IN(:...status)', { status: ['enable', 'disable'] })
+				.leftJoinAndSelect('roles.rules', 'rules', 'rules.status IN(:...status)', {
+					status: ['enable', 'disable']
+				})
+				.where(
+					new Brackets(Q => {
+						Q.where('t.uid = :uid', { uid })
+					})
+				)
+				.getOne()
+			await this.nodeValidator(
+				{ node, i18n },
+				{
 					name: i18n.t('user.name'),
 					empty: { value: true },
 					close: { value: props.close },
-					delete: { value: props.delete },
-					options: { where: { uid }, relations: ['roles'] }
-				})
-				return await this.redisService.setStore(`user_cache_${uid}`, node).then(() => {
-					return node
-				})
-			}
+					delete: { value: props.delete }
+				}
+			)
+
+			return await this.redisService.setStore(`user__${uid}`, node).then(() => {
+				return node
+			})
 		})
 	}
 
@@ -153,18 +162,14 @@ export class UserService extends CoreService {
 				ids: props.roles,
 				options: { where: { id: In(props.roles), status: In(['disable', 'enable', 'delete']) } }
 			})
+			//prettier-ignore
 			return await this.entity.userModel
 				.createQueryBuilder()
 				.relation('roles')
 				.of(node)
-				.addAndRemove(
-					batch.list,
-					node.roles.map(x => x.id)
-				)
-				.then(async () => {
-					await this.redisService.delStore(`user_cache_${props.uid}`)
-					return { message: i18n.t('http.UPDATE_SUCCESS') }
-				})
+				.addAndRemove(batch.list, node.roles.map(x => x.id)).then(() => {
+				return { message: i18n.t('http.UPDATE_SUCCESS') }
+			})
 		})
 	}
 }

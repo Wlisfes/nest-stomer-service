@@ -21,7 +21,7 @@ export class WeChatService extends CoreService {
 	/**获取小程序凭证**/
 	public async httpAccessToken(): Promise<DTO.RToken> {
 		try {
-			const token = await this.redis.getStore('access-token')
+			const token = await this.redis.getStore<any>('access-token')
 			if (!token) {
 				//prettier-ignore
 				const data = await firstValueFrom(

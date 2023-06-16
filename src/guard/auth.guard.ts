@@ -30,24 +30,27 @@ export class AuthGuard implements CanActivate {
 		if (bearer && bearer.decorator) {
 			const token = request.headers[APP_AUTH_TOKEN]
 			if (!token) {
-				//未携带token，未登录
+				//未携带token，未登录; error为true时抛出错误
 				if (bearer.error) {
-					//error为true时抛出错误
 					throw new HttpException(i18n.t('user.notice.LOGIN_NOT'), HttpStatus.UNAUTHORIZED)
 				}
 			} else {
-				const node = await this.userService.untieJwtToken(token)
-				const cache = await this.redisService.getStore(`user_token_${node.uid}`)
-				if (!cache || cache !== token) {
+				const { uid } = await this.userService.untieJwtToken(token)
+				const expire = Date.now()
+				const cache = await this.redisService.getStore<{ token: string; refresh: string; expire: number }>(
+					`authorize__${uid}`
+				)
+				if (!cache || cache.token !== token || cache.expire < expire) {
 					//token未存储在redis中、或者redis中存储的token不一致，登录已过期
 					if (bearer.error) {
-						//error为true时抛出错误
 						throw new HttpException(i18n.t('user.notice.TOKEN_EXPIRE'), HttpStatus.UNAUTHORIZED)
 					}
+					/**停止往下验证**/
+					return true
 				}
 
 				//读取redis用户信息挂载到request
-				const user = await this.userService.httpBasicUser(node.uid, { cache: true, close: true, delete: true })
+				const user = await this.userService.httpBasicUser(uid, { cache: true, close: true, delete: true })
 				request.user = user
 			}
 		}
