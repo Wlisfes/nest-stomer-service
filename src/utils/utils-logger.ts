@@ -4,8 +4,8 @@ import * as Log4js from 'log4js'
 import * as Util from 'util'
 import * as Moment from 'dayjs'
 import * as StackTrace from 'stacktrace-js'
+import { LoggerConfig } from '@/config/logger-config'
 import Chalk from 'chalk'
-import config from '@/config/log4js'
 
 // 日志级别
 export enum LoggerLevel {
@@ -89,7 +89,7 @@ Log4js.addLayout('Awesome-nest', (logConfig: any) => {
 })
 
 // 注入配置
-Log4js.configure(config)
+Log4js.configure(LoggerConfig)
 
 // 实例化
 const logger = Log4js.getLogger()

@@ -1,7 +1,7 @@
 import * as path from 'path'
 const baseLogPath = path.resolve(__dirname, '../../logs') // 日志要写入哪个目录
 
-const log4jsConfig = {
+export const LoggerConfig = {
 	appenders: {
 		console: {
 			type: 'console' // 会打印到控制台
@@ -64,5 +64,3 @@ const log4jsConfig = {
 	pm2: true, // 使用 pm2 来管理项目时，打开
 	pm2InstanceVar: 'INSTANCE_ID' // 会根据 pm2 分配的 id 进行区分，以免各进程在写日志时造成冲突
 }
-
-export default log4jsConfig
