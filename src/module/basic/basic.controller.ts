@@ -19,8 +19,8 @@ export class BasicController {
 	public async httpCaptcha(@Response() response, @Query() query: ali.RequestCaptcha) {
 		const session = await this.aliCloud.customSession()
 		const { data, text } = await this.aliCloud.httpCaptcha(query)
-		await this.redisService.setStore(session, text, 3 * 60)
-		response.cookie('AUTN_CAPTCHA', session, { maxAge: 3 * 60 * 1000, httpOnly: true })
+		await this.redisService.setStore(session, text, 5 * 60)
+		response.cookie('AUTN_CAPTCHA', session, { maxAge: 5 * 60 * 1000, httpOnly: true })
 		response.type('svg')
 		response.send(data)
 	}

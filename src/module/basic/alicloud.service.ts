@@ -50,7 +50,7 @@ export class AlicloudService {
 				throw new HttpException(e.data?.Message ?? '发送失败', HttpStatus.BAD_REQUEST)
 			})
 
-			return await this.redis.setStore(props.mobile, code, 300).then(() => {
+			return await this.redis.setStore(props.mobile, code, 5 * 60).then(() => {
 				return { message: '发送成功' }
 			})
 		} catch (e) {
