@@ -2,7 +2,7 @@ import { Injectable, HttpException, HttpStatus } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { create } from 'svg-captcha'
 import { CoreService } from '@/core/core.service'
-import { COMMON_CAPTCHA } from '@/config/redis-config'
+import { COMMON_CAPTCHA, COMMON_MOBILE } from '@/config/redis-config'
 import { RedisService } from './redis.service'
 import * as AliCloud from '@alicloud/pop-core'
 import * as ali from './alicloud.interface'
@@ -55,7 +55,7 @@ export class AlicloudService extends CoreService {
 				throw new HttpException(e.data?.Message ?? '发送失败', HttpStatus.BAD_REQUEST)
 			})
 
-			return await this.redisService.setStore(props.mobile, code, 5 * 60).then(() => {
+			return await this.redisService.setStore(`${COMMON_MOBILE}:${props.mobile}`, code, 5 * 60).then(() => {
 				return { message: '发送成功' }
 			})
 		} catch (e) {

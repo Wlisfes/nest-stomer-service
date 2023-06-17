@@ -1,22 +1,27 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { IsNotEmpty } from 'class-validator'
+import { IsNotEmpty, IsEnum } from 'class-validator'
 import { IsOptional, IsMobile } from '@/decorator/common.decorator'
 
 export class RequestCaptcha {
+	@ApiProperty({ description: '返回类型', enum: ['svg', 'json'], default: 'svg', required: false })
+	@IsOptional({}, { string: true, number: true })
+	@IsEnum(['svg', 'json'], { message: 'type类型错误' })
+	type: string
+
 	@ApiProperty({ description: 'size', required: false })
-	@IsOptional()
+	@IsOptional({}, { string: true, number: true })
 	size: number
 
 	@ApiProperty({ description: 'fontSize', required: false })
-	@IsOptional()
+	@IsOptional({}, { string: true, number: true })
 	fontSize?: number
 
 	@ApiProperty({ description: 'width', required: false })
-	@IsOptional()
+	@IsOptional({}, { string: true, number: true })
 	width?: number
 
 	@ApiProperty({ description: 'height', required: false })
-	@IsOptional()
+	@IsOptional({}, { string: true, number: true })
 	height?: number
 }
 export class RequestMobileCaptcha {

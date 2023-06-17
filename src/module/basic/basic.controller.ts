@@ -18,8 +18,13 @@ export class BasicController {
 	public async httpCaptcha(@Response() response, @Query() query: ali.RequestCaptcha) {
 		const { data, session } = await this.alicloudService.httpCaptcha(query)
 		response.cookie('AUTN_CAPTCHA', session, { maxAge: 5 * 60 * 1000, httpOnly: true })
-		response.type('svg')
-		response.send(data)
+		if ((query.type ?? 'svg') === 'svg') {
+			response.type('svg')
+			response.send(data)
+		} else {
+			response.type('json')
+			response.send({ fileSVG: data.toString() })
+		}
 	}
 
 	@Post('/mobile-captcha')

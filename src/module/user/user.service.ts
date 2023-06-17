@@ -8,7 +8,7 @@ import { EntityService } from '@/module/basic/entity.service'
 import { RedisService } from '@/module/basic/redis.service'
 import { AlicloudService } from '@/module/basic/alicloud.service'
 import { UserEntity } from '@/entity/user.entity'
-import { USER_AUTHORIZE, USER_CACHE } from '@/config/redis-config'
+import { USER_TOKEN, USER_REFRESH, USER_CACHE, COMMON_CAPTCHA, COMMON_MOBILE } from '@/config/redis-config'
 import * as uuid from 'uuid'
 import * as http from './user.interface'
 
@@ -31,12 +31,9 @@ export class UserService extends CoreService {
 			const secret = this.configService.get('JWT_SECRET')
 			const token = await this.jwtService.signAsync({ ...node, secret: uuid.v4() }, { secret })
 			const refresh = await this.jwtService.signAsync({ ...node, secret: uuid.v4() }, { secret })
-			//prettier-ignore
-			return await this.redisService.setStore(`${USER_AUTHORIZE}:${node.uid}`, {
-				token, 
-				refresh, 
-				expire: Date.now() + expire * 1000 
-			}, expire * 10).then(() => {
+			//redis
+			await this.redisService.setStore(`${USER_TOKEN}:${node.uid}`, token, expire)
+			return await this.redisService.setStore(`${USER_REFRESH}:${node.uid}`, refresh, expire * 10).then(() => {
 				return { expire, token, refresh }
 			})
 		})
@@ -60,7 +57,7 @@ export class UserService extends CoreService {
 				options: { where: { mobile: props.mobile } }
 			})
 
-			const code = await this.redisService.getStore(props.mobile)
+			const code = await this.redisService.getStore(`${COMMON_MOBILE}:${props.mobile}`)
 			if (!code) {
 				//验证码失效
 				throw new HttpException(i18n.t('user.code.expire'), HttpStatus.BAD_REQUEST)
@@ -76,7 +73,7 @@ export class UserService extends CoreService {
 			})
 			return await this.entity.userModel.save(node).then(async () => {
 				//登录成功、清除redis验证码
-				await this.redisService.delStore(props.mobile)
+				await this.redisService.delStore(`${COMMON_MOBILE}:${props.mobile}`)
 				return { message: i18n.t('user.notice.REGISTER_SUCCESS') }
 			})
 		})
@@ -85,10 +82,10 @@ export class UserService extends CoreService {
 	/**登录**/
 	public async httpAuthorize(props: http.RequestAuthorize, AUTN_CAPTCHA: string) {
 		return await this.RunCatch(async i18n => {
-			const code = await this.redisService.getStore(AUTN_CAPTCHA)
+			const code = await this.redisService.getStore(`${COMMON_CAPTCHA}:${AUTN_CAPTCHA}`)
 			if (code !== props.code) {
 				//验证码错误、清除redis验证码
-				await this.redisService.delStore(AUTN_CAPTCHA)
+				code && (await this.redisService.delStore(`${COMMON_CAPTCHA}:${AUTN_CAPTCHA}`))
 				throw new HttpException(i18n.translate('user.code.error'), HttpStatus.BAD_REQUEST)
 			}
 			const node = await this.validator({
@@ -101,12 +98,12 @@ export class UserService extends CoreService {
 			})
 			if (!compareSync(props.password, node.password)) {
 				//密码错误、清除redis验证码
-				await this.redisService.delStore(AUTN_CAPTCHA)
+				await this.redisService.delStore(`${COMMON_CAPTCHA}:${AUTN_CAPTCHA}`)
 				throw new HttpException(i18n.t('user.password.error'), HttpStatus.BAD_REQUEST)
 			}
 			return await this.newJwtToken(node).then(async ({ token, expire, refresh }) => {
 				//登录成功、清除redis验证码
-				await this.redisService.delStore(AUTN_CAPTCHA)
+				await this.redisService.delStore(`${COMMON_CAPTCHA}:${AUTN_CAPTCHA}`)
 				return {
 					expire,
 					token,

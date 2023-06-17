@@ -29,10 +29,7 @@ export class RedisService {
 						port: Number(config.get('REDIS_PORT')),
 						db: Number(config.get('REDIS_DB')),
 						password: config.get('REDIS_PASSWORD'),
-						tls: {
-							rejectUnauthorized: false,
-							host: config.get('REDIS_HOST')
-						}
+						lazyConnect: false
 					})
 					instance.subscribe(command, () => {
 						instance.on('message', (cmd, key) => trigger.emit('message', { cmd, key }))

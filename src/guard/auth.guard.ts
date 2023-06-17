@@ -3,7 +3,7 @@ import { Reflector } from '@nestjs/core'
 import { UserService } from '@/module/user/user.service'
 import { RedisService } from '@/module/basic/redis.service'
 import { usuCurrent } from '@/i18n'
-import { USER_AUTHORIZE } from '@/config/redis-config'
+import { USER_TOKEN, USER_REFRESH, USER_CACHE } from '@/config/redis-config'
 
 export const APP_AUTH_INJECT = 'APP_AUTH_INJECT'
 export const APP_AUTH_TOKEN = 'x-token'
@@ -37,17 +37,15 @@ export class AuthGuard implements CanActivate {
 				}
 			} else {
 				const { uid } = await this.userService.untieJwtToken(token)
-				const expire = Date.now()
-				const cache = await this.redisService.getStore<{ token: string; refresh: string; expire: number }>(
-					`${USER_AUTHORIZE}:${uid}`
-				)
-				if (!cache || cache.token !== token || cache.expire < expire) {
+				const _token = await this.redisService.getStore<string>(`${USER_TOKEN}:${uid}`)
+
+				if (!_token || _token !== token) {
 					//token未存储在redis中、或者redis中存储的token不一致，登录已过期
 					if (bearer.error) {
 						throw new HttpException(i18n.t('user.notice.TOKEN_EXPIRE'), HttpStatus.UNAUTHORIZED)
+					} else {
+						return true //停止往下验证
 					}
-					/**停止往下验证**/
-					return true
 				}
 
 				//读取redis用户信息挂载到request

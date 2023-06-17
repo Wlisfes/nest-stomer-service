@@ -57,11 +57,7 @@ import * as path from 'path'
 					port: parseInt(config.get('REDIS_PORT')),
 					password: config.get('REDIS_PASSWORD'),
 					db: parseInt(config.get('REDIS_DB')),
-					lazyConnect: true,
-					tls: {
-						rejectUnauthorized: false,
-						host: config.get('REDIS_HOST')
-					}
+					lazyConnect: false
 				}
 			})
 		}),
