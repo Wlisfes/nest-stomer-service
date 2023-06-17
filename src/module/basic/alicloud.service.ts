@@ -1,16 +1,17 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { create } from 'svg-captcha'
+import { CoreService } from '@/core/core.service'
+import { COMMON_CAPTCHA } from '@/config/redis-config'
 import { RedisService } from './redis.service'
-import * as Nanoid from 'nanoid'
 import * as AliCloud from '@alicloud/pop-core'
 import * as ali from './alicloud.interface'
 
 @Injectable()
-export class AlicloudService {
+export class AlicloudService extends CoreService {
 	protected readonly aliCloud: AliCloud
-	public readonly customSession = Nanoid.customAlphabet('123456789')
-	constructor(private readonly config: ConfigService, private readonly redis: RedisService) {
+	constructor(private readonly config: ConfigService, private readonly redisService: RedisService) {
+		super()
 		this.aliCloud = new AliCloud({
 			accessKeyId: this.config.get('ALIYUN_ACCESSKEYID'),
 			accessKeySecret: this.config.get('ALIYUN_ACCESSKEYSECRET'),
@@ -21,7 +22,8 @@ export class AlicloudService {
 
 	/**图形验证码**/
 	public async httpCaptcha(props: ali.RequestCaptcha) {
-		return create({
+		const session = this.createUIDNumber(32)
+		const { data, text } = create({
 			size: props?.size ?? 4,
 			fontSize: props?.fontSize ?? 38,
 			color: true,
@@ -32,12 +34,15 @@ export class AlicloudService {
 			charPreset: '123456789',
 			background: '#E8F0FE'
 		})
+		return await this.redisService.setStore(`${COMMON_CAPTCHA}:${session}`, text, 5 * 60).then(() => {
+			return { session, data, text }
+		})
 	}
 
 	/**发送手机验证码**/
 	public async httpMobileCaptcha(props: ali.RequestMobileCaptcha, size?: number) {
 		try {
-			const code = await this.customSession(6)
+			const code = await this.createUIDNumber(6)
 			//prettier-ignore
 			await this.aliCloud.request('SendSms',{
 					PhoneNumbers: props.mobile,
@@ -50,7 +55,7 @@ export class AlicloudService {
 				throw new HttpException(e.data?.Message ?? '发送失败', HttpStatus.BAD_REQUEST)
 			})
 
-			return await this.redis.setStore(props.mobile, code, 5 * 60).then(() => {
+			return await this.redisService.setStore(props.mobile, code, 5 * 60).then(() => {
 				return { message: '发送成功' }
 			})
 		} catch (e) {

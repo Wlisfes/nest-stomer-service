@@ -2,12 +2,13 @@ import { Injectable, HttpException, HttpStatus } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Brackets, In } from 'typeorm'
 import { JwtService } from '@nestjs/jwt'
+import { compareSync } from 'bcryptjs'
 import { CoreService } from '@/core/core.service'
 import { EntityService } from '@/module/basic/entity.service'
 import { RedisService } from '@/module/basic/redis.service'
 import { AlicloudService } from '@/module/basic/alicloud.service'
 import { UserEntity } from '@/entity/user.entity'
-import { compareSync } from 'bcryptjs'
+import { USER_AUTHORIZE, USER_CACHE } from '@/config/redis-config'
 import * as uuid from 'uuid'
 import * as http from './user.interface'
 
@@ -31,7 +32,7 @@ export class UserService extends CoreService {
 			const token = await this.jwtService.signAsync({ ...node, secret: uuid.v4() }, { secret })
 			const refresh = await this.jwtService.signAsync({ ...node, secret: uuid.v4() }, { secret })
 			//prettier-ignore
-			return await this.redisService.setStore(`authorize__${node.uid}`, {
+			return await this.redisService.setStore(`${USER_AUTHORIZE}:${node.uid}`, {
 				token, 
 				refresh, 
 				expire: Date.now() + expire * 1000 
@@ -68,7 +69,7 @@ export class UserService extends CoreService {
 				throw new HttpException(i18n.t('user.code.error'), HttpStatus.BAD_REQUEST)
 			}
 			const node = await this.entity.userModel.create({
-				uid: uuid.v4(),
+				uid: this.createUIDNumber(),
 				nickname: props.nickname,
 				password: props.password,
 				mobile: props.mobile
@@ -140,8 +141,7 @@ export class UserService extends CoreService {
 					delete: { value: props.delete }
 				}
 			)
-
-			return await this.redisService.setStore(`user__${uid}`, node).then(() => {
+			return await this.redisService.setStore(`${USER_CACHE}:${uid}`, node).then(() => {
 				return node
 			})
 		})

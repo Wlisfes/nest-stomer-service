@@ -14,8 +14,7 @@ import { CloudConsumer } from './queue.consumer'
 						host: config.get('QUEUE_REDIS_HOST'),
 						port: parseInt(config.get('QUEUE_REDIS_PORT')),
 						password: config.get('QUEUE_REDIS_PASSWORD'),
-						db: config.get('QUEUE_REDIS_DB'),
-						keyPrefix: config.get('QUEUE_REDIS_KEYPREFIX')
+						db: config.get('QUEUE_REDIS_DB')
 					}
 				}
 			}

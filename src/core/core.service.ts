@@ -2,9 +2,14 @@ import { Injectable, HttpException, HttpStatus } from '@nestjs/common'
 import { usuCurrent } from '@/i18n'
 import { ICoreDator } from './core.interface'
 import * as moment from 'dayjs'
+import * as Nanoid from 'nanoid'
 
 @Injectable()
 export class CoreService {
+	public createUIDNumber(size: number = 18) {
+		return Nanoid.customAlphabet('1234567890')(size)
+	}
+
 	/**创建国际化实例**/
 	public async usuCurrent() {
 		return usuCurrent()
