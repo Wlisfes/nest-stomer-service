@@ -23,7 +23,12 @@ export class BasicController {
 			response.send(data)
 		} else {
 			response.type('json')
-			response.send({ fileSVG: data.toString() })
+			response.send(
+				await this.alicloudService.createResult({
+					message: '请求成功',
+					data: { baseURL: data.toString() }
+				})
+			)
 		}
 	}
 

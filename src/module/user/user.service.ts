@@ -8,7 +8,7 @@ import { EntityService } from '@/module/basic/entity.service'
 import { RedisService } from '@/module/basic/redis.service'
 import { AlicloudService } from '@/module/basic/alicloud.service'
 import { UserEntity } from '@/entity/user.entity'
-import { USER_TOKEN, USER_REFRESH, USER_CACHE, COMMON_CAPTCHA, COMMON_MOBILE } from '@/config/redis-config'
+import { USER_TOKEN, USER_REFRESH, USER_CACHE, COMMON_CAPTCHA, COMMON_MOBILE, USER_ONLINE } from '@/config/redis-config'
 import * as uuid from 'uuid'
 import * as http from './user.interface'
 
@@ -102,8 +102,9 @@ export class UserService extends CoreService {
 				throw new HttpException(i18n.t('user.password.error'), HttpStatus.BAD_REQUEST)
 			}
 			return await this.newJwtToken(node).then(async ({ token, expire, refresh }) => {
-				//登录成功、清除redis验证码
+				//登录成功、清除redis验证码;写入在线用户
 				await this.redisService.delStore(`${COMMON_CAPTCHA}:${AUTN_CAPTCHA}`)
+				await this.redisService.setStore(`${USER_ONLINE}:${node.uid}`, node.uid)
 				return {
 					expire,
 					token,

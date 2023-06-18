@@ -59,6 +59,7 @@ export class RedisService {
 		return new Promise(resolve => {
 			const { trigger, observer } = this
 			const onTrigger = (e: ICommand) => {
+				console.log(e)
 				if (this.isCommand(command, e.key)) {
 					handler?.(e)
 					observer.emit('message', e)
