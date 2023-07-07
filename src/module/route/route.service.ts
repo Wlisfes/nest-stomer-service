@@ -63,10 +63,14 @@ export class RouteService extends CoreService {
 	/**动态路由节点**/
 	public async httpRouteDynamic() {
 		return await this.RunCatch(async i18n => {
-			const [list = [], total = 0] = await this.entity.routeModel.findAndCount({
-				where: { status: 'enable' }
-			})
-			return { list, total }
+			// const [list = [], total = 0] = await this.entity.routeModel.findAndCount({
+			// 	where: { status: 'enable' }
+			// })
+			const [list = [], total = 0] = await this.entity.routeModel
+				.createQueryBuilder('t')
+				.orderBy({ 't.id': 'DESC' })
+				.getManyAndCount()
+			return { total, list }
 		})
 	}
 
@@ -76,14 +80,9 @@ export class RouteService extends CoreService {
 			const [list = [], total = 0] = await this.entity.routeModel
 				.createQueryBuilder('t')
 				.leftJoinAndSelect('t.rule', 'rule', 'rule.status IN(:...status)', { status: ['enable', 'disable'] })
-				.where(
-					new Brackets(Q => {
-						Q.where('t.status IN(:...status)', { status: ['enable', 'disable'] })
-					})
-				)
 				.orderBy({ 't.id': 'DESC' })
 				.getManyAndCount()
-			return { total, list: this.listToTree(list) }
+			return { total, list: this.listToTree(list, ['enable', 'disable']) }
 		})
 	}
 }
