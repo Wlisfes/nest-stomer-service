@@ -60,12 +60,6 @@ export class CoreService {
 		return tree
 	}
 
-	/**树结构扁平化数组**/
-	public treeToList<T extends Record<string, any>>(
-		data: Array<T>,
-		status: Array<'disable' | 'enable' | 'delete'> = []
-	) {}
-
 	/**数据验证处理**/
 	public async nodeValidator<T>(
 		option: { node: T; i18n: ReturnType<typeof usuCurrent> },
