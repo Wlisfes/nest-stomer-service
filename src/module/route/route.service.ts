@@ -24,6 +24,7 @@ export class RouteService extends CoreService {
 				status: props.status ?? 'enable',
 				path: props.path,
 				redirect: props.redirect,
+				order: props.order,
 				icon: props.icon || null,
 				parent: props.parent || null
 			})

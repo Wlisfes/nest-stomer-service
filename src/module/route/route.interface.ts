@@ -18,6 +18,10 @@ export class RequestRoute extends PickType(ICommon, ['id', 'status']) {
 	@IsNotEmpty({ message: '节点title 必填' })
 	title: string
 
+	@ApiProperty({ description: '节点排序', example: 0 })
+	@IsNotEmpty({ message: '节点排序 必填' })
+	order: number
+
 	@ApiProperty({ description: '页面路径', example: '/manager/system' })
 	@IsNotEmpty({ message: '页面路径 必填' })
 	path: string
@@ -37,9 +41,9 @@ export class RequestRoute extends PickType(ICommon, ['id', 'status']) {
 }
 
 //prettier-ignore
-export class RequestCreateRoute extends PickType(RequestRoute, ['path', 'redirect', 'type', 'title', 'icon', 'parent', 'status']) {}
+export class RequestCreateRoute extends PickType(RequestRoute, ['path', 'redirect', 'type', 'title', 'icon', 'parent', 'status', 'order']) {}
 //prettier-ignore
-export class RequestUpdateRoute extends PickType(RequestRoute, ['id', 'path', 'redirect', 'type', 'title', 'icon', 'parent', 'status']) {}
+export class RequestUpdateRoute extends PickType(RequestRoute, ['id', 'path', 'redirect', 'type', 'title', 'icon', 'parent', 'status', 'order']) {}
 export class RequestBasicRoute extends PickType(RequestRoute, ['id']) {}
 
 export class ResultRoute extends IntersectionType(RequestRoute, PickType(RCommon, ['createTime', 'updateTime'])) {}
