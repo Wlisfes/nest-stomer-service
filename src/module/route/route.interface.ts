@@ -40,15 +40,24 @@ export class RequestRoute extends PickType(ICommon, ['id', 'status']) {
 	parent: number
 }
 
-//prettier-ignore
+/**创建路由**/ //prettier-ignore
 export class RequestCreateRoute extends PickType(RequestRoute, ['path', 'redirect', 'type', 'title', 'icon', 'parent', 'status', 'order']) {}
-//prettier-ignore
-export class RequestUpdateRoute extends PickType(RequestRoute, ['id', 'path', 'redirect', 'type', 'title', 'icon', 'parent', 'status', 'order']) {}
-export class RequestBasicRoute extends PickType(RequestRoute, ['id']) {}
 
+/**编辑路由**/ //prettier-ignore
+export class RequestUpdateRoute extends PickType(RequestRoute, ['id', 'path', 'redirect', 'type', 'title', 'icon', 'parent', 'status', 'order']) {}
+
+/**路由信息**/
+export class RequestBasicRoute extends PickType(RequestRoute, ['id']) {}
 export class ResultRoute extends IntersectionType(RequestRoute, PickType(RCommon, ['createTime', 'updateTime'])) {}
+
+/**路由状态**/
+export class RequestTransferRoute extends PickType(RequestRoute, ['id', 'status']) {}
+
+/**路由列表**/
 export class ResultColumnRoute extends PickType(RCommon, ['page', 'size', 'total']) {
 	@ApiProperty({ description: '列表', type: [ResultRoute], example: [] })
 	list: ResultRoute[]
 }
+
+/**动态路由节点**/
 export class ResultDynamicRoute extends ResultColumnRoute {}

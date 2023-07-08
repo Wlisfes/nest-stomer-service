@@ -37,6 +37,21 @@ export class RouteService extends CoreService {
 	/**编辑路由**/
 	public async httpRouteUpdate(props: http.RequestUpdateRoute) {}
 
+	/**编辑路由状态**/
+	public async httpRouteTransfer(props: http.RequestTransferRoute) {
+		return await this.RunCatch(async i18n => {
+			await this.validator({
+				model: this.entity.routeModel,
+				name: i18n.t('rule.name'),
+				empty: { value: true },
+				options: { where: { id: props.id } }
+			})
+			return await this.entity.routeModel.update({ id: props.id }, { status: props.status }).then(() => {
+				return { message: i18n.t('http.UPDATE_SUCCESS') }
+			})
+		})
+	}
+
 	/**路由信息**/
 	public async httpBasicRoute(props: http.RequestBasicRoute) {
 		return await this.RunCatch(async i18n => {
@@ -66,7 +81,7 @@ export class RouteService extends CoreService {
 		return await this.RunCatch(async i18n => {
 			const [list = [], total = 0] = await this.entity.routeModel
 				.createQueryBuilder('t')
-				.orderBy({ 't.id': 'DESC' })
+				.orderBy({ 't.order': 'DESC', 't.id': 'DESC' })
 				.getManyAndCount()
 			return {
 				total,
@@ -81,9 +96,9 @@ export class RouteService extends CoreService {
 			const [list = [], total = 0] = await this.entity.routeModel
 				.createQueryBuilder('t')
 				.leftJoinAndSelect('t.rule', 'rule', 'rule.status IN(:...status)', { status: ['enable', 'disable'] })
-				.orderBy({ 't.id': 'DESC' })
+				.orderBy({ 't.order': 'DESC', 't.id': 'DESC' })
 				.getManyAndCount()
-			return { total, list: this.listToTree(list, ['enable', 'disable']) }
+			return { total, list1: list, list: this.listToTree(list, ['enable', 'disable']) }
 		})
 	}
 }

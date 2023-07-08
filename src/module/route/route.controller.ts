@@ -39,6 +39,15 @@ export class RouteController {
 		return await this.routeService.httpBasicRoute(query)
 	}
 
+	@Put('/transfer')
+	@ApiDecorator({
+		operation: { summary: '编辑路由状态' },
+		response: { status: 200, description: 'OK', type: RNotice }
+	})
+	public async httpRouteTransfer(@Body() body: http.RequestTransferRoute) {
+		return await this.routeService.httpRouteTransfer(body)
+	}
+
 	@Get('/column')
 	@ApiDecorator({
 		operation: { summary: '路由列表' },
