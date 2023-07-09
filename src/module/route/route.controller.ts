@@ -84,6 +84,15 @@ export class RouteController {
 		return await this.ruleService.httpRuleUpdate(body)
 	}
 
+	@Get('/rule/basic')
+	@ApiDecorator({
+		operation: { summary: '接口规则信息' },
+		response: { status: 200, description: 'OK', type: http1.ResultRule }
+	})
+	public async httpBasicRule(@Query() query: http1.RequestBasicRule) {
+		return await this.ruleService.httpBasicRule(query)
+	}
+
 	@Put('/transfer/rule')
 	@ApiDecorator({
 		operation: { summary: '编辑接口规则状态' },

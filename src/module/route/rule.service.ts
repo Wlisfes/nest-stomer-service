@@ -72,6 +72,19 @@ export class RuleService extends CoreService {
 		})
 	}
 
+	/**路由信息**/
+	public async httpBasicRule(props: http.RequestBasicRule) {
+		return await this.RunCatch(async i18n => {
+			return await this.validator({
+				model: this.entity.ruleModel,
+				name: i18n.t('rule.name'),
+				empty: { value: true },
+				delete: { value: true },
+				options: { where: { id: props.id } }
+			})
+		})
+	}
+
 	/**编辑接口规则状态**/
 	public async httpRuleTransfer(props: http.RequestTransferRule) {
 		return await this.RunCatch(async i18n => {

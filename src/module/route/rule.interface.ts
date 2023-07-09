@@ -1,4 +1,4 @@
-import { ApiProperty, PickType, OmitType, IntersectionType } from '@nestjs/swagger'
+import { ApiProperty, PickType, IntersectionType } from '@nestjs/swagger'
 import { IsNotEmpty } from 'class-validator'
 import { Type } from 'class-transformer'
 import { IsOptional } from '@/decorator/common.decorator'
@@ -23,6 +23,15 @@ export class RequestRule extends PickType(ICommon, ['id', 'status']) {
 	parent: number
 }
 
+/**创建规则**/
 export class RequestCreateRule extends PickType(RequestRule, ['path', 'name', 'method', 'status', 'parent']) {}
+
+/**编辑规则**/
 export class RequestUpdateRule extends PickType(RequestRule, ['id', 'path', 'name', 'method', 'status', 'parent']) {}
+
+/**编辑规则状态*/
 export class RequestTransferRule extends PickType(RequestRule, ['id', 'status']) {}
+
+/**规则信息*/
+export class RequestBasicRule extends PickType(RequestRule, ['id']) {}
+export class ResultRule extends IntersectionType(RequestRule, PickType(RCommon, ['createTime', 'updateTime'])) {}
