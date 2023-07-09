@@ -72,7 +72,7 @@ export class RCommon {
 	message: string
 }
 
-export class RNotice {
+export class Notice {
 	@ApiProperty({ description: 'message', example: '接口提示' })
 	message: string
 }

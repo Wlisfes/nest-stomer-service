@@ -1,7 +1,7 @@
 import { Controller, Post, Get, Put, Body, Query } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
 import { ApiDecorator } from '@/decorator/compute.decorator'
-import { RNotice } from '@/interface/common.interface'
+import { Notice } from '@/interface/common.interface'
 import { RouteService } from './route.service'
 import { RuleService } from './rule.service'
 import * as http from './route.interface'
@@ -15,7 +15,7 @@ export class RouteController {
 	@Post('/create')
 	@ApiDecorator({
 		operation: { summary: '新增路由' },
-		response: { status: 200, description: 'OK', type: RNotice }
+		response: { status: 200, description: 'OK', type: Notice }
 	})
 	public async httpRouteCreate(@Body() body: http.RequestCreateRoute) {
 		return await this.routeService.httpRouteCreate(body)
@@ -24,7 +24,7 @@ export class RouteController {
 	@Put('/update')
 	@ApiDecorator({
 		operation: { summary: '编辑路由' },
-		response: { status: 200, description: 'OK', type: RNotice }
+		response: { status: 200, description: 'OK', type: Notice }
 	})
 	public async httpRouteUpdate(@Body() body: http.RequestUpdateRoute) {
 		return await this.routeService.httpRouteUpdate(body)
@@ -42,7 +42,7 @@ export class RouteController {
 	@Put('/transfer')
 	@ApiDecorator({
 		operation: { summary: '编辑路由状态' },
-		response: { status: 200, description: 'OK', type: RNotice }
+		response: { status: 200, description: 'OK', type: Notice }
 	})
 	public async httpRouteTransfer(@Body() body: http.RequestTransferRoute) {
 		return await this.routeService.httpRouteTransfer(body)
@@ -69,7 +69,7 @@ export class RouteController {
 	@Post('/create/rule')
 	@ApiDecorator({
 		operation: { summary: '新增接口规则' },
-		response: { status: 200, description: 'OK', type: RNotice }
+		response: { status: 200, description: 'OK', type: Notice }
 	})
 	public async httpRuleCreate(@Body() body: http1.RequestCreateRule) {
 		return await this.ruleService.httpRuleCreate(body)
@@ -78,7 +78,7 @@ export class RouteController {
 	@Put('/update/rule')
 	@ApiDecorator({
 		operation: { summary: '编辑接口规则' },
-		response: { status: 200, description: 'OK', type: RNotice }
+		response: { status: 200, description: 'OK', type: Notice }
 	})
 	public async httpRuleUpdate(@Body() body: http1.RequestUpdateRule) {
 		return await this.ruleService.httpRuleUpdate(body)
@@ -87,7 +87,7 @@ export class RouteController {
 	@Put('/transfer/rule')
 	@ApiDecorator({
 		operation: { summary: '编辑接口规则状态' },
-		response: { status: 200, description: 'OK', type: RNotice }
+		response: { status: 200, description: 'OK', type: Notice }
 	})
 	public async httpRuleTransfer(@Body() body: http1.RequestTransferRule) {
 		return await this.ruleService.httpRuleTransfer(body)

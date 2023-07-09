@@ -1,7 +1,7 @@
 import { Controller, Post, Put, Get, Body, Query } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
 import { ApiDecorator } from '@/decorator/compute.decorator'
-import { RNotice } from '@/interface/common.interface'
+import { Notice } from '@/interface/common.interface'
 import { RoleService } from './role.service'
 import * as http from './role.interface'
 
@@ -13,7 +13,7 @@ export class RoleController {
 	@Post('/create')
 	@ApiDecorator({
 		operation: { summary: '新增角色' },
-		response: { status: 200, description: 'OK', type: RNotice }
+		response: { status: 200, description: 'OK', type: Notice }
 	})
 	public async httpRoleCreate(@Body() body: http.RequestCreateRole) {
 		return await this.roleService.httpRoleCreate(body)
@@ -22,7 +22,7 @@ export class RoleController {
 	@Put('/update')
 	@ApiDecorator({
 		operation: { summary: '编辑角色' },
-		response: { status: 200, description: 'OK', type: RNotice }
+		response: { status: 200, description: 'OK', type: Notice }
 	})
 	public async httpRoleUpdate(@Body() body: http.RequestUpdateRole) {
 		return await this.roleService.httpRoleUpdate(body)
@@ -40,7 +40,7 @@ export class RoleController {
 	@Put('/transfer')
 	@ApiDecorator({
 		operation: { summary: '编辑角色状态' },
-		response: { status: 200, description: 'OK', type: RNotice }
+		response: { status: 200, description: 'OK', type: Notice }
 	})
 	public async httpRoleTransfer(@Body() body: http.RequestTransferRole) {
 		return await this.roleService.httpRoleTransfer(body)
