@@ -72,7 +72,7 @@ export class RuleService extends CoreService {
 		})
 	}
 
-	/**路由信息**/
+	/**接口规则信息**/
 	public async httpBasicRule(props: http.RequestBasicRule) {
 		return await this.RunCatch(async i18n => {
 			return await this.validator({
@@ -80,7 +80,10 @@ export class RuleService extends CoreService {
 				name: i18n.t('rule.name'),
 				empty: { value: true },
 				delete: { value: true },
-				options: { where: { id: props.id } }
+				options: {
+					where: { id: props.id },
+					relations: ['parent']
+				}
 			})
 		})
 	}
