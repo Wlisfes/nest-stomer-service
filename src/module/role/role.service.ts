@@ -12,7 +12,7 @@ export class RoleService extends CoreService {
 	}
 
 	/**新增角色**/
-	public async httpRoleCreate(props: http.RequestCreateRole) {
+	public async httpCreateRole(props: http.RequestCreateRole) {
 		return await this.RunCatch(async i18n => {
 			await this.haveCreate({
 				model: this.entity.roleModel,
@@ -39,7 +39,7 @@ export class RoleService extends CoreService {
 	}
 
 	/**编辑角色**/
-	public async httpRoleUpdate(props: http.RequestUpdateRole) {
+	public async httpUpdateRole(props: http.RequestUpdateRole) {
 		return await this.RunCatch(async i18n => {
 			const node = await this.validator({
 				model: this.entity.roleModel,
@@ -100,8 +100,43 @@ export class RoleService extends CoreService {
 		})
 	}
 
+	/**角色列表**/
+	public async httpColumnRole(props: http.RequestColumnRole) {
+		return await this.RunCatch(async i18n => {
+			const [list = [], total = 0] = await this.entity.roleModel
+				.createQueryBuilder('t')
+				.leftJoinAndSelect('t.rules', 'rules')
+				.where(
+					new Brackets(Q => {
+						if (props.status) {
+							Q.where('t.status = :status', { status: props.status })
+						} else {
+							Q.where('t.status IN(:...status)', { status: ['enable', 'disable'] })
+						}
+						if (props.name) {
+							Q.andWhere('t.name LIKE :name', { name: `%${props.name}%` })
+						}
+					})
+				)
+				.orderBy({ 't.createTime': 'DESC' })
+				.skip((props.page - 1) * props.size)
+				.take(props.size)
+				.getManyAndCount()
+			return {
+				size: props.size,
+				page: props.page,
+				total,
+				list: list.map(item => {
+					return Object.assign(item, {
+						rules: item.rules.filter(x => ['enable', 'disable'].includes(x.status))
+					})
+				})
+			}
+		})
+	}
+
 	/**编辑角色状态**/
-	public async httpRoleTransfer(props: http.RequestTransferRole) {
+	public async httpTransferRole(props: http.RequestTransferRole) {
 		return await this.RunCatch(async i18n => {
 			await this.validator({
 				model: this.entity.roleModel,

@@ -1,11 +1,11 @@
-import { ApiProperty, PickType, IntersectionType } from '@nestjs/swagger'
+import { ApiProperty, PickType, PartialType, IntersectionType } from '@nestjs/swagger'
 import { IsNotEmpty, IsNumber } from 'class-validator'
-import { Type, Transform } from 'class-transformer'
+import { Transform } from 'class-transformer'
 import { IsOptional, TransferNumber } from '@/decorator/common.decorator'
-import { ICommon } from '@/interface/common.interface'
+import { ICommon, RCommon } from '@/interface/common.interface'
 import { at } from '@/i18n'
 
-export class IRole extends PickType(ICommon, ['id', 'status']) {
+export class RequestRole extends PickType(ICommon, ['id', 'status', 'createTime', 'updateTime']) {
 	@ApiProperty({ description: '角色主键', example: 'admin' })
 	@IsNotEmpty({ message: at('user.nickname.required') })
 	bucket: string
@@ -24,9 +24,24 @@ export class IRole extends PickType(ICommon, ['id', 'status']) {
 	rules: number[]
 }
 
-export class RequestCreateRole extends PickType(IRole, ['bucket', 'name', 'status', 'comment', 'rules']) {}
-export class RequestUpdateRole extends PickType(IRole, ['id', 'name', 'status', 'comment', 'rules']) {}
-export class RequestBasicRole extends PickType(IRole, ['id']) {}
-export class RequestTransferRole extends PickType(IRole, ['id', 'status']) {}
+/**新增角色**/
+export class RequestCreateRole extends PickType(RequestRole, ['bucket', 'name', 'status', 'comment', 'rules']) {}
 
-export class ResultBasicRole extends IntersectionType(IRole, PickType(ICommon, ['createTime', 'updateTime'])) {}
+/**编辑角色**/
+export class RequestUpdateRole extends PickType(RequestRole, ['id', 'name', 'status', 'comment', 'rules']) {}
+
+/**角色信息**/
+export class RequestBasicRole extends PickType(RequestRole, ['id']) {}
+
+/**角色列表**/
+export class RequestColumnRole extends IntersectionType(
+	PickType(ICommon, ['page', 'size']),
+	PartialType(PickType(RequestRole, ['name', 'status']))
+) {}
+export class ResultColumnRole extends PickType(RCommon, ['page', 'size', 'total']) {
+	@ApiProperty({ description: '列表', type: [RequestRole], example: [] })
+	list: RequestRole[]
+}
+
+/**编辑角色状态**/
+export class RequestTransferRole extends PickType(RequestRole, ['id', 'status']) {}
