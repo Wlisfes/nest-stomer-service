@@ -17,8 +17,8 @@ export class RouteController {
 		operation: { summary: '新增路由' },
 		response: { status: 200, description: 'OK', type: Notice }
 	})
-	public async httpRouteCreate(@Body() body: http.RequestCreateRoute) {
-		return await this.routeService.httpRouteCreate(body)
+	public async httpCreateRoute(@Body() body: http.RequestCreateRoute) {
+		return await this.routeService.httpCreateRoute(body)
 	}
 
 	@Put('/update')
@@ -26,14 +26,14 @@ export class RouteController {
 		operation: { summary: '编辑路由' },
 		response: { status: 200, description: 'OK', type: Notice }
 	})
-	public async httpRouteUpdate(@Body() body: http.RequestUpdateRoute) {
-		return await this.routeService.httpRouteUpdate(body)
+	public async httpUpdateRoute(@Body() body: http.RequestUpdateRoute) {
+		return await this.routeService.httpUpdateRoute(body)
 	}
 
 	@Get('/basic')
 	@ApiDecorator({
 		operation: { summary: '路由信息' },
-		response: { status: 200, description: 'OK', type: http.ResultRoute }
+		response: { status: 200, description: 'OK', type: http.RequestRoute }
 	})
 	public async httpBasicRoute(@Query() query: http.RequestBasicRoute) {
 		return await this.routeService.httpBasicRoute(query)
@@ -44,8 +44,8 @@ export class RouteController {
 		operation: { summary: '编辑路由状态' },
 		response: { status: 200, description: 'OK', type: Notice }
 	})
-	public async httpRouteTransfer(@Body() body: http.RequestTransferRoute) {
-		return await this.routeService.httpRouteTransfer(body)
+	public async httpTransferRoute(@Body() body: http.RequestTransferRoute) {
+		return await this.routeService.httpTransferRoute(body)
 	}
 
 	@Get('/column')
@@ -53,8 +53,8 @@ export class RouteController {
 		operation: { summary: '路由列表' },
 		response: { status: 200, description: 'OK', type: http.ResultColumnRoute }
 	})
-	public async httpRouteColumn() {
-		return await this.routeService.httpRouteColumn()
+	public async httpColumnRoute() {
+		return await this.routeService.httpColumnRoute()
 	}
 
 	@Get('/dynamic')
@@ -62,8 +62,8 @@ export class RouteController {
 		operation: { summary: '动态路由节点' },
 		response: { status: 200, description: 'OK', type: http.ResultDynamicRoute }
 	})
-	public async httpRouteDynamic() {
-		return await this.routeService.httpRouteDynamic()
+	public async httpDynamicRoute() {
+		return await this.routeService.httpDynamicRoute()
 	}
 
 	@Post('/create/rule')
@@ -71,8 +71,8 @@ export class RouteController {
 		operation: { summary: '新增接口规则' },
 		response: { status: 200, description: 'OK', type: Notice }
 	})
-	public async httpRuleCreate(@Body() body: http1.RequestCreateRule) {
-		return await this.ruleService.httpRuleCreate(body)
+	public async httpCreateRule(@Body() body: http1.RequestCreateRule) {
+		return await this.ruleService.httpCreateRule(body)
 	}
 
 	@Put('/update/rule')
@@ -80,14 +80,14 @@ export class RouteController {
 		operation: { summary: '编辑接口规则' },
 		response: { status: 200, description: 'OK', type: Notice }
 	})
-	public async httpRuleUpdate(@Body() body: http1.RequestUpdateRule) {
-		return await this.ruleService.httpRuleUpdate(body)
+	public async httpUpdateRule(@Body() body: http1.RequestUpdateRule) {
+		return await this.ruleService.httpUpdateRule(body)
 	}
 
 	@Get('/rule/basic')
 	@ApiDecorator({
 		operation: { summary: '接口规则信息' },
-		response: { status: 200, description: 'OK', type: http1.ResultRule }
+		response: { status: 200, description: 'OK', type: http1.RequestRule }
 	})
 	public async httpBasicRule(@Query() query: http1.RequestBasicRule) {
 		return await this.ruleService.httpBasicRule(query)
@@ -98,7 +98,7 @@ export class RouteController {
 		operation: { summary: '编辑接口规则状态' },
 		response: { status: 200, description: 'OK', type: Notice }
 	})
-	public async httpRuleTransfer(@Body() body: http1.RequestTransferRule) {
-		return await this.ruleService.httpRuleTransfer(body)
+	public async httpTransferRule(@Body() body: http1.RequestTransferRule) {
+		return await this.ruleService.httpTransferRule(body)
 	}
 }

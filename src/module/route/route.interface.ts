@@ -1,10 +1,10 @@
-import { ApiProperty, PickType, OmitType, IntersectionType } from '@nestjs/swagger'
+import { ApiProperty, PickType } from '@nestjs/swagger'
 import { IsNotEmpty } from 'class-validator'
 import { Type } from 'class-transformer'
 import { IsOptional } from '@/decorator/common.decorator'
 import { ICommon, RCommon } from '@/interface/common.interface'
 
-export class RequestRoute extends PickType(ICommon, ['id', 'status']) {
+export class RequestRoute extends PickType(ICommon, ['id', 'status', 'createTime', 'uid']) {
 	@ApiProperty({
 		description: '节点类型: 目录-directory、菜单-menu',
 		enum: ['directory', 'menu'],
@@ -48,15 +48,14 @@ export class RequestUpdateRoute extends PickType(RequestRoute, ['id', 'path', 'r
 
 /**路由信息**/
 export class RequestBasicRoute extends PickType(RequestRoute, ['id']) {}
-export class ResultRoute extends IntersectionType(RequestRoute, PickType(RCommon, ['createTime', 'updateTime'])) {}
 
 /**路由状态**/
 export class RequestTransferRoute extends PickType(RequestRoute, ['id', 'status']) {}
 
 /**路由列表**/
 export class ResultColumnRoute extends PickType(RCommon, ['page', 'size', 'total']) {
-	@ApiProperty({ description: '列表', type: [ResultRoute], example: [] })
-	list: ResultRoute[]
+	@ApiProperty({ description: '列表', type: [RequestRoute], example: [] })
+	list: RequestRoute[]
 }
 
 /**动态路由节点**/

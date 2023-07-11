@@ -11,7 +11,7 @@ export class RouteService extends CoreService {
 	}
 
 	/**新增路由**/
-	public async httpRouteCreate(props: http.RequestCreateRoute) {
+	public async httpCreateRoute(props: http.RequestCreateRoute) {
 		return await this.RunCatch(async i18n => {
 			await this.haveCreate({
 				model: this.entity.routeModel,
@@ -35,10 +35,10 @@ export class RouteService extends CoreService {
 	}
 
 	/**编辑路由**/
-	public async httpRouteUpdate(props: http.RequestUpdateRoute) {}
+	public async httpUpdateRoute(props: http.RequestUpdateRoute) {}
 
 	/**编辑路由状态**/
-	public async httpRouteTransfer(props: http.RequestTransferRoute) {
+	public async httpTransferRoute(props: http.RequestTransferRoute) {
 		return await this.RunCatch(async i18n => {
 			await this.validator({
 				model: this.entity.routeModel,
@@ -77,7 +77,7 @@ export class RouteService extends CoreService {
 	}
 
 	/**动态路由节点**/
-	public async httpRouteDynamic() {
+	public async httpDynamicRoute() {
 		return await this.RunCatch(async i18n => {
 			const [list = [], total = 0] = await this.entity.routeModel
 				.createQueryBuilder('t')
@@ -91,7 +91,7 @@ export class RouteService extends CoreService {
 	}
 
 	/**路由列表**/
-	public async httpRouteColumn() {
+	public async httpColumnRoute() {
 		return await this.RunCatch(async i18n => {
 			const [list = [], total = 0] = await this.entity.routeModel
 				.createQueryBuilder('t')
