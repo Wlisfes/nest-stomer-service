@@ -24,10 +24,10 @@ export class RequestChacter extends PickType(ICommon, ['id', 'status', 'createTi
 }
 
 /**新增字典**/
-export class RequestCreateChacter extends PickType(RequestChacter, ['command', 'cn', 'en', 'comment']) {}
+export class RequestCreateChacter extends PickType(RequestChacter, ['command', 'cn', 'en', 'comment', 'status']) {}
 
-/**编辑字典**/
-export class RequestUpdateChacter extends PickType(RequestChacter, ['id', 'command', 'cn', 'en', 'comment']) {}
+/**编辑字典**/ //prettier-ignore
+export class RequestUpdateChacter extends PickType(RequestChacter, ['id', 'cn', 'en', 'comment', 'status']) {}
 
 /**字典信息**/
 export class RequestBasicChacter extends PickType(RequestChacter, ['id']) {}

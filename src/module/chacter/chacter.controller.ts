@@ -19,6 +19,15 @@ export class ChacterController {
 		return await this.chacterService.httpCreateChacter(body)
 	}
 
+	@Put('/update')
+	@ApiDecorator({
+		operation: { summary: '编辑字典' },
+		response: { status: 200, description: 'OK', type: Notice }
+	})
+	public async httpUpdateChacter(@Body() body: http.RequestUpdateChacter) {
+		return await this.chacterService.httpUpdateChacter(body)
+	}
+
 	@Get('/basic')
 	@ApiDecorator({
 		operation: { summary: '字典信息' },
