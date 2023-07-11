@@ -1,11 +1,11 @@
-import { ApiProperty, PickType, OmitType, IntersectionType } from '@nestjs/swagger'
+import { ApiProperty, PickType, PartialType, IntersectionType } from '@nestjs/swagger'
 import { IsNotEmpty } from 'class-validator'
 import { Type } from 'class-transformer'
 import { at } from '@/i18n'
 import { IsOptional } from '@/decorator/common.decorator'
 import { ICommon, RCommon } from '@/interface/common.interface'
 
-export class IChacter extends PickType(ICommon, ['id']) {
+export class RequestChacter extends PickType(ICommon, ['id', 'status', 'createTime', 'updateTime']) {
 	@ApiProperty({ description: '字典标识', example: 'enable' })
 	@IsNotEmpty({ message: at('chacter.command.required') })
 	command: string
@@ -23,28 +23,24 @@ export class IChacter extends PickType(ICommon, ['id']) {
 	en: string
 }
 
-export class RChacter extends PickType(ICommon, ['id', 'createTime', 'updateTime']) {
-	@ApiProperty({ description: '字典标识', example: 'enable' })
-	command: string
+/**新增字典**/
+export class RequestCreateChacter extends PickType(RequestChacter, ['command', 'cn', 'en', 'comment']) {}
 
-	@ApiProperty({ description: '备注', example: 'enable' })
-	comment: string
+/**编辑字典**/
+export class RequestUpdateChacter extends PickType(RequestChacter, ['id', 'command', 'cn', 'en', 'comment']) {}
 
-	@ApiProperty({ description: '字典中文', example: '启用' })
-	cn: string
+/**字典信息**/
+export class RequestBasicChacter extends PickType(RequestChacter, ['id']) {}
 
-	@ApiProperty({ description: '字典英文', example: 'Enable' })
-	en: string
+/**字典列表**/
+export class RequestColumnChacter extends IntersectionType(
+	PickType(ICommon, ['page', 'size']),
+	PartialType(PickType(RequestChacter, ['command']))
+) {}
+export class ResultColumnChacter extends PickType(RCommon, ['page', 'size', 'total']) {
+	@ApiProperty({ description: '列表', type: [RequestChacter], example: [] })
+	list: RequestChacter[]
 }
 
-export class ICreate extends PickType(IChacter, ['command', 'cn', 'en', 'comment']) {}
-export class IUpdate extends PickType(IChacter, ['id', 'command', 'cn', 'en', 'comment']) {}
-export class IOnter extends PickType(IChacter, ['id']) {}
-export class IColumn extends PickType(ICommon, ['page', 'size']) {
-	@ApiProperty({ description: '字典标识', required: false, example: 'enable' })
-	command: string
-}
-export class RColumn extends PickType(RCommon, ['page', 'size', 'total']) {
-	@ApiProperty({ description: '列表', type: [IChacter], example: [] })
-	list: IChacter[]
-}
+/**字典状态**/
+export class RequestTransferChacter extends PickType(RequestChacter, ['id', 'status']) {}

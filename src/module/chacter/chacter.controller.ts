@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Put, Delete, Body, Query } from '@nestjs/common'
+import { Controller, Post, Get, Put, Body, Query } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
 import { ApiDecorator } from '@/decorator/compute.decorator'
 import { Notice } from '@/interface/common.interface'
@@ -10,39 +10,39 @@ import * as http from './chacter.interface'
 export class ChacterController {
 	constructor(private readonly chacterService: ChacterService) {}
 
-	@Get()
-	@ApiDecorator({
-		operation: { summary: '字典详情' },
-		response: { status: 200, description: 'OK', type: http.RChacter }
-	})
-	public async httpOnter(@Query() query: http.IOnter) {
-		return await this.chacterService.httpOnter(query)
-	}
-
 	@Post('/create')
 	@ApiDecorator({
 		operation: { summary: '新增字典' },
 		response: { status: 200, description: 'OK', type: Notice }
 	})
-	public async httpCreate(@Body() body: http.ICreate) {
-		return await this.chacterService.httpCreate(body)
+	public async httpCreateChacter(@Body() body: http.RequestCreateChacter) {
+		return await this.chacterService.httpCreateChacter(body)
+	}
+
+	@Get('/basic')
+	@ApiDecorator({
+		operation: { summary: '字典信息' },
+		response: { status: 200, description: 'OK', type: http.RequestChacter }
+	})
+	public async httpBasicChacter(@Query() query: http.RequestBasicChacter) {
+		return await this.chacterService.httpBasicChacter(query)
 	}
 
 	@Get('/column')
 	@ApiDecorator({
 		operation: { summary: '字典列表' },
-		response: { status: 200, description: 'OK', type: http.RColumn }
+		response: { status: 200, description: 'OK', type: http.ResultColumnChacter }
 	})
-	public async httpColumn(@Query() query: http.IColumn) {
-		return await this.chacterService.httpColumn(query)
+	public async httpColumnChacter(@Query() query: http.RequestColumnChacter) {
+		return await this.chacterService.httpColumnChacter(query)
 	}
 
-	@Delete('/delete')
+	@Put('/transfer')
 	@ApiDecorator({
-		operation: { summary: '删除字典' },
-		response: { status: 200, description: 'OK', type: Notice }
+		operation: { summary: '编辑字典状态' },
+		response: { status: 200, description: 'OK', type: http.RequestChacter }
 	})
-	public async httpDelete(@Query() query: http.IOnter) {
-		return await this.chacterService.httpDelete(query)
+	public async httpTransferChacter(@Body() body: http.RequestTransferChacter) {
+		return await this.chacterService.httpTransferChacter(body)
 	}
 }

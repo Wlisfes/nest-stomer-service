@@ -11,7 +11,7 @@ export class ChacterService extends CoreService {
 	}
 
 	/**新增字典**/
-	public async httpCreate(props: http.ICreate) {
+	public async httpCreateChacter(props: http.RequestCreateChacter) {
 		return await this.RunCatch(async i18n => {
 			await this.haveCreate({
 				model: this.entity.ruleModel,
@@ -31,7 +31,7 @@ export class ChacterService extends CoreService {
 	}
 
 	/**字典详情**/
-	public async httpOnter(props: http.IOnter) {
+	public async httpBasicChacter(props: http.RequestBasicChacter) {
 		return await this.RunCatch(async i18n => {
 			return await this.validator({
 				model: this.entity.chacterModel,
@@ -43,7 +43,7 @@ export class ChacterService extends CoreService {
 	}
 
 	/**字典列表**/
-	public async httpColumn(props: http.IColumn) {
+	public async httpColumnChacter(props: http.RequestColumnChacter) {
 		return await this.RunCatch(async i18n => {
 			const [list = [], total = 0] = await this.entity.chacterModel
 				.createQueryBuilder('t')
@@ -62,17 +62,17 @@ export class ChacterService extends CoreService {
 		})
 	}
 
-	/**删除字典**/
-	public async httpDelete(props: http.IOnter) {
+	/**编辑字典状态**/
+	public async httpTransferChacter(props: http.RequestTransferChacter) {
 		return await this.RunCatch(async i18n => {
 			await this.validator({
 				model: this.entity.chacterModel,
-				name: i18n.t('chacter.name'),
+				name: i18n.t('rule.name'),
 				empty: { value: true },
 				options: { where: { id: props.id } }
 			})
-			return await this.entity.chacterModel.delete(props.id).then(() => {
-				return { message: i18n.t('http.DELETE_SUCCESS') }
+			return await this.entity.chacterModel.update({ id: props.id }, { status: props.status }).then(() => {
+				return { message: i18n.t('http.UPDATE_SUCCESS') }
 			})
 		})
 	}

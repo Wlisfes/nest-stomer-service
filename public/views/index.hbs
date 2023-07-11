@@ -37,9 +37,13 @@
 	</body>
 	<script>
 		window.onload = function() {
-			document.querySelector('#captcha-tap').addEventListener('click', function() {
-				document.querySelector('#captcha').src = `/api/basic/captcha?width=120&height=50&fontSize=50&t=${Math.random()}`
-			})
+			function createCaptcha() {
+				document.querySelector('#captcha-tap').addEventListener('click', function() {
+					document.querySelector('#captcha').src = `/api/basic/captcha?width=120&height=50&fontSize=50&t=${Math.random()}`
+				})
+			}
+
+			setInterval(createCaptcha, 50)
 		}
 	</script>
 </html>
