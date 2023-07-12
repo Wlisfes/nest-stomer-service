@@ -38,12 +38,10 @@
 	<script>
 		window.onload = function() {
 			function createCaptcha() {
-				document.querySelector('#captcha-tap').addEventListener('click', function() {
-					document.querySelector('#captcha').src = `/api/basic/captcha?width=120&height=50&fontSize=50&t=${Math.random()}`
-				})
+				document.querySelector('#captcha').src = `/api/basic/captcha?width=120&height=50&fontSize=50&t=${Math.random()}`
 			}
 
-			setInterval(createCaptcha, 50)
+			setInterval(createCaptcha, 1000 * 30)
 		}
 	</script>
 </html>
