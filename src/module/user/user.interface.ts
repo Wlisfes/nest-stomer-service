@@ -36,10 +36,3 @@ export class RequestUser extends PickType(ICommon, ['id', 'uid']) {
 
 export class RequestRegister extends PickType(RequestUser, ['nickname', 'password', 'mobile', 'code']) {}
 export class RequestAuthorize extends PickType(RequestUser, ['mobile', 'password', 'code']) {}
-export class RequestUserRole extends PickType(RequestUser, ['uid']) {
-	@ApiProperty({ description: '角色ID', type: [Number], example: [] })
-	@IsOptional({}, { string: true, number: true })
-	@Transform(type => TransferNumber(type), { toClassOnly: true })
-	@IsNumber({}, { each: true, message: '角色ID类型必须为Number数组' })
-	roles: number[]
-}

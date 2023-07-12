@@ -1,7 +1,6 @@
-import { Entity, Column, ManyToOne, ManyToMany } from 'typeorm'
+import { Entity, Column, ManyToOne } from 'typeorm'
 import { NEntity } from '@/entity/common.entity'
 import { RouteEntity } from '@/entity/route.entity'
-import { RoleEntity } from '@/entity/role.entity'
 
 @Entity('tb-rule')
 export class RuleEntity extends NEntity {
@@ -19,7 +18,4 @@ export class RuleEntity extends NEntity {
 
 	@ManyToOne(type => RouteEntity, route => route.rule)
 	parent: RouteEntity
-
-	@ManyToMany(type => RoleEntity, role => role.rules)
-	roles: RoleEntity[]
 }

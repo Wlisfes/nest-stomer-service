@@ -120,10 +120,6 @@ export class UserService extends CoreService {
 		return await this.RunCatch(async i18n => {
 			const node = await this.entity.userModel
 				.createQueryBuilder('t')
-				.leftJoinAndSelect('t.roles', 'roles', 'roles.status IN(:...status)', { status: ['enable', 'disable'] })
-				.leftJoinAndSelect('roles.rules', 'rules', 'rules.status IN(:...status)', {
-					status: ['enable', 'disable']
-				})
 				.where(
 					new Brackets(Q => {
 						Q.where('t.uid = :uid', { uid })
@@ -141,32 +137,6 @@ export class UserService extends CoreService {
 			)
 			return await this.redisService.setStore(`${USER_CACHE}:${uid}`, node).then(() => {
 				return node
-			})
-		})
-	}
-
-	/**修改用户角色**/
-	public async httpUserUpdateRole(props: http.RequestUserRole) {
-		return await this.RunCatch(async i18n => {
-			const node = await this.validator({
-				model: this.entity.userModel,
-				name: i18n.t('user.name'),
-				empty: { value: true },
-				options: { where: { uid: props.uid }, relations: ['roles'] }
-			})
-			const batch = await this.batchValidator({
-				model: this.entity.roleModel,
-				name: i18n.t('role.name'),
-				ids: props.roles,
-				options: { where: { id: In(props.roles), status: In(['disable', 'enable', 'delete']) } }
-			})
-			//prettier-ignore
-			return await this.entity.userModel
-				.createQueryBuilder()
-				.relation('roles')
-				.of(node)
-				.addAndRemove(batch.list, node.roles.map(x => x.id)).then(() => {
-				return { message: i18n.t('http.UPDATE_SUCCESS') }
 			})
 		})
 	}

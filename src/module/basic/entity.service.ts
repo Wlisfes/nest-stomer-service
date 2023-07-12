@@ -4,7 +4,6 @@ import { Repository } from 'typeorm'
 import { UserEntity } from '@/entity/user.entity'
 import { RouteEntity } from '@/entity/route.entity'
 import { RuleEntity } from '@/entity/rule.entity'
-import { RoleEntity } from '@/entity/role.entity'
 import { ChacterEntity } from '@/entity/chacter.entity'
 
 @Injectable()
@@ -13,7 +12,6 @@ export class EntityService {
 		@InjectRepository(UserEntity) public readonly userModel: Repository<UserEntity>,
 		@InjectRepository(RouteEntity) public readonly routeModel: Repository<RouteEntity>,
 		@InjectRepository(ChacterEntity) public readonly chacterModel: Repository<ChacterEntity>,
-		@InjectRepository(RuleEntity) public readonly ruleModel: Repository<RuleEntity>,
-		@InjectRepository(RoleEntity) public readonly roleModel: Repository<RoleEntity>
+		@InjectRepository(RuleEntity) public readonly ruleModel: Repository<RuleEntity>
 	) {}
 }

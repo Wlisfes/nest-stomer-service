@@ -39,14 +39,4 @@ export class UserController {
 	public async httpBasicUser(@Request() request: { user: http.RequestUser }) {
 		return request.user
 	}
-
-	@Put('/update/role')
-	// @ApiBearer({ decorator: true, error: true, baseURL: '/api/user/update/role' })
-	@ApiDecorator({
-		operation: { summary: '修改用户角色' },
-		response: { status: 200, description: 'OK', type: Notice }
-	})
-	public async httpUserUpdateRole(@Body() body: http.RequestUserRole) {
-		return await this.userService.httpUserUpdateRole(body)
-	}
 }
