@@ -105,7 +105,7 @@ export class RoleService extends CoreService {
 		return await this.RunCatch(async i18n => {
 			const [list = [], total = 0] = await this.entity.roleModel
 				.createQueryBuilder('t')
-				.leftJoinAndSelect('t.rules', 'rules')
+				.leftJoinAndSelect('t.rules', 'r', [`r.status = 'enable'`, `r.status = 'disable'`].join(' or '))
 				.where(
 					new Brackets(Q => {
 						if (props.status) {
@@ -122,16 +122,8 @@ export class RoleService extends CoreService {
 				.skip((props.page - 1) * props.size)
 				.take(props.size)
 				.getManyAndCount()
-			return {
-				size: props.size,
-				page: props.page,
-				total,
-				list: list.map(item => {
-					return Object.assign(item, {
-						rules: item.rules.filter(x => ['enable', 'disable'].includes(x.status))
-					})
-				})
-			}
+
+			return { size: props.size, page: props.page, total, list }
 		})
 	}
 
