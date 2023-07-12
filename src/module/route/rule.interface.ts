@@ -19,14 +19,14 @@ export class RequestRule extends PickType(ICommon, ['id', 'status', 'createTime'
 	@ApiProperty({ description: '接口归属节点', example: 1 })
 	@IsNotEmpty({ message: '接口归属节点 必填' })
 	@Type(() => Number)
-	parent: number
+	route: number
 }
 
 /**创建规则**/
-export class RequestCreateRule extends PickType(RequestRule, ['path', 'name', 'method', 'status', 'parent']) {}
+export class RequestCreateRule extends PickType(RequestRule, ['path', 'name', 'method', 'status', 'route']) {}
 
 /**编辑规则**/
-export class RequestUpdateRule extends PickType(RequestRule, ['id', 'path', 'name', 'method', 'status', 'parent']) {}
+export class RequestUpdateRule extends PickType(RequestRule, ['id', 'path', 'name', 'method', 'status', 'route']) {}
 
 /**编辑规则状态*/
 export class RequestTransferRule extends PickType(RequestRule, ['id', 'status']) {}

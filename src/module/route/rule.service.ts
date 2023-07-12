@@ -18,20 +18,20 @@ export class RuleService extends CoreService {
 				name: i18n.t('rule.name'),
 				options: { where: { path: props.path, status: In(['disable', 'enable']) } }
 			})
-			const parent = await this.validator({
+			const route = await this.validator({
 				model: this.entity.routeModel,
 				name: i18n.t('route.name'),
 				empty: { value: true },
 				close: { value: true },
 				delete: { value: true },
-				options: { where: { id: props.parent } }
+				options: { where: { id: props.route } }
 			})
 			const node = await this.entity.ruleModel.create({
 				path: props.path,
 				name: props.name,
 				method: props.method,
 				status: props.status,
-				parent: parent
+				route: route
 			})
 			return await this.entity.ruleModel.save(node).then(() => {
 				return { message: i18n.t('http.CREATE_SUCCESS') }
@@ -50,11 +50,11 @@ export class RuleService extends CoreService {
 				},
 				rule => rule.id !== props.id
 			)
-			const parent = await this.validator({
+			const route = await this.validator({
 				model: this.entity.routeModel,
 				name: i18n.t('route.name'),
 				empty: { value: true },
-				options: { where: { id: props.parent } }
+				options: { where: { id: props.route } }
 			})
 			//prettier-ignore
 			return await this.entity.ruleModel.update(
@@ -64,7 +64,7 @@ export class RuleService extends CoreService {
 					name: props.name ?? node.name,
 					method: props.method ?? node.method,
 					status: props.status ?? node.status,
-					parent: parent
+					route: route
 				}
 			).then(() => {
 				return { message: i18n.t('http.UPDATE_SUCCESS') }

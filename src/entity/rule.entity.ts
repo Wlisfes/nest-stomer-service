@@ -17,5 +17,5 @@ export class RuleEntity extends NEntity {
 	status: string
 
 	@ManyToOne(type => RouteEntity, route => route.rule)
-	parent: RouteEntity
+	route: RouteEntity
 }

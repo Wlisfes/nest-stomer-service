@@ -28,6 +28,6 @@ export class RouteEntity extends NEntity {
 	@Column({ comment: '父级节点ID', nullable: true, default: null })
 	parent: number
 
-	@OneToMany(type => RuleEntity, rule => rule.parent)
+	@OneToMany(type => RuleEntity, rule => rule.route)
 	rule: RuleEntity[]
 }
