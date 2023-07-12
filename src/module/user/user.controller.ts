@@ -39,4 +39,13 @@ export class UserController {
 	public async httpBasicUser(@Request() request: { user: http.RequestUser }) {
 		return request.user
 	}
+
+	@Put('/update/authorize')
+	@ApiDecorator({
+		operation: { summary: '用户信息' },
+		response: { status: 200, description: 'OK', type: Notice }
+	})
+	public async httpUpdateAuthorize() {
+		return await this.userService.httpUpdateAuthorize()
+	}
 }
