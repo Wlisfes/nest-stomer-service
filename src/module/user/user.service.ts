@@ -162,6 +162,8 @@ export class UserService extends CoreService {
 				ids: [1, 2, 3, 4, 5, 6, 7, 8, 9]
 			})
 
+			console.log(list)
+
 			return await this.entity.userModel
 				.createQueryBuilder('t')
 				.relation('rules')
