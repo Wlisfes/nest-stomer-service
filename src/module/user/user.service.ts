@@ -9,8 +9,8 @@ import { RedisService } from '@/module/basic/redis.service'
 import { AlicloudService } from '@/module/basic/alicloud.service'
 import { UserEntity } from '@/entity/user.entity'
 import { USER_TOKEN, USER_REFRESH, USER_CACHE, COMMON_CAPTCHA, COMMON_MOBILE, USER_ONLINE } from '@/config/redis-config'
+import * as http from '@/module/user/user.interface'
 import * as uuid from 'uuid'
-import * as http from './user.interface'
 
 @Injectable()
 export class UserService extends CoreService {
@@ -66,7 +66,7 @@ export class UserService extends CoreService {
 				throw new HttpException(i18n.t('user.code.error'), HttpStatus.BAD_REQUEST)
 			}
 			const node = await this.entity.userModel.create({
-				uid: this.createUIDNumber(),
+				uid: Date.now(),
 				nickname: props.nickname,
 				password: props.password,
 				mobile: props.mobile
@@ -116,7 +116,7 @@ export class UserService extends CoreService {
 	}
 
 	/**获取用户信息**/
-	public async httpBasicUser(uid: string, props: { cache: boolean; close: boolean; delete: boolean }) {
+	public async httpBasicUser(uid: number, props: { cache: boolean; close: boolean; delete: boolean }) {
 		return await this.RunCatch(async i18n => {
 			const node = await this.entity.userModel
 				.createQueryBuilder('t')
@@ -177,14 +177,17 @@ export class UserService extends CoreService {
 	}
 
 	/**用户列表**/
-	public async httpColumnUser() {
+	public async httpColumnUser(props: http.RequestColumnUser) {
 		return await this.RunCatch(async i18n => {
 			const [list = [], total = 0] = await this.entity.userModel
 				.createQueryBuilder('t')
+				.where(new Brackets(Q => {}))
 				.orderBy({ 't.createTime': 'DESC' })
+				.skip((props.page - 1) * props.size)
+				.take(props.size)
 				.getManyAndCount()
 
-			return { total, list }
+			return { size: props.size, page: props.page, total, list }
 		})
 	}
 }

@@ -1,11 +1,11 @@
-import { Controller, Post, Put, Get, Body, Request } from '@nestjs/common'
+import { Controller, Post, Put, Get, Body, Request, Query } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
 import { ApiDecorator } from '@/decorator/compute.decorator'
 import { ApiBearer } from '@/guard/auth.guard'
 import { CoreService } from '@/core/core.service'
 import { UserService } from './user.service'
 import { ResultNotice } from '@/interface/common.interface'
-import * as http from './user.interface'
+import * as http from '@/module/user/user.interface'
 
 @ApiTags('用户模块')
 @Controller('user')
@@ -47,5 +47,14 @@ export class UserController {
 	})
 	public async httpUpdateAuthorize() {
 		return await this.userService.httpUpdateAuthorize()
+	}
+
+	@Get('/column')
+	@ApiDecorator({
+		operation: { summary: '用户列表' },
+		response: { status: 200, description: 'OK', type: http.RequestUser }
+	})
+	public async httpColumnUser(@Query() query: http.RequestColumnUser) {
+		return await this.userService.httpColumnUser(query)
 	}
 }

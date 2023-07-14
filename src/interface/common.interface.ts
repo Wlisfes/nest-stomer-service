@@ -10,10 +10,10 @@ export class RequestCommon {
 	@Type(type => Number)
 	id: number
 
-	@ApiProperty({ description: 'UID', example: '9c82c871-4b00-4456-a452-f184c4621f91' })
+	@ApiProperty({ description: 'UID', example: 1689351318677 })
 	@IsNotEmpty({ message: 'UID 必填' })
-	@Type(type => String)
-	uid: string
+	@Type(type => Number)
+	uid: number
 
 	@ApiProperty({ description: '创建时间', example: '2022-04-10 23:33:27' })
 	@IsNotEmpty({ message: '创建时间 必填' })

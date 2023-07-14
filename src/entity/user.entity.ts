@@ -6,8 +6,8 @@ import { hashSync } from 'bcryptjs'
 
 @Entity('tb-user')
 export class UserEntity extends NEntity {
-	@Column({ type: 'uuid', comment: 'uid', readonly: true })
-	uid: string
+	@Column({ type: 'bigint', comment: 'uid', readonly: true })
+	uid: number
 
 	@Column({ charset: 'utf8mb4', comment: '昵称', nullable: false })
 	nickname: string
