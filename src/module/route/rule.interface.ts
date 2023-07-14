@@ -1,9 +1,9 @@
 import { ApiProperty, PickType, IntersectionType } from '@nestjs/swagger'
 import { IsNotEmpty } from 'class-validator'
 import { Type } from 'class-transformer'
-import { ICommon, RCommon } from '@/interface/common.interface'
+import { RequestCommon } from '@/interface/common.interface'
 
-export class RequestRule extends PickType(ICommon, ['id', 'status', 'createTime', 'updateTime']) {
+export class RequestRule extends PickType(RequestCommon, ['id', 'status', 'createTime', 'updateTime']) {
 	@ApiProperty({ description: '接口地址', example: '/api/xxx' })
 	@IsNotEmpty({ message: '接口地址 必填' })
 	path: string

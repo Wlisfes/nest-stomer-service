@@ -1,7 +1,7 @@
 import { Controller, Post, Get, Put, Body, Query } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
 import { ApiDecorator } from '@/decorator/compute.decorator'
-import { Notice } from '@/interface/common.interface'
+import { ResultNotice } from '@/interface/common.interface'
 import { ChacterService } from './chacter.service'
 import * as http from './chacter.interface'
 
@@ -13,7 +13,7 @@ export class ChacterController {
 	@Post('/create')
 	@ApiDecorator({
 		operation: { summary: '新增字典' },
-		response: { status: 200, description: 'OK', type: Notice }
+		response: { status: 200, description: 'OK', type: ResultNotice }
 	})
 	public async httpCreateChacter(@Body() body: http.RequestCreateChacter) {
 		return await this.chacterService.httpCreateChacter(body)
@@ -22,7 +22,7 @@ export class ChacterController {
 	@Put('/update')
 	@ApiDecorator({
 		operation: { summary: '编辑字典' },
-		response: { status: 200, description: 'OK', type: Notice }
+		response: { status: 200, description: 'OK', type: ResultNotice }
 	})
 	public async httpUpdateChacter(@Body() body: http.RequestUpdateChacter) {
 		return await this.chacterService.httpUpdateChacter(body)

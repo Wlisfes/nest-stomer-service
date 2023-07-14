@@ -3,9 +3,9 @@ import { IsNotEmpty } from 'class-validator'
 import { Type } from 'class-transformer'
 import { at } from '@/i18n'
 import { IsOptional } from '@/decorator/common.decorator'
-import { ICommon, RCommon } from '@/interface/common.interface'
+import { RequestCommon } from '@/interface/common.interface'
 
-export class RequestChacter extends PickType(ICommon, ['id', 'status', 'createTime', 'updateTime']) {
+export class RequestChacter extends PickType(RequestCommon, ['id', 'status', 'createTime', 'updateTime']) {
 	@ApiProperty({ description: '字典标识', example: 'enable' })
 	@IsNotEmpty({ message: at('chacter.command.required') })
 	command: string
@@ -34,10 +34,10 @@ export class RequestBasicChacter extends PickType(RequestChacter, ['id']) {}
 
 /**字典列表**/
 export class RequestColumnChacter extends IntersectionType(
-	PickType(ICommon, ['page', 'size']),
+	PickType(RequestCommon, ['page', 'size']),
 	PartialType(PickType(RequestChacter, ['command']))
 ) {}
-export class ResultColumnChacter extends PickType(RCommon, ['page', 'size', 'total']) {
+export class ResultColumnChacter extends PickType(RequestCommon, ['page', 'size', 'total']) {
 	@ApiProperty({ description: '列表', type: [RequestChacter], example: [] })
 	list: RequestChacter[]
 }

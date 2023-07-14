@@ -2,9 +2,9 @@ import { ApiProperty, PickType } from '@nestjs/swagger'
 import { IsNotEmpty } from 'class-validator'
 import { Type } from 'class-transformer'
 import { IsOptional } from '@/decorator/common.decorator'
-import { ICommon, RCommon } from '@/interface/common.interface'
+import { RequestCommon } from '@/interface/common.interface'
 
-export class RequestRoute extends PickType(ICommon, ['id', 'status', 'createTime', 'uid']) {
+export class RequestRoute extends PickType(RequestCommon, ['id', 'status', 'createTime', 'uid']) {
 	@ApiProperty({
 		description: '节点类型: 目录-directory、菜单-menu',
 		enum: ['directory', 'menu'],
@@ -53,7 +53,7 @@ export class RequestBasicRoute extends PickType(RequestRoute, ['id']) {}
 export class RequestTransferRoute extends PickType(RequestRoute, ['id', 'status']) {}
 
 /**路由列表**/
-export class ResultColumnRoute extends PickType(RCommon, ['page', 'size', 'total']) {
+export class ResultColumnRoute extends PickType(RequestCommon, ['page', 'size', 'total']) {
 	@ApiProperty({ description: '列表', type: [RequestRoute], example: [] })
 	list: RequestRoute[]
 }

@@ -162,8 +162,6 @@ export class UserService extends CoreService {
 				ids: [1, 2, 3, 4, 5, 6, 7, 8, 9]
 			})
 
-			console.log(list)
-
 			return await this.entity.userModel
 				.createQueryBuilder('t')
 				.relation('rules')
@@ -175,6 +173,18 @@ export class UserService extends CoreService {
 				.then(() => {
 					return { message: i18n.t('http.UPDATE_SUCCESS') }
 				})
+		})
+	}
+
+	/**用户列表**/
+	public async httpColumnUser() {
+		return await this.RunCatch(async i18n => {
+			const [list = [], total = 0] = await this.entity.userModel
+				.createQueryBuilder('t')
+				.orderBy({ 't.createTime': 'DESC' })
+				.getManyAndCount()
+
+			return { total, list }
 		})
 	}
 }

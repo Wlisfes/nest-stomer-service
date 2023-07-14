@@ -4,7 +4,7 @@ import { ApiDecorator } from '@/decorator/compute.decorator'
 import { ApiBearer } from '@/guard/auth.guard'
 import { CoreService } from '@/core/core.service'
 import { UserService } from './user.service'
-import { Notice } from '@/interface/common.interface'
+import { ResultNotice } from '@/interface/common.interface'
 import * as http from './user.interface'
 
 @ApiTags('用户模块')
@@ -15,7 +15,7 @@ export class UserController {
 	@Post('/register')
 	@ApiDecorator({
 		operation: { summary: '注册用户' },
-		response: { status: 200, description: 'OK', type: Notice }
+		response: { status: 200, description: 'OK', type: ResultNotice }
 	})
 	public async httpRegister(@Body() body: http.RequestRegister) {
 		return await this.userService.httpRegister(body)
@@ -43,7 +43,7 @@ export class UserController {
 	@Put('/update/authorize')
 	@ApiDecorator({
 		operation: { summary: '用户信息' },
-		response: { status: 200, description: 'OK', type: Notice }
+		response: { status: 200, description: 'OK', type: ResultNotice }
 	})
 	public async httpUpdateAuthorize() {
 		return await this.userService.httpUpdateAuthorize()

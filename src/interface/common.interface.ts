@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger'
 import { IsNotEmpty, IsNumber, Min } from 'class-validator'
 import { Type } from 'class-transformer'
 
-export class ICommon {
+export class RequestCommon {
 	@ApiProperty({ description: 'ID', example: 1 })
 	@IsNotEmpty({ message: 'ID 必填' })
 	@IsNumber({}, { message: 'ID 必须是数字且不能小于1' })
@@ -41,29 +41,6 @@ export class ICommon {
 	@IsNotEmpty({ message: 'status 必填' })
 	@Type(type => String)
 	status: string
-}
-
-export class RCommon {
-	@ApiProperty({ description: 'ID', example: 1 })
-	id: number
-
-	@ApiProperty({ description: 'UID', example: 1665553635334 })
-	uid: number
-
-	@ApiProperty({ description: '创建时间', example: '2022-04-10 23:33:27' })
-	createTime: string
-
-	@ApiProperty({ description: '修改时间', example: '2022-04-11 19:12:57' })
-	updateTime: string
-
-	@ApiProperty({ description: '分页', example: 1 })
-	page: number
-
-	@ApiProperty({ description: '分页数量', example: 10 })
-	size: number
-
-	@ApiProperty({ description: '状态: 禁用-disable、启用-enable、删除-delete', example: 'enable' })
-	status: string
 
 	@ApiProperty({ description: '总数', example: 0 })
 	total: number
@@ -72,7 +49,7 @@ export class RCommon {
 	message: string
 }
 
-export class Notice {
+export class ResultNotice {
 	@ApiProperty({ description: 'message', example: '接口提示' })
 	message: string
 }
