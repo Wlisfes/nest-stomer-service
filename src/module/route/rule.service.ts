@@ -82,7 +82,7 @@ export class RuleService extends CoreService {
 				delete: { value: true },
 				options: {
 					where: { id: props.id },
-					relations: ['parent']
+					relations: ['route']
 				}
 			})
 		})
