@@ -144,36 +144,34 @@ export class UserService extends CoreService {
 
 	/**编辑用户权限**/
 	public async httpUpdateAuthorize() {
-		return await this.RunCatch(async i18n => {
-			const user = await this.validator({
-				model: this.entity.userModel,
-				name: i18n.t('user.name'),
-				empty: { value: true },
-				options: {
-					where: { uid: `719773724730736443` },
-					relations: ['rules']
-				}
-			})
-
-			const { list } = await this.batchValidator({
-				model: this.entity.ruleModel,
-				name: i18n.t('rule.name'),
-				options: { where: { id: In([1, 2, 3, 4, 5, 6, 7, 8, 9]) } },
-				ids: [1, 2, 3, 4, 5, 6, 7, 8, 9]
-			})
-
-			return await this.entity.userModel
-				.createQueryBuilder('t')
-				.relation('rules')
-				.of(user)
-				.addAndRemove(
-					list.map(x => x.id),
-					user.rules.map(x => x.id)
-				)
-				.then(() => {
-					return { message: i18n.t('http.UPDATE_SUCCESS') }
-				})
-		})
+		// return await this.RunCatch(async i18n => {
+		// 	const user = await this.validator({
+		// 		model: this.entity.userModel,
+		// 		name: i18n.t('user.name'),
+		// 		empty: { value: true },
+		// 		options: {
+		// 			where: { uid: `719773724730736443` },
+		// 			relations: ['rules']
+		// 		}
+		// 	})
+		// 	const { list } = await this.batchValidator({
+		// 		model: this.entity.ruleModel,
+		// 		name: i18n.t('rule.name'),
+		// 		options: { where: { id: In([1, 2, 3, 4, 5, 6, 7, 8, 9]) } },
+		// 		ids: [1, 2, 3, 4, 5, 6, 7, 8, 9]
+		// 	})
+		// 	return await this.entity.userModel
+		// 		.createQueryBuilder('t')
+		// 		.relation('rules')
+		// 		.of(user)
+		// 		.addAndRemove(
+		// 			list.map(x => x.id),
+		// 			user.rules.map(x => x.id)
+		// 		)
+		// 		.then(() => {
+		// 			return { message: i18n.t('http.UPDATE_SUCCESS') }
+		// 		})
+		// })
 	}
 
 	/**用户列表**/

@@ -1,7 +1,6 @@
 import { Entity, Column, ManyToMany, JoinTable } from 'typeorm'
 import { NEntity } from '@/entity/common.entity'
 import { RouteEntity } from '@/entity/route.entity'
-import { RuleEntity } from '@/entity/rule.entity'
 import { hashSync } from 'bcryptjs'
 
 @Entity('tb-user')
@@ -44,8 +43,4 @@ export class UserEntity extends NEntity {
 	@ManyToMany(type => RouteEntity)
 	@JoinTable({ name: 'tb-user-routes' })
 	routes: RouteEntity[]
-
-	@ManyToMany(type => RuleEntity)
-	@JoinTable({ name: 'tb-user-rules' })
-	rules: RuleEntity[]
 }

@@ -14,7 +14,7 @@ export class ChacterService extends CoreService {
 	public async httpCreateChacter(props: http.RequestCreateChacter) {
 		return await this.RunCatch(async i18n => {
 			await this.haveCreate({
-				model: this.entity.ruleModel,
+				model: this.entity.chacterModel,
 				name: i18n.t('chacter.name'),
 				options: { where: { command: props.command } }
 			})
