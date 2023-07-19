@@ -3,8 +3,8 @@ import { NEntity } from '@/entity/common.entity'
 
 @Entity('tb-route')
 export class RouteEntity extends NEntity {
-	@Column({ comment: '节点类型: 目录-directory、菜单-menu', default: 'directory', nullable: false })
-	type: string
+	@Column({ comment: '节点类型: 目录-folder、菜单-menu、规则-rule', default: 'folder', nullable: false })
+	source: string
 
 	@Column({ comment: '节点title', nullable: false })
 	title: string
@@ -27,6 +27,6 @@ export class RouteEntity extends NEntity {
 	@Column({ comment: '父级节点ID', nullable: true, default: null })
 	parent: number
 
-	@Column({ comment: '接口类型', nullable: true, default: null })
+	@Column({ comment: '规则类型: GET、POST、PUT、DELETE', nullable: true, default: null })
 	method: string
 }

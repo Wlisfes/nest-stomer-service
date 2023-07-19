@@ -43,6 +43,7 @@ export type I18nTranslations = {
     };
     "route": {
         "name": string;
+        "rule": string;
     };
     "rule": {
         "name": string;

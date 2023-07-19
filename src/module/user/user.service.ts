@@ -120,7 +120,6 @@ export class UserService extends CoreService {
 		return await this.RunCatch(async i18n => {
 			const node = await this.entity.userModel
 				.createQueryBuilder('t')
-				.leftJoinAndSelect('t.rules', 'r', [`r.status = 'enable'`, `r.status = 'disable'`].join(' or '))
 				.where(
 					new Brackets(Q => {
 						Q.where('t.uid = :uid', { uid })

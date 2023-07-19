@@ -3,14 +3,12 @@ import { ApiTags } from '@nestjs/swagger'
 import { ApiDecorator } from '@/decorator/compute.decorator'
 import { ResultNotice } from '@/interface/common.interface'
 import { RouteService } from './route.service'
-import { RuleService } from './rule.service'
 import * as http from './route.interface'
-import * as http1 from './rule.interface'
 
 @ApiTags('路由模块')
 @Controller('route')
 export class RouteController {
-	constructor(private readonly routeService: RouteService, private readonly ruleService: RuleService) {}
+	constructor(private readonly routeService: RouteService) {}
 
 	@Post('/create')
 	@ApiDecorator({
@@ -71,8 +69,8 @@ export class RouteController {
 		operation: { summary: '新增接口规则' },
 		response: { status: 200, description: 'OK', type: ResultNotice }
 	})
-	public async httpCreateRule(@Body() body: http1.RequestCreateRule) {
-		return await this.ruleService.httpCreateRule(body)
+	public async httpCreateRule(@Body() body: http.RequestCreateRule) {
+		return await this.routeService.httpCreateRule(body)
 	}
 
 	@Put('/update/rule')
@@ -80,17 +78,17 @@ export class RouteController {
 		operation: { summary: '编辑接口规则' },
 		response: { status: 200, description: 'OK', type: ResultNotice }
 	})
-	public async httpUpdateRule(@Body() body: http1.RequestUpdateRule) {
-		return await this.ruleService.httpUpdateRule(body)
+	public async httpUpdateRule(@Body() body: http.RequestUpdateRule) {
+		return await this.routeService.httpUpdateRule(body)
 	}
 
-	@Get('/rule/basic')
+	@Get('/basic/rule')
 	@ApiDecorator({
 		operation: { summary: '接口规则信息' },
-		response: { status: 200, description: 'OK', type: http1.RequestRule }
+		response: { status: 200, description: 'OK', type: http.RequestRoute }
 	})
-	public async httpBasicRule(@Query() query: http1.RequestBasicRule) {
-		return await this.ruleService.httpBasicRule(query)
+	public async httpBasicRule(@Query() query: http.RequestBasicRule) {
+		return await this.routeService.httpBasicRule(query)
 	}
 
 	@Put('/transfer/rule')
@@ -98,7 +96,7 @@ export class RouteController {
 		operation: { summary: '编辑接口规则状态' },
 		response: { status: 200, description: 'OK', type: ResultNotice }
 	})
-	public async httpTransferRule(@Body() body: http1.RequestTransferRule) {
-		return await this.ruleService.httpTransferRule(body)
+	public async httpTransferRule(@Body() body: http.RequestTransferRule) {
+		return await this.routeService.httpTransferRule(body)
 	}
 }
