@@ -81,6 +81,11 @@ export class RouteService extends CoreService {
 		return await this.RunCatch(async i18n => {
 			const [list = [], total = 0] = await this.entity.routeModel
 				.createQueryBuilder('t')
+				.where(
+					new Brackets(Q => {
+						Q.andWhere('t.source IN(:...source)', { source: ['folder', 'menu'] })
+					})
+				)
 				.orderBy({ 't.order': 'DESC', 't.id': 'DESC' })
 				.getManyAndCount()
 			return {
