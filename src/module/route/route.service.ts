@@ -118,6 +118,7 @@ export class RouteService extends CoreService {
 				options: { where: { id: props.parent } }
 			})
 			const node = await this.entity.routeModel.create({
+				source: 'rule',
 				path: props.path,
 				title: props.title,
 				method: props.method,
