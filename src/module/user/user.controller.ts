@@ -5,7 +5,7 @@ import { ApiBearer } from '@/guard/auth.guard'
 import { CoreService } from '@/core/core.service'
 import { UserService } from './user.service'
 import { ResultNotice } from '@/interface/common.interface'
-import * as http from '@/module/user/user.interface'
+import * as http from '@/interface/user.interface'
 
 @ApiTags('用户模块')
 @Controller('user')

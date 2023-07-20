@@ -3,7 +3,7 @@ import { ApiTags } from '@nestjs/swagger'
 import { ApiDecorator } from '@/decorator/compute.decorator'
 import { ResultNotice } from '@/interface/common.interface'
 import { ChacterService } from './chacter.service'
-import * as http from './chacter.interface'
+import * as http from '@/interface/chacter.interface'
 
 @ApiTags('字典模块')
 @Controller('chacter')

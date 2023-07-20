@@ -3,7 +3,7 @@ import { ApiTags } from '@nestjs/swagger'
 import { ApiDecorator } from '@/decorator/compute.decorator'
 import { AlicloudService } from './alicloud.service'
 import { ResultNotice } from '@/interface/common.interface'
-import * as ali from './alicloud.interface'
+import * as http from '@/interface/alicloud.interface'
 
 @ApiTags('基础模块')
 @Controller('basic')
@@ -15,7 +15,7 @@ export class BasicController {
 		operation: { summary: '图形验证码' },
 		response: { status: 200, description: 'OK' }
 	})
-	public async httpCaptcha(@Response() response, @Query() query: ali.RequestCaptcha) {
+	public async httpCaptcha(@Response() response, @Query() query: http.RequestCaptcha) {
 		const { data, session } = await this.alicloudService.httpCaptcha(query)
 		response.cookie('AUTN_CAPTCHA', session, { maxAge: 5 * 60 * 1000, httpOnly: true })
 		if ((query.type ?? 'svg') === 'svg') {
@@ -37,7 +37,7 @@ export class BasicController {
 		operation: { summary: '发送手机验证码' },
 		response: { status: 200, description: 'OK', type: ResultNotice }
 	})
-	public async httpMobileCaptcha(@Body() body: ali.RequestMobileCaptcha) {
+	public async httpMobileCaptcha(@Body() body: http.RequestMobileCaptcha) {
 		return await this.alicloudService.httpMobileCaptcha(body, 6)
 	}
 }

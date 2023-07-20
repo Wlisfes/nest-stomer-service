@@ -9,7 +9,7 @@ import { RedisService } from '@/module/basic/redis.service'
 import { AlicloudService } from '@/module/basic/alicloud.service'
 import { UserEntity } from '@/entity/user.entity'
 import { USER_TOKEN, USER_REFRESH, USER_CACHE, COMMON_CAPTCHA, COMMON_MOBILE, USER_ONLINE } from '@/config/redis-config'
-import * as http from '@/module/user/user.interface'
+import * as http from '@/interface/user.interface'
 import * as uuid from 'uuid'
 
 @Injectable()

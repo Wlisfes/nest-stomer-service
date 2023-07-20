@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { Brackets, In } from 'typeorm'
 import { CoreService } from '@/core/core.service'
 import { EntityService } from '@/module/basic/entity.service'
-import * as http from './chacter.interface'
+import * as http from '@/interface/chacter.interface'
 
 @Injectable()
 export class ChacterService extends CoreService {

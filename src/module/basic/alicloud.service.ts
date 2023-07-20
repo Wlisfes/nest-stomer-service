@@ -5,7 +5,7 @@ import { CoreService } from '@/core/core.service'
 import { COMMON_CAPTCHA, COMMON_MOBILE } from '@/config/redis-config'
 import { RedisService } from './redis.service'
 import * as AliCloud from '@alicloud/pop-core'
-import * as ali from './alicloud.interface'
+import * as http from '@/interface/alicloud.interface'
 
 @Injectable()
 export class AlicloudService extends CoreService {
@@ -21,7 +21,7 @@ export class AlicloudService extends CoreService {
 	}
 
 	/**图形验证码**/
-	public async httpCaptcha(props: ali.RequestCaptcha) {
+	public async httpCaptcha(props: http.RequestCaptcha) {
 		const session = this.createUIDNumber(32)
 		const { data, text } = create({
 			size: props?.size ?? 4,
@@ -40,7 +40,7 @@ export class AlicloudService extends CoreService {
 	}
 
 	/**发送手机验证码**/
-	public async httpMobileCaptcha(props: ali.RequestMobileCaptcha, size?: number) {
+	public async httpMobileCaptcha(props: http.RequestMobileCaptcha, size?: number) {
 		try {
 			const code = await this.createUIDNumber(6)
 			//prettier-ignore
