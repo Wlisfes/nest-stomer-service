@@ -3,7 +3,7 @@ import { ApiTags } from '@nestjs/swagger'
 import { ApiDecorator } from '@/decorator/compute.decorator'
 import { ResultNotice } from '@/interface/common.interface'
 import { RouteService } from './route.service'
-import * as http from './route.interface'
+import * as http from '@/interface/route.interface'
 
 @ApiTags('路由模块')
 @Controller('route')
