@@ -7,8 +7,8 @@ import { RequestCommon } from '@/interface/common.interface'
 export class RequestRoute extends PickType(RequestCommon, ['id', 'status', 'createTime', 'uid']) {
 	@ApiProperty({
 		description: '节点类型: 目录-folder、菜单-menu、规则-rule',
-		enum: ['directory', 'menu'],
-		example: 'directory'
+		enum: ['folder', 'menu', 'rule'],
+		example: 'folder'
 	})
 	@IsNotEmpty({ message: '节点类型 必填' })
 	@Type(() => String)
