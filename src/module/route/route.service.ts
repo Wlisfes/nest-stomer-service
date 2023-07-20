@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { Brackets, In } from 'typeorm'
+import { isEmpty } from 'class-validator'
 import { CoreService } from '@/core/core.service'
 import { EntityService } from '@/module/basic/entity.service'
 import * as http from '@/interface/route.interface'
@@ -18,6 +19,14 @@ export class RouteService extends CoreService {
 				name: i18n.t('route.name'),
 				options: { where: { path: props.path, status: In(['disable', 'enable']) } }
 			})
+			if (isEmpty(props.parent)) {
+				await this.validator({
+					model: this.entity.routeModel,
+					name: i18n.t('route.name'),
+					empty: { value: true },
+					options: { where: { id: props.parent } }
+				})
+			}
 			const node = await this.entity.routeModel.create({
 				source: props.source,
 				title: props.title,
@@ -35,7 +44,42 @@ export class RouteService extends CoreService {
 	}
 
 	/**编辑路由**/
-	public async httpUpdateRoute(props: http.RequestUpdateRoute) {}
+	public async httpUpdateRoute(props: http.RequestUpdateRoute) {
+		return await this.RunCatch(async i18n => {
+			await this.haveUpdate(
+				{
+					model: this.entity.routeModel,
+					name: i18n.t('route.name'),
+					options: { where: { path: props.path, status: In(['disable', 'enable']) } }
+				},
+				e => e.id !== props.id
+			)
+			if (isEmpty(props.parent)) {
+				await this.validator({
+					model: this.entity.routeModel,
+					name: i18n.t('route.name'),
+					empty: { value: true },
+					options: { where: { id: props.parent } }
+				})
+			}
+			//prettier-ignore
+			return await this.entity.routeModel.update(
+				{ id: props.id },
+				{
+					source: props.source,
+					title: props.title,
+					status: props.status,
+					path: props.path,
+					redirect: props.redirect,
+					order: props.order,
+					icon: props.icon ?? null,
+					parent: props.parent ?? null
+				}
+			).then(() => {
+				return { message: i18n.t('http.UPDATE_SUCCESS') }
+			})
+		})
+	}
 
 	/**编辑路由状态**/
 	public async httpTransferRoute(props: http.RequestTransferRoute) {
