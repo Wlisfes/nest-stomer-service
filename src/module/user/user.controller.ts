@@ -21,7 +21,7 @@ export class UserController {
 		return await this.userService.httpRegister(body)
 	}
 
-	@Post('/login')
+	@Post('/authorize')
 	@ApiDecorator({
 		operation: { summary: '登录' },
 		response: { status: 200, description: 'OK' }
