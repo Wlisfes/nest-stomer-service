@@ -38,7 +38,9 @@ async function useSwagger(app: NestExpressApplication) {
 }
 
 async function bootstrap() {
-	const app = await NestFactory.create<NestExpressApplication>(AppModule)
+	const app = await NestFactory.create<NestExpressApplication>(AppModule, {
+		logger: ['debug']
+	})
 
 	//允许跨域
 	app.enableCors()
