@@ -4,8 +4,7 @@ import { NestExpressApplication } from '@nestjs/platform-express'
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger'
 import { I18nValidationPipe } from 'nestjs-i18n'
 import { knife4jSetup } from 'nest-knife4j'
-import { AppModule } from './app.module'
-import { logger } from '@/middleware/logger.middleware'
+import { AppModule } from '@/app.module'
 import { join } from 'path'
 import * as express from 'express'
 import * as cookieParser from 'cookie-parser'
@@ -45,11 +44,11 @@ async function bootstrap() {
 	//允许跨域
 	app.enableCors()
 	app.use(cookieParser())
+	app.setGlobalPrefix('/api-stomer')
 
 	//解析body参数
 	app.use(express.json())
 	app.use(express.urlencoded({ extended: true }))
-	app.use(logger)
 
 	//静态资源
 	app.useStaticAssets(join(__dirname, '..', 'public'))

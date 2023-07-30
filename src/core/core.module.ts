@@ -1,5 +1,4 @@
 import { Module, Global } from '@nestjs/common'
-import { RouterModule } from '@nestjs/core'
 import { CoreService } from './core.service'
 //module
 import { BasicModule } from '@/module/basic/basic.module'
@@ -8,12 +7,10 @@ import { WeChatModule } from '@/module/we-chat/we-chat.module'
 import { UserModule } from '@/module/user/user.module'
 import { RouteModule } from '@/module/route/route.module'
 import { ChacterModule } from '@/module/chacter/chacter.module'
-const modules = [BasicModule, DispatchModule, WeChatModule, UserModule, RouteModule, ChacterModule]
-const routes = modules.map(module => ({ path: 'api', module: module }))
 
 @Global()
 @Module({
-	imports: [RouterModule.register(routes), ...modules],
+	imports: [BasicModule, DispatchModule, WeChatModule, UserModule, RouteModule, ChacterModule],
 	providers: [CoreService],
 	exports: [CoreService]
 })

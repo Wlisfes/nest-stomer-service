@@ -3,13 +3,15 @@ import * as day from 'dayjs'
 
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
+	private readonly logger = new Logger(HttpExceptionFilter.name)
+
 	catch(exception: any, host: ArgumentsHost) {
 		const ctx = host.switchToHttp()
 		const response = ctx.getResponse()
 		const request = ctx.getRequest()
 		const error = exception?.response?.hasOwnProperty('statusCode') ? exception.response ?? null : exception ?? null
 		const message = Array.isArray(exception.response?.message) ? exception.response.message[0] : exception.message
-		Logger.error({
+		this.logger.error({
 			['Referer']: request.headers.referer,
 			['Request URL']: request.originalUrl,
 			['Method']: request.method,
