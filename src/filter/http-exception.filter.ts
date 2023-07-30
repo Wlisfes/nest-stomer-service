@@ -17,9 +17,9 @@ export class HttpExceptionFilter implements ExceptionFilter {
 			['Method']: request.method,
 			['IP']: request.ip,
 			['Status code']: exception.status,
-			['Params']: JSON.stringify(request.params),
-			['Query']: JSON.stringify(request.query),
-			['Body']: JSON.stringify(request.body),
+			['Params']: request.params,
+			['Query']: request.query,
+			['Body']: request.body,
 			['Message']: message,
 			['Error']: error
 		})

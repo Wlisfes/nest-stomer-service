@@ -1,14 +1,16 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import { Brackets, In } from 'typeorm'
+import { Brackets } from 'typeorm'
 import { JwtService } from '@nestjs/jwt'
+import { HttpService } from '@nestjs/axios'
 import { compareSync } from 'bcryptjs'
 import { CoreService } from '@/core/core.service'
 import { EntityService } from '@/module/basic/entity.service'
 import { RedisService } from '@/module/basic/redis.service'
 import { AlicloudService } from '@/module/basic/alicloud.service'
 import { UserEntity } from '@/entity/user.entity'
-import { USER_TOKEN, USER_REFRESH, USER_CACHE, COMMON_CAPTCHA, COMMON_MOBILE, USER_ONLINE } from '@/config/redis-config'
+import { USER_TOKEN, USER_REFRESH, USER_CACHE, COMMON_MOBILE, USER_ONLINE } from '@/config/redis-config'
+import { divineHandler } from '@/utils/utils-common'
 import * as http from '@/interface/user.interface'
 import * as uuid from 'uuid'
 
@@ -19,7 +21,8 @@ export class UserService extends CoreService {
 		private readonly redisService: RedisService,
 		private readonly aliCloud: AlicloudService,
 		private readonly jwtService: JwtService,
-		private readonly configService: ConfigService
+		private readonly configService: ConfigService,
+		private readonly httpService: HttpService
 	) {
 		super()
 	}
@@ -79,15 +82,27 @@ export class UserService extends CoreService {
 		})
 	}
 
-	/**登录**/
-	public async httpAuthorize(props: http.RequestAuthorize, AUTN_CAPTCHA: string) {
+	/**登录**/ //prettier-ignore
+	public async httpAuthorize(props: http.RequestAuthorize, referer: string) {
 		return await this.RunCatch(async i18n => {
-			const code = await this.redisService.getStore(`${COMMON_CAPTCHA}:${AUTN_CAPTCHA}`)
-			if (code !== props.code) {
-				//验证码错误、清除redis验证码
-				code && (await this.redisService.delStore(`${COMMON_CAPTCHA}:${AUTN_CAPTCHA}`))
-				throw new HttpException(i18n.translate('user.code.error'), HttpStatus.BAD_REQUEST)
-			}
+			await this.httpService.axiosRef.request({
+				url: `https://api.lisfes.cn/api-captcha/supervisor/inspector`,
+				method: 'POST',
+				headers: { origin: referer },
+				data: {
+					appSecret: '5wE2EzGEI4JDn4M1uzsEEMsGCCsAu2pJ',
+					appKey: 'sFnFysvpL0DFGs6H',
+					token: props.token,
+					session: props.session
+				}
+			}).then(async ({ data }) => {
+				return await divineHandler(
+					() => data.code !== 200,
+					() => {
+						throw new HttpException(data.message, HttpStatus.BAD_REQUEST)
+					}
+				).then(e => data)
+			})
 			const node = await this.validator({
 				model: this.entity.userModel,
 				name: i18n.t('user.name'), //账号
@@ -95,15 +110,16 @@ export class UserService extends CoreService {
 				close: { value: true },
 				delete: { value: true },
 				options: { where: { mobile: props.mobile }, select: ['id', 'uid', 'status', 'password'] }
+			}).then(async data => {
+				return await divineHandler(
+					() => !compareSync(props.password, node.password),
+					() => {
+						throw new HttpException(i18n.t('user.password.error'), HttpStatus.BAD_REQUEST)
+					}
+				).then(e => data)
 			})
-			if (!compareSync(props.password, node.password)) {
-				//密码错误、清除redis验证码
-				await this.redisService.delStore(`${COMMON_CAPTCHA}:${AUTN_CAPTCHA}`)
-				throw new HttpException(i18n.t('user.password.error'), HttpStatus.BAD_REQUEST)
-			}
 			return await this.newJwtToken(node).then(async ({ token, expire, refresh }) => {
-				//登录成功、清除redis验证码;写入在线用户
-				await this.redisService.delStore(`${COMMON_CAPTCHA}:${AUTN_CAPTCHA}`)
+				//登录成功、写入在线用户
 				await this.redisService.setStore(`${USER_ONLINE}:${node.uid}`, node.uid)
 				return {
 					expire,

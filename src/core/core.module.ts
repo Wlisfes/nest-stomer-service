@@ -1,6 +1,5 @@
 import { Module, Global } from '@nestjs/common'
-import { CoreService } from './core.service'
-//module
+import { CoreService } from '@/core/core.service'
 import { BasicModule } from '@/module/basic/basic.module'
 import { DispatchModule } from '@/module/dispatch/dispatch.module'
 import { WeChatModule } from '@/module/we-chat/we-chat.module'

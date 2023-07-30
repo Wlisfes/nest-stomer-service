@@ -32,13 +32,21 @@ export class RequestUser extends PickType(RequestCommon, ['id', 'uid']) {
 	@IsNotEmpty({ message: at('user.code.required') })
 	@Length(4, 6, { message: at('user.code.error') })
 	code: string
+
+	@ApiProperty({ description: 'session记录' })
+	@IsNotEmpty({ message: 'session记录 必填' })
+	session: string
+
+	@ApiProperty({ description: '校验凭证' })
+	@IsNotEmpty({ message: '校验凭证 必填' })
+	token: string
 }
 
 /**注册用户**/
 export class RequestRegister extends PickType(RequestUser, ['nickname', 'password', 'mobile', 'code']) {}
 
 /**登录**/
-export class RequestAuthorize extends PickType(RequestUser, ['mobile', 'password', 'code']) {}
+export class RequestAuthorize extends PickType(RequestUser, ['mobile', 'password', 'session', 'token']) {}
 
 /**用户信息**/
 export class RequestBasicUser extends PickType(RequestUser, ['uid']) {}

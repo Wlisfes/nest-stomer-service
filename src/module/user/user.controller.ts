@@ -1,4 +1,4 @@
-import { Controller, Post, Put, Get, Body, Request, Query } from '@nestjs/common'
+import { Controller, Post, Put, Get, Body, Request, Query, Headers } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
 import { ApiDecorator } from '@/decorator/compute.decorator'
 import { ApiBearer } from '@/guard/auth.guard'
@@ -26,8 +26,8 @@ export class UserController {
 		operation: { summary: '登录' },
 		response: { status: 200, description: 'OK' }
 	})
-	public async httpAuthorize(@Body() body: http.RequestAuthorize, @Request() request) {
-		return await this.userService.httpAuthorize(body, request.cookies.AUTN_CAPTCHA)
+	public async httpAuthorize(@Headers() headers, @Body() body: http.RequestAuthorize) {
+		return await this.userService.httpAuthorize(body, headers.origin)
 	}
 
 	@Get('/basic')
