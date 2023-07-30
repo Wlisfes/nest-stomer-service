@@ -105,14 +105,14 @@ export class UserService extends CoreService {
 			})
 			const node = await this.validator({
 				model: this.entity.userModel,
-				name: i18n.t('user.name'), //账号
+				name: i18n.t('user.name'),
 				empty: { value: true },
 				close: { value: true },
 				delete: { value: true },
 				options: { where: { mobile: props.mobile }, select: ['id', 'uid', 'status', 'password'] }
 			}).then(async data => {
 				return await divineHandler(
-					() => !compareSync(props.password, node.password),
+					() => !compareSync(props.password, data.password),
 					() => {
 						throw new HttpException(i18n.t('user.password.error'), HttpStatus.BAD_REQUEST)
 					}
@@ -127,6 +127,27 @@ export class UserService extends CoreService {
 					refresh,
 					message: i18n.t('user.notice.LOGIN_SUCCESS')
 				}
+			})
+		})
+	}
+
+	/**创建用户**/
+	public async httpCreateUser(props: http.RequestCreateUser) {
+		return await this.RunCatch(async i18n => {
+			await this.haveCreate({
+				model: this.entity.userModel,
+				name: i18n.t('user.mobile.value'),
+				message: i18n.t('user.mobile.register'),
+				options: { where: { mobile: props.mobile } }
+			})
+			const node = await this.entity.userModel.create({
+				uid: Date.now(),
+				nickname: props.nickname,
+				password: props.password,
+				mobile: props.mobile
+			})
+			return await this.entity.userModel.save(node).then(async () => {
+				return { message: i18n.t('http.CREATE_SUCCESS') }
 			})
 		})
 	}

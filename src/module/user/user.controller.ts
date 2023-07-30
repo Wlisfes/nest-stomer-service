@@ -30,6 +30,15 @@ export class UserController {
 		return await this.userService.httpAuthorize(body, headers.origin)
 	}
 
+	@Post('/create')
+	@ApiDecorator({
+		operation: { summary: '创建用户' },
+		response: { status: 200, description: 'OK' }
+	})
+	public async httpCreateUser(@Body() body: http.RequestCreateUser) {
+		return await this.userService.httpCreateUser(body)
+	}
+
 	@Get('/basic')
 	@ApiBearer({ decorator: true, error: true, baseURL: '/api/user/basic' })
 	@ApiDecorator({

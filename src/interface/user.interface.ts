@@ -48,6 +48,9 @@ export class RequestRegister extends PickType(RequestUser, ['nickname', 'passwor
 /**登录**/
 export class RequestAuthorize extends PickType(RequestUser, ['mobile', 'password', 'session', 'token']) {}
 
+/**创建用户**/
+export class RequestCreateUser extends PickType(RequestUser, ['nickname', 'password', 'mobile']) {}
+
 /**用户信息**/
 export class RequestBasicUser extends PickType(RequestUser, ['uid']) {}
 
