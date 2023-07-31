@@ -5,9 +5,8 @@ import { JwtService } from '@nestjs/jwt'
 import { HttpService } from '@nestjs/axios'
 import { compareSync } from 'bcryptjs'
 import { CoreService } from '@/core/core.service'
-import { EntityService } from '@/module/basic/entity.service'
-import { RedisService } from '@/module/basic/redis.service'
-import { AlicloudService } from '@/module/basic/alicloud.service'
+import { EntityService } from '@/core/entity.service'
+import { RedisService } from '@/core/redis.service'
 import { UserEntity } from '@/entity/user.entity'
 import { USER_TOKEN, USER_REFRESH, USER_CACHE, COMMON_MOBILE, USER_ONLINE } from '@/config/redis-config'
 import { divineHandler } from '@/utils/utils-common'
@@ -19,7 +18,6 @@ export class UserService extends CoreService {
 	constructor(
 		private readonly entity: EntityService,
 		private readonly redisService: RedisService,
-		private readonly aliCloud: AlicloudService,
 		private readonly jwtService: JwtService,
 		private readonly configService: ConfigService,
 		private readonly httpService: HttpService

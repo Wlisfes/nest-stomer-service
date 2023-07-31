@@ -1,7 +1,7 @@
 import { CanActivate, SetMetadata, ExecutionContext, Injectable, HttpException, HttpStatus } from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
 import { UserService } from '@/module/user/user.service'
-import { RedisService } from '@/module/basic/redis.service'
+import { RedisService } from '@/core/redis.service'
 import { usuCurrent } from '@/i18n'
 import { SwaggerOption } from '@/config/swagger-config'
 import { USER_TOKEN, USER_REFRESH, USER_CACHE } from '@/config/redis-config'

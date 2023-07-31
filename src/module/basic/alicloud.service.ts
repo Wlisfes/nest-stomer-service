@@ -3,14 +3,13 @@ import { ConfigService } from '@nestjs/config'
 import { create } from 'svg-captcha'
 import { CoreService } from '@/core/core.service'
 import { COMMON_CAPTCHA, COMMON_MOBILE } from '@/config/redis-config'
-import { RedisService } from './redis.service'
 import * as AliCloud from '@alicloud/pop-core'
 import * as http from '@/interface/alicloud.interface'
 
 @Injectable()
 export class AlicloudService extends CoreService {
 	protected readonly aliCloud: AliCloud
-	constructor(private readonly config: ConfigService, private readonly redisService: RedisService) {
+	constructor(private readonly config: ConfigService) {
 		super()
 		this.aliCloud = new AliCloud({
 			accessKeyId: this.config.get('ALIYUN_ACCESSKEYID'),
@@ -34,9 +33,9 @@ export class AlicloudService extends CoreService {
 			charPreset: '123456789',
 			background: '#E8F0FE'
 		})
-		return await this.redisService.setStore(`${COMMON_CAPTCHA}:${session}`, text, 5 * 60).then(() => {
-			return { session, data, text }
-		})
+		// return await this.redisService.setStore(`${COMMON_CAPTCHA}:${session}`, text, 5 * 60).then(() => {
+		return { session, data, text }
+		// })
 	}
 
 	/**发送手机验证码**/
@@ -55,9 +54,9 @@ export class AlicloudService extends CoreService {
 				throw new HttpException(e.data?.Message ?? '发送失败', HttpStatus.BAD_REQUEST)
 			})
 
-			return await this.redisService.setStore(`${COMMON_MOBILE}:${props.mobile}`, code, 5 * 60).then(() => {
-				return { message: '发送成功' }
-			})
+			// return await this.redisService.setStore(`${COMMON_MOBILE}:${props.mobile}`, code, 5 * 60).then(() => {
+			return { message: '发送成功' }
+			// })
 		} catch (e) {
 			throw new HttpException(e.message || e.toString(), HttpStatus.BAD_REQUEST)
 		}

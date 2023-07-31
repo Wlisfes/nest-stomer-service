@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { Brackets, In } from 'typeorm'
 import { isEmpty } from 'class-validator'
 import { CoreService } from '@/core/core.service'
-import { EntityService } from '@/module/basic/entity.service'
+import { EntityService } from '@/core/entity.service'
 import * as http from '@/interface/route.interface'
 
 @Injectable()
