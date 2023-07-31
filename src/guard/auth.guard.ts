@@ -5,7 +5,7 @@ import {
 	Injectable,
 	HttpException,
 	HttpStatus,
-	Request
+	Logger
 } from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
 import { UserService } from '@/module/user/user.service'
@@ -24,6 +24,7 @@ export class IBearer {
 
 @Injectable()
 export class AuthGuard implements CanActivate {
+	private readonly logger = new Logger(AuthGuard.name)
 	constructor(
 		private readonly reflector: Reflector,
 		private readonly userService: UserService,
@@ -41,26 +42,13 @@ export class AuthGuard implements CanActivate {
 
 	/**验证用户是否在线**/
 	private async AuthorizeOnline(uid: number, error: boolean) {
-		const online = await this.redisService.getStore<string>(`${USER_ONLINE}:${uid}`)
-		if (online) {
-			/**在线状态**/
-			return true
-		} else if (error) {
-			/**不在线、并且抛出错误**/
-			return await this.AuthorizeHttpException(error)
-		}
-		return false
-	}
-
-	/**验证用户是否携带token**/
-	private async AuthorizeToken(request: Request, error: boolean): Promise<[boolean, any]> {
-		const token = request.headers[SwaggerOption.APP_AUTH_TOKEN]
-		if (token) {
-			return [true, await this.userService.untieJwtToken(token)]
-		} else if (error) {
-			return [false, await this.AuthorizeHttpException(error)]
-		}
-		return [false, null]
+		const i18n = usuCurrent()
+		return await this.redisService.getStore<string>(`${USER_ONLINE}:${uid}`).then(async online => {
+			if (!online) {
+				await this.AuthorizeHttpException(error, i18n.t('user.notice.TOKEN_EXPIRE'), HttpStatus.UNAUTHORIZED)
+			}
+			return !!online
+		})
 	}
 
 	public async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -68,26 +56,40 @@ export class AuthGuard implements CanActivate {
 		const request = context.switchToHttp().getRequest()
 		const bearer = this.reflector.get<IBearer>(APP_AUTH_INJECT, context.getHandler())
 
-		/**验证登录**/
+		//验证登录
 		if (bearer && bearer.authorize) {
-			const [result, data] = await this.AuthorizeToken(request, bearer.error).then(async ([result1, data1]) => {
-				if (result1 && (await this.AuthorizeOnline(data1.uid, bearer.error))) {
-					const token = await this.redisService.getStore<string>(`${USER_TOKEN}:${data1.uid}`)
-					if (!token || token !== request.headers[SwaggerOption.APP_AUTH_TOKEN]) {
-						await this.AuthorizeHttpException(bearer.error)
-					}
-				}
-				return [result1, data1]
-			})
-			if (result) {
-				//读取redis用户信息挂载到request
-				const user = await this.userService.httpBasicAuthorize(data.uid, {
-					cache: true,
-					close: true,
-					delete: true
+			const authorize = request.headers[SwaggerOption.APP_AUTH_TOKEN]
+			if (!authorize) {
+				//未携带token
+				await this.AuthorizeHttpException(
+					bearer.error,
+					i18n.t('user.notice.LOGIN_NOT'),
+					HttpStatus.UNAUTHORIZED
+				)
+			} else {
+				//解析token
+				const data: any = await this.userService.untieJwtToken(authorize).catch(async e => {
+					await this.AuthorizeHttpException(
+						bearer.error,
+						i18n.t('user.notice.TOKEN_EXPIRE'),
+						HttpStatus.UNAUTHORIZED
+					)
 				})
-				request.user = user
+				await this.AuthorizeOnline(data.uid, bearer.error).then(async result => {
+					return await this.redisService.getStore<string>(`${USER_TOKEN}:${data.uid}`).then(async token => {
+						if (!token || authorize !== token) {
+							await this.AuthorizeHttpException(
+								bearer.error,
+								i18n.t('user.notice.TOKEN_EXPIRE'),
+								HttpStatus.UNAUTHORIZED
+							)
+						}
+						return token
+					})
+				})
 			}
+			//未抛出错误、继续往下走
+			return true
 		}
 
 		return true
