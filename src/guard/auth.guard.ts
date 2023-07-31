@@ -3,10 +3,10 @@ import { Reflector } from '@nestjs/core'
 import { UserService } from '@/module/user/user.service'
 import { RedisService } from '@/module/basic/redis.service'
 import { usuCurrent } from '@/i18n'
+import { SwaggerOption } from '@/config/swagger-config'
 import { USER_TOKEN, USER_REFRESH, USER_CACHE } from '@/config/redis-config'
 
 export const APP_AUTH_INJECT = 'APP_AUTH_INJECT'
-export const APP_AUTH_TOKEN = 'x-token'
 
 export class IBearer {
 	decorator: boolean
@@ -29,7 +29,7 @@ export class AuthGuard implements CanActivate {
 
 		/**验证登录**/
 		if (bearer && bearer.decorator) {
-			const token = request.headers[APP_AUTH_TOKEN]
+			const token = request.headers[SwaggerOption.APP_AUTH_TOKEN]
 			if (!token) {
 				//未携带token，未登录; error为true时抛出错误
 				if (bearer.error) {
@@ -59,4 +59,4 @@ export class AuthGuard implements CanActivate {
 }
 
 //用户登录守卫、使用ApiBearer守卫的接口会验证用户登录
-export const ApiBearer = (props: IBearer) => SetMetadata(APP_AUTH_INJECT, props)
+export const AuthBearer = (props: IBearer) => SetMetadata(APP_AUTH_INJECT, props)

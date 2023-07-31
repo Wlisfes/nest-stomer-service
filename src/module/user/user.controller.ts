@@ -1,7 +1,7 @@
 import { Controller, Post, Put, Get, Body, Request, Query, Headers } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
 import { ApiDecorator } from '@/decorator/compute.decorator'
-import { ApiBearer } from '@/guard/auth.guard'
+import { AuthBearer } from '@/guard/auth.guard'
 import { CoreService } from '@/core/core.service'
 import { UserService } from './user.service'
 import { ResultNotice } from '@/interface/common.interface'
@@ -40,7 +40,7 @@ export class UserController {
 	}
 
 	@Get('/basic')
-	@ApiBearer({ decorator: true, error: true, baseURL: '/api/user/basic' })
+	@AuthBearer({ decorator: true, error: true, baseURL: '/api/user/basic' })
 	@ApiDecorator({
 		operation: { summary: '用户信息' },
 		response: { status: 200, description: 'OK', type: http.RequestUser }
