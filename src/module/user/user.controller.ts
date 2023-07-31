@@ -30,6 +30,16 @@ export class UserController {
 		return await this.userService.httpAuthorize(body, headers.origin)
 	}
 
+	@Get('/basic-authorize')
+	@AuthBearer({ authorize: true, error: true, baseURL: '/api/user/authorize' })
+	@ApiDecorator({
+		operation: { summary: '用户信息' },
+		response: { status: 200, description: 'OK', type: http.RequestUser }
+	})
+	public async httpBasicAuthorize(@Request() request: { user: http.RequestUser }) {
+		return request.user
+	}
+
 	@Post('/create')
 	@ApiDecorator({
 		operation: { summary: '创建用户' },
@@ -39,19 +49,9 @@ export class UserController {
 		return await this.userService.httpCreateUser(body)
 	}
 
-	@Get('/basic')
-	@AuthBearer({ decorator: true, error: true, baseURL: '/api/user/basic' })
-	@ApiDecorator({
-		operation: { summary: '用户信息' },
-		response: { status: 200, description: 'OK', type: http.RequestUser }
-	})
-	public async httpBasicUser(@Request() request: { user: http.RequestUser }) {
-		return request.user
-	}
-
 	@Put('/update/authorize')
 	@ApiDecorator({
-		operation: { summary: '用户信息' },
+		operation: { summary: '编辑用户权限' },
 		response: { status: 200, description: 'OK', type: ResultNotice }
 	})
 	public async httpUpdateAuthorize() {

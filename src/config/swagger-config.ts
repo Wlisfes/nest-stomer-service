@@ -7,5 +7,5 @@ export const SwaggerOption = {
 	defaultModelExpandDepth: 5,
 	filter: true,
 	docExpansion: 'none',
-	APP_AUTH_TOKEN: 'authorize'
+	APP_AUTH_TOKEN: 'Authorization'
 }

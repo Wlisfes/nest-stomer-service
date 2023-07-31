@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common'
-
 import { InjectRedis, Redis } from '@nestjs-modules/ioredis'
 
 @Injectable()

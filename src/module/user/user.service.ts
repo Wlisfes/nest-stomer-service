@@ -129,29 +129,8 @@ export class UserService extends CoreService {
 		})
 	}
 
-	/**创建用户**/
-	public async httpCreateUser(props: http.RequestCreateUser) {
-		return await this.RunCatch(async i18n => {
-			await this.haveCreate({
-				model: this.entity.userModel,
-				name: i18n.t('user.mobile.value'),
-				message: i18n.t('user.mobile.register'),
-				options: { where: { mobile: props.mobile } }
-			})
-			const node = await this.entity.userModel.create({
-				uid: Date.now(),
-				nickname: props.nickname,
-				password: props.password,
-				mobile: props.mobile
-			})
-			return await this.entity.userModel.save(node).then(async () => {
-				return { message: i18n.t('http.CREATE_SUCCESS') }
-			})
-		})
-	}
-
 	/**获取用户信息**/
-	public async httpBasicUser(uid: number, props: { cache: boolean; close: boolean; delete: boolean }) {
+	public async httpBasicAuthorize(uid: number, props: { cache: boolean; close: boolean; delete: boolean }) {
 		return await this.RunCatch(async i18n => {
 			const node = await this.entity.userModel
 				.createQueryBuilder('t')
@@ -172,6 +151,27 @@ export class UserService extends CoreService {
 			)
 			return await this.redisService.setStore(`${USER_CACHE}:${uid}`, node).then(() => {
 				return node
+			})
+		})
+	}
+
+	/**创建用户**/
+	public async httpCreateUser(props: http.RequestCreateUser) {
+		return await this.RunCatch(async i18n => {
+			await this.haveCreate({
+				model: this.entity.userModel,
+				name: i18n.t('user.mobile.value'),
+				message: i18n.t('user.mobile.register'),
+				options: { where: { mobile: props.mobile } }
+			})
+			const node = await this.entity.userModel.create({
+				uid: Date.now(),
+				nickname: props.nickname,
+				password: props.password,
+				mobile: props.mobile
+			})
+			return await this.entity.userModel.save(node).then(async () => {
+				return { message: i18n.t('http.CREATE_SUCCESS') }
 			})
 		})
 	}
