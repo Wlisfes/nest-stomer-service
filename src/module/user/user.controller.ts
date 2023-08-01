@@ -1,10 +1,10 @@
 import { Controller, Post, Put, Get, Body, Request, Query, Headers } from '@nestjs/common'
-import { ApiTags } from '@nestjs/swagger'
+import { ApiTags, ApiBearerAuth } from '@nestjs/swagger'
 import { ApiDecorator } from '@/decorator/compute.decorator'
-import { AuthBearer } from '@/guard/auth.guard'
 import { CoreService } from '@/core/core.service'
 import { UserService } from './user.service'
 import { ResultNotice } from '@/interface/common.interface'
+import { SwaggerOption } from '@/config/swagger-config'
 import * as http from '@/interface/user.interface'
 
 @ApiTags('用户模块')
@@ -31,10 +31,11 @@ export class UserController {
 	}
 
 	@Get('/basic-authorize')
-	@AuthBearer({ authorize: true, error: true, baseURL: '/api/user/authorize' })
+	@ApiBearerAuth(SwaggerOption.APP_AUTH_TOKEN)
 	@ApiDecorator({
 		operation: { summary: '用户信息' },
-		response: { status: 200, description: 'OK', type: http.RequestUser }
+		response: { status: 200, description: 'OK', type: http.RequestUser },
+		authorize: { login: true, error: true, baseURL: `/api/user/authorize` }
 	})
 	public async httpBasicAuthorize(@Request() request: { user: http.RequestUser }) {
 		return request.user

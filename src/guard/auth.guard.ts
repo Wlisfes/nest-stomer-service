@@ -55,7 +55,6 @@ export class AuthGuard implements CanActivate {
 		const i18n = usuCurrent()
 		const request = context.switchToHttp().getRequest()
 		const bearer = this.reflector.get<IBearer>(APP_AUTH_INJECT, context.getHandler())
-
 		//验证登录
 		if (bearer && bearer.authorize) {
 			const authorize = request.headers[SwaggerOption.APP_AUTH_TOKEN]
@@ -87,6 +86,7 @@ export class AuthGuard implements CanActivate {
 						return token
 					})
 				})
+				request.user = data
 			}
 			//未抛出错误、继续往下走
 			return true
@@ -97,4 +97,4 @@ export class AuthGuard implements CanActivate {
 }
 
 //用户登录守卫、使用ApiBearer守卫的接口会验证用户登录
-export const AuthBearer = (props: IBearer) => SetMetadata(APP_AUTH_INJECT, props)
+export const ApiBearer = (props: IBearer) => SetMetadata(APP_AUTH_INJECT, props)
