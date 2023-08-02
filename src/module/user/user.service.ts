@@ -1,6 +1,6 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import { Brackets } from 'typeorm'
+import { Brackets, In } from 'typeorm'
 import { JwtService } from '@nestjs/jwt'
 import { HttpService } from '@nestjs/axios'
 import { compareSync } from 'bcryptjs'
@@ -31,11 +31,9 @@ export class UserService extends CoreService {
 			const expire = Number(this.configService.get('JWT_EXPIRE') ?? 7200)
 			const secret = this.configService.get('JWT_SECRET')
 			const token = await this.jwtService.signAsync({ ...node, secret: uuid.v4() }, { secret })
-			const refresh = await this.jwtService.signAsync({ ...node, secret: uuid.v4() }, { secret })
 			//redis
-			await this.redisService.setStore(`${USER_TOKEN}:${node.uid}`, token, expire)
-			return await this.redisService.setStore(`${USER_REFRESH}:${node.uid}`, refresh, expire * 10).then(() => {
-				return { expire, token, refresh }
+			return await this.redisService.setStore(`${USER_TOKEN}:${node.uid}`, token, expire).then(() => {
+				return { expire, token }
 			})
 		})
 	}
@@ -116,13 +114,12 @@ export class UserService extends CoreService {
 					}
 				).then(e => data)
 			})
-			return await this.newJwtToken(node).then(async ({ token, expire, refresh }) => {
+			return await this.newJwtToken(node).then(async ({ token, expire }) => {
 				//登录成功、写入在线用户
 				await this.redisService.setStore(`${USER_ONLINE}:${node.uid}`, node.uid)
 				return {
 					expire,
 					token,
-					refresh,
 					message: i18n.t('user.notice.LOGIN_SUCCESS')
 				}
 			})
@@ -130,10 +127,13 @@ export class UserService extends CoreService {
 	}
 
 	/**获取用户信息**/
-	public async httpBasicAuthorize(uid: number, props: { cache: boolean; close: boolean; delete: boolean }) {
+	public async httpBasicAuthorize(uid: number) {
 		return await this.RunCatch(async i18n => {
 			const node = await this.entity.userModel
 				.createQueryBuilder('t')
+				.leftJoinAndSelect('t.routes', 'routes', 'routes.status IN(:...status)', {
+					status: ['enable', 'disable']
+				})
 				.where(
 					new Brackets(Q => {
 						Q.where('t.uid = :uid', { uid })
@@ -145,8 +145,8 @@ export class UserService extends CoreService {
 				{
 					name: i18n.t('user.name'),
 					empty: { value: true },
-					close: { value: props.close },
-					delete: { value: props.delete }
+					close: { value: true },
+					delete: { value: true }
 				}
 			)
 			return await this.redisService.setStore(`${USER_CACHE}:${uid}`, node).then(() => {
@@ -177,35 +177,45 @@ export class UserService extends CoreService {
 	}
 
 	/**编辑用户权限**/
-	public async httpUpdateAuthorize() {
-		// return await this.RunCatch(async i18n => {
-		// 	const user = await this.validator({
-		// 		model: this.entity.userModel,
-		// 		name: i18n.t('user.name'),
-		// 		empty: { value: true },
-		// 		options: {
-		// 			where: { uid: `719773724730736443` },
-		// 			relations: ['rules']
-		// 		}
-		// 	})
-		// 	const { list } = await this.batchValidator({
-		// 		model: this.entity.ruleModel,
-		// 		name: i18n.t('rule.name'),
-		// 		options: { where: { id: In([1, 2, 3, 4, 5, 6, 7, 8, 9]) } },
-		// 		ids: [1, 2, 3, 4, 5, 6, 7, 8, 9]
-		// 	})
-		// 	return await this.entity.userModel
-		// 		.createQueryBuilder('t')
-		// 		.relation('rules')
-		// 		.of(user)
-		// 		.addAndRemove(
-		// 			list.map(x => x.id),
-		// 			user.rules.map(x => x.id)
-		// 		)
-		// 		.then(() => {
-		// 			return { message: i18n.t('http.UPDATE_SUCCESS') }
-		// 		})
-		// })
+	public async httpUpdateAuthorize(props: http.RequestUpdateAuthorize) {
+		return await this.RunCatch(async i18n => {
+			console.log(props)
+			const user = await this.validator({
+				model: this.entity.userModel,
+				name: i18n.t('user.name'),
+				empty: { value: true },
+				close: { value: true },
+				delete: { value: true },
+				options: { where: { uid: props.uid }, relations: ['routes'] }
+			})
+			const { list } = await this.batchValidator({
+				model: this.entity.routeModel,
+				name: i18n.t('route.rule'),
+				options: { where: { id: In(props.route) } }
+			}).then(async data => {
+				return data
+				// return await divineHandler(
+				// 	() => props.route.length !== data.total,
+				// 	() => {
+				// 		throw new HttpException(
+				// 			i18n.t('http.NOT_ISSUE', { args: { name: i18n.t('route.rule') } }),
+				// 			HttpStatus.BAD_REQUEST
+				// 		)
+				// 	}
+				// ).then(e => data)
+			})
+			return await this.entity.userModel
+				.createQueryBuilder('t')
+				.relation('routes')
+				.of(user)
+				.addAndRemove(
+					list.map(x => x.id),
+					user.routes.map(x => x.id)
+				)
+				.then(() => {
+					return { message: i18n.t('http.UPDATE_SUCCESS') }
+				})
+		})
 	}
 
 	/**用户列表**/

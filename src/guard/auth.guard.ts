@@ -19,7 +19,6 @@ export const APP_AUTH_INJECT = 'APP_AUTH_INJECT'
 export class IBearer {
 	authorize: boolean
 	error: boolean
-	baseURL: string
 }
 
 @Injectable()
@@ -55,6 +54,8 @@ export class AuthGuard implements CanActivate {
 		const i18n = usuCurrent()
 		const request = context.switchToHttp().getRequest()
 		const bearer = this.reflector.get<IBearer>(APP_AUTH_INJECT, context.getHandler())
+		const baseURL = request.route.path
+
 		//验证登录
 		if (bearer && bearer.authorize) {
 			const authorize = request.headers[SwaggerOption.APP_AUTH_TOKEN]

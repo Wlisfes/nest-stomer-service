@@ -1,5 +1,5 @@
 import { Controller, Post, Put, Get, Body, Request, Query, Headers } from '@nestjs/common'
-import { ApiTags, ApiBearerAuth } from '@nestjs/swagger'
+import { ApiTags } from '@nestjs/swagger'
 import { ApiDecorator } from '@/decorator/compute.decorator'
 import { CoreService } from '@/core/core.service'
 import { UserService } from './user.service'
@@ -31,14 +31,13 @@ export class UserController {
 	}
 
 	@Get('/basic-authorize')
-	@ApiBearerAuth(SwaggerOption.APP_AUTH_TOKEN)
 	@ApiDecorator({
 		operation: { summary: '用户信息' },
 		response: { status: 200, description: 'OK', type: http.RequestUser },
-		authorize: { login: true, error: true, baseURL: `/api/user/authorize` }
+		authorize: { login: true, error: true }
 	})
 	public async httpBasicAuthorize(@Request() request: { user: http.RequestUser }) {
-		return request.user
+		return await this.userService.httpBasicAuthorize(request.user.uid)
 	}
 
 	@Post('/create')
@@ -55,8 +54,8 @@ export class UserController {
 		operation: { summary: '编辑用户权限' },
 		response: { status: 200, description: 'OK', type: ResultNotice }
 	})
-	public async httpUpdateAuthorize() {
-		return await this.userService.httpUpdateAuthorize()
+	public async httpUpdateAuthorize(@Body() body: http.RequestUpdateAuthorize) {
+		return await this.userService.httpUpdateAuthorize(body)
 	}
 
 	@Get('/column')

@@ -1,21 +1,23 @@
 import { ValidateIf, ValidationOptions, buildMessage, ValidateBy, ValidationArguments } from 'class-validator'
+export interface IsOptionalOption {
+	filter: Array<'string' | 'number'>
+}
 
 /**自定义装饰器-验证空值**/
-export function IsOptional(validationOptions?: ValidationOptions, props?: { string?: boolean; number?: boolean }) {
-	if (props?.number) {
-		return ValidateIf((obj, value) => {
-			return value !== null && value !== undefined && value !== '' && value !== 0
-		}, validationOptions)
+export function IsOptional(validationOptions?: ValidationOptions, option: IsOptionalOption = { filter: [] }) {
+	const validates = [null, undefined]
+	if (option.filter.includes('number')) {
+		validates.push(0)
+		validates.push('0')
 	}
-
-	if (props?.string) {
-		return ValidateIf((obj, value) => {
-			return value !== null && value !== undefined && value !== ''
-		}, validationOptions)
+	if (option.filter.includes('string')) {
+		validates.push('')
 	}
 
 	return ValidateIf((obj, value) => {
-		return value !== null && value !== undefined
+		const include = validates.includes(value)
+		console.log('include:', { value, include, validates })
+		return true
 	}, validationOptions)
 }
 
@@ -50,7 +52,8 @@ export function IsCustomize(option: {
 }
 
 /**数字转化**/
-export function TransferNumber({ value }) {
+export function MakeTransfer({ value }) {
+	console.log('MakeTransfer---:', value)
 	if (value && Array.isArray(value)) {
 		return value
 	} else if (value && typeof value === 'string') {

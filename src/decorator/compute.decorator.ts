@@ -7,7 +7,7 @@ import { SwaggerOption } from '@/config/swagger-config'
 interface Option {
 	operation: ApiOperationOptions
 	response: ApiResponseOptions
-	authorize?: { login: boolean; error: boolean; baseURL: string }
+	authorize?: { login: boolean; error: boolean }
 }
 
 /**
@@ -29,8 +29,7 @@ export function ApiDecorator(option: Option) {
 			ApiBearerAuth(SwaggerOption.APP_AUTH_TOKEN),
 			ApiBearer({
 				authorize: option.authorize.login,
-				error: option.authorize.error,
-				baseURL: option.authorize.baseURL
+				error: option.authorize.error
 			})
 		)
 	}
