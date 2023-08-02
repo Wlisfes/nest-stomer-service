@@ -155,6 +155,18 @@ export class UserService extends CoreService {
 		})
 	}
 
+	/**获取用户信息**/
+	public async httpBearerAuthorize(uid: number) {
+		return await this.RunCatch(async i18n => {
+			return await this.validator({
+				model: this.entity.userModel,
+				name: i18n.t('user.name'),
+				empty: { value: true },
+				options: { where: { uid }, relations: ['routes'] }
+			})
+		})
+	}
+
 	/**创建用户**/
 	public async httpCreateUser(props: http.RequestCreateUser) {
 		return await this.RunCatch(async i18n => {

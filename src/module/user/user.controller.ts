@@ -58,6 +58,19 @@ export class UserController {
 		return await this.userService.httpUpdateAuthorize(body)
 	}
 
+	@Get('/bearer-authorize')
+	@ApiDecorator({
+		operation: { summary: '用户信息' },
+		response: { status: 200, description: 'OK', type: http.RequestUser },
+		authorize: { login: true, error: true }
+	})
+	public async httpBearerAuthorize(
+		@Request() request: { user: http.RequestUser },
+		@Query() query: http.RequestBasicUser
+	) {
+		return await this.userService.httpBearerAuthorize(query.uid)
+	}
+
 	@Get('/column')
 	@ApiDecorator({
 		operation: { summary: '用户列表' },

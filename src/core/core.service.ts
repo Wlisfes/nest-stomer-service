@@ -35,31 +35,6 @@ export class CoreService {
 		}
 	}
 
-	/**数组转树结构**/
-	public listToTree<T extends Record<string, any>>(
-		data: Array<T>,
-		status: Array<'disable' | 'enable' | 'delete'> = []
-	) {
-		const tree: Array<T> = []
-		const map: Object = data.reduce((curr: Object, next: T & { children: Array<T>; id: number }) => {
-			next.children = []
-			curr[next.id] = next
-			return curr
-		}, Object.assign({}))
-		data.forEach((node: T) => {
-			if (node.parent) {
-				if (status.length === 0 || status.includes(node.status)) {
-					map[node.parent].children.push(node)
-				}
-			} else {
-				if (status.length === 0 || status.includes(node.status)) {
-					tree.push(node)
-				}
-			}
-		})
-		return tree
-	}
-
 	/**数据验证处理**/
 	public async nodeValidator<T>(
 		option: { node: T; i18n: ReturnType<typeof usuCurrent> },

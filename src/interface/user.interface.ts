@@ -1,7 +1,7 @@
 import { ApiProperty, PickType, IntersectionType, PartialType } from '@nestjs/swagger'
 import { IsNotEmpty, Length, IsNumber } from 'class-validator'
 import { Type, Transform } from 'class-transformer'
-import { IsOptional, IsMobile, MakeTransfer } from '@/decorator/common.decorator'
+import { IsOptional, IsMobile } from '@/decorator/common.decorator'
 import { RequestCommon } from '@/interface/common.interface'
 import { at } from '@/i18n'
 
@@ -59,9 +59,7 @@ export class RequestUpdateUser extends PickType(RequestUser, ['uid']) {}
 
 /**编辑用户权限**/
 export class RequestUpdateAuthorize extends PickType(RequestUser, ['uid']) {
-	@ApiProperty({ description: '权限ID', type: [Number], example: [], required: false })
-	@IsOptional({}, { filter: ['number', 'string'] })
-	@Transform(type => MakeTransfer(type), { toClassOnly: true })
+	@ApiProperty({ description: '权限ID', type: [Number], example: [] })
 	@IsNumber({}, { each: true, message: '权限ID 必须为Array<number>' })
 	route: number[]
 }

@@ -19,3 +19,40 @@ export async function divineHandler(fn: boolean | Function, handler: Function) {
 	}
 	return undefined
 }
+
+/**数组转树结构**/
+export function listToTree<T extends Record<string, any>>(
+	data: Array<T>,
+	status: Array<'disable' | 'enable' | 'delete'> = []
+) {
+	const tree: Array<T> = []
+	const map: Object = data.reduce((curr: Object, next: T & { children: Array<T>; id: number }) => {
+		next.children = []
+		curr[next.id] = next
+		return curr
+	}, Object.assign({}))
+	data.forEach((node: T) => {
+		if (node.parent) {
+			if (status.length === 0 || status.includes(node.status)) {
+				map[node.parent].children.push(node)
+			}
+		} else {
+			if (status.length === 0 || status.includes(node.status)) {
+				tree.push(node)
+			}
+		}
+	})
+	return tree
+}
+
+/**删除树结构叶子节点children字段**/
+export function delChildren(data = []) {
+	data.forEach(node => {
+		if ((node.children ?? []).length === 0) {
+			node.isLeaf = true
+			delete node.children
+		}
+		delChildren(node.children)
+	})
+	return data
+}

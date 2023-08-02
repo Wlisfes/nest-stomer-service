@@ -3,6 +3,7 @@ import { Brackets, In } from 'typeorm'
 import { isEmpty } from 'class-validator'
 import { CoreService } from '@/core/core.service'
 import { EntityService } from '@/core/entity.service'
+import { listToTree, delChildren } from '@/utils/utils-common'
 import * as http from '@/interface/route.interface'
 
 @Injectable()
@@ -134,7 +135,7 @@ export class RouteService extends CoreService {
 				.getManyAndCount()
 			return {
 				total,
-				list: this.listToTree(list, ['enable'])
+				list: listToTree(list, ['enable'])
 			}
 		})
 	}
@@ -146,7 +147,7 @@ export class RouteService extends CoreService {
 				.createQueryBuilder('t')
 				.orderBy({ 't.order': 'DESC', 't.id': 'DESC' })
 				.getManyAndCount()
-			return { total, list: this.listToTree(list, ['enable', 'disable']) }
+			return { total, list: delChildren(listToTree(list, ['enable', 'disable'])) }
 		})
 	}
 
