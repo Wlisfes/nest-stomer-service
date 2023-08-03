@@ -147,6 +147,18 @@ export class RouteService extends CoreService {
 				.createQueryBuilder('t')
 				.orderBy({ 't.order': 'DESC', 't.id': 'DESC' })
 				.getManyAndCount()
+			return { total, list: listToTree(list, ['enable', 'disable']) }
+		})
+	}
+
+	/**路由权限列表**/
+	public async httpOptionsRoute() {
+		return await this.RunCatch(async i18n => {
+			const [list = [], total = 0] = await this.entity.routeModel
+				.createQueryBuilder('t')
+				.select(['t.id', 't.status', 't.title', 't.source', 't.parent', 't.order'])
+				.orderBy({ 't.order': 'DESC', 't.id': 'DESC' })
+				.getManyAndCount()
 			return { total, list: delChildren(listToTree(list, ['enable', 'disable'])) }
 		})
 	}

@@ -55,6 +55,15 @@ export class RouteController {
 		return await this.routeService.httpColumnRoute()
 	}
 
+	@Get('/options')
+	@ApiDecorator({
+		operation: { summary: '路由权限列表' },
+		response: { status: 200, description: 'OK', type: http.ResultColumnRoute }
+	})
+	public async httpOptionsRoute() {
+		return await this.routeService.httpOptionsRoute()
+	}
+
 	@Get('/dynamic')
 	@ApiDecorator({
 		operation: { summary: '动态路由节点' },
