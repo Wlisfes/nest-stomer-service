@@ -60,7 +60,7 @@ export class UserController {
 
 	@Get('/bearer-authorize')
 	@ApiDecorator({
-		operation: { summary: '用户信息' },
+		operation: { summary: '用户权限信息' },
 		response: { status: 200, description: 'OK', type: http.RequestUser },
 		authorize: { login: true, error: true }
 	})

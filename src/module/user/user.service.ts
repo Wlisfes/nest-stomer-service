@@ -9,7 +9,7 @@ import { EntityService } from '@/core/entity.service'
 import { RedisService } from '@/core/redis.service'
 import { UserEntity } from '@/entity/user.entity'
 import { USER_TOKEN, USER_REFRESH, USER_CACHE, COMMON_MOBILE, USER_ONLINE } from '@/config/redis-config'
-import { divineHandler } from '@/utils/utils-common'
+import { divineHandler, listToTree, treeToList, delChildren } from '@/utils/utils-common'
 import * as http from '@/interface/user.interface'
 import * as uuid from 'uuid'
 
@@ -155,14 +155,29 @@ export class UserService extends CoreService {
 		})
 	}
 
-	/**获取用户信息**/
+	/**用户权限信息**/
 	public async httpBearerAuthorize(uid: number) {
 		return await this.RunCatch(async i18n => {
 			return await this.validator({
 				model: this.entity.userModel,
 				name: i18n.t('user.name'),
 				empty: { value: true },
-				options: { where: { uid }, relations: ['routes'] }
+				options: {
+					where: { uid },
+					relations: ['routes'],
+					select: ['id', 'uid', 'nickname', 'status', 'avatar']
+				}
+			}).then(data => {
+				const routes = treeToList(delChildren(listToTree(data.routes)))
+				return Object.assign(data, {
+					routes: routes.map((x: any) => ({
+						id: x.id,
+						status: x.status,
+						title: x.title,
+						source: x.source,
+						isLeaf: x.isLeaf
+					}))
+				})
 			})
 		})
 	}
@@ -205,16 +220,15 @@ export class UserService extends CoreService {
 				name: i18n.t('route.rule'),
 				options: { where: { id: In(props.route) } }
 			}).then(async data => {
-				return data
-				// return await divineHandler(
-				// 	() => props.route.length !== data.total,
-				// 	() => {
-				// 		throw new HttpException(
-				// 			i18n.t('http.NOT_ISSUE', { args: { name: i18n.t('route.rule') } }),
-				// 			HttpStatus.BAD_REQUEST
-				// 		)
-				// 	}
-				// ).then(e => data)
+				return await divineHandler(
+					() => props.route.length !== data.total,
+					() => {
+						throw new HttpException(
+							i18n.t('http.NOT_ISSUE', { args: { name: i18n.t('route.rule') } }),
+							HttpStatus.BAD_REQUEST
+						)
+					}
+				).then(e => data)
 			})
 			return await this.entity.userModel
 				.createQueryBuilder('t')

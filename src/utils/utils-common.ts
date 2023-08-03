@@ -45,6 +45,21 @@ export function listToTree<T extends Record<string, any>>(
 	return tree
 }
 
+/**树结构转数组**/
+export function treeToList(tree) {
+	const result = []
+	for (const node of tree) {
+		const children = node.children
+		delete node.children
+		result.push(node)
+		if (children && children.length > 0) {
+			const childrenNodes = treeToList(children)
+			result.push(...childrenNodes)
+		}
+	}
+	return result
+}
+
 /**删除树结构叶子节点children字段**/
 export function delChildren(data = []) {
 	data.forEach(node => {
