@@ -82,11 +82,11 @@ export class UserService extends CoreService {
 	public async httpAuthorize(props: http.RequestAuthorize, referer: string) {
 		return await this.RunCatch(async i18n => {
 			await this.httpService.axiosRef.request({
-				url: `https://api.lisfes.cn/api-captcha/supervisor/inspector`,
+				url: `https://api.lisfes.cn/api-basic/captcha/supervisor/inspector`,
 				method: 'POST',
 				headers: { origin: referer },
 				data: {
-					appSecret: '5wE2EzGEI4JDn4M1uzsEEMsGCCsAu2pJ',
+					appSecret: 'KB91uw5vzwpDwp5E2q3CAr67y7A7t2un',
 					appKey: 'sFnFysvpL0DFGs6H',
 					token: props.token,
 					session: props.session
