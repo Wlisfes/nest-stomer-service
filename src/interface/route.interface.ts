@@ -1,4 +1,4 @@
-import { ApiProperty, PickType, getSchemaPath } from '@nestjs/swagger'
+import { ApiProperty, PickType } from '@nestjs/swagger'
 import { IsNotEmpty } from 'class-validator'
 import { Type } from 'class-transformer'
 import { IsOptional } from '@/decorator/common.decorator'
@@ -55,15 +55,6 @@ export class BasicRoute extends PickType(Route, ['id']) {}
 
 /**路由状态**/
 export class TransferRoute extends PickType(Route, ['id', 'status']) {}
-
-/**路由列表**/
-export class ColumnRoute<T> extends PickType(Request, ['page', 'size', 'total']) {
-	@ApiProperty({ description: '列表', type: 'array', example: [] })
-	list: T[]
-}
-
-/**动态路由节点**/
-export class DynamicRoute extends ColumnRoute<Route> {}
 
 /**创建规则**/
 export class CreateRule extends PickType(Route, ['path', 'title', 'method', 'status', 'parent']) {}

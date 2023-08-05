@@ -1,5 +1,5 @@
 import { Controller, Post, Get, Put, Body, Query } from '@nestjs/common'
-import { ApiTags } from '@nestjs/swagger'
+import { ApiTags, getSchemaPath } from '@nestjs/swagger'
 import { ApiDecorator } from '@/decorator/compute.decorator'
 import { Notice } from '@/interface/common.interface'
 import { RouteService } from './route.service'
@@ -49,7 +49,7 @@ export class RouteController {
 	@Get('/column')
 	@ApiDecorator({
 		operation: { summary: '路由列表' },
-		response: { status: 200, description: 'OK', type: http.ColumnRoute }
+		customize: { status: 200, description: 'OK', type: http.Route }
 	})
 	public async httpColumnRoute() {
 		return await this.routeService.httpColumnRoute()
@@ -58,7 +58,7 @@ export class RouteController {
 	@Get('/options')
 	@ApiDecorator({
 		operation: { summary: '路由权限列表' },
-		response: { status: 200, description: 'OK', type: http.ColumnRoute }
+		customize: { status: 200, description: 'OK', type: http.Route }
 	})
 	public async httpOptionsRoute() {
 		return await this.routeService.httpOptionsRoute()
@@ -67,7 +67,7 @@ export class RouteController {
 	@Get('/dynamic')
 	@ApiDecorator({
 		operation: { summary: '动态路由节点' },
-		response: { status: 200, description: 'OK', type: http.DynamicRoute }
+		customize: { status: 200, description: 'OK', type: http.Route }
 	})
 	public async httpDynamicRoute() {
 		return await this.routeService.httpDynamicRoute()
