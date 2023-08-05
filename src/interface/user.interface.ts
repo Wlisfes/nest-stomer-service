@@ -2,10 +2,10 @@ import { ApiProperty, PickType, IntersectionType, PartialType } from '@nestjs/sw
 import { IsNotEmpty, Length, IsNumber } from 'class-validator'
 import { Type, Transform } from 'class-transformer'
 import { IsOptional, IsMobile } from '@/decorator/common.decorator'
-import { RequestCommon } from '@/interface/common.interface'
+import { Request } from '@/interface/common.interface'
 import { at } from '@/i18n'
 
-export class RequestUser extends PickType(RequestCommon, ['id', 'uid']) {
+export class User extends PickType(Request, ['id', 'uid']) {
 	@ApiProperty({ description: '昵称', example: '猪头' })
 	@IsNotEmpty({ message: at('user.nickname.required') })
 	nickname: string
@@ -43,29 +43,29 @@ export class RequestUser extends PickType(RequestCommon, ['id', 'uid']) {
 }
 
 /**注册用户**/
-export class RequestRegister extends PickType(RequestUser, ['nickname', 'password', 'mobile', 'code']) {}
+export class Register extends PickType(User, ['nickname', 'password', 'mobile', 'code']) {}
 
 /**登录**/
-export class RequestAuthorize extends PickType(RequestUser, ['mobile', 'password', 'session', 'token']) {}
+export class Authorize extends PickType(User, ['mobile', 'password', 'session', 'token']) {}
 
 /**创建用户**/
-export class RequestCreateUser extends PickType(RequestUser, ['nickname', 'password', 'mobile']) {}
+export class CreateUser extends PickType(User, ['nickname', 'password', 'mobile']) {}
 
 /**用户信息**/
-export class RequestBasicUser extends PickType(RequestUser, ['uid']) {}
+export class BasicUser extends PickType(User, ['uid']) {}
 
 /**编辑用户信息**/
-export class RequestUpdateUser extends PickType(RequestUser, ['uid']) {}
+export class UpdateUser extends PickType(User, ['uid']) {}
 
 /**编辑用户权限**/
-export class RequestUpdateAuthorize extends PickType(RequestUser, ['uid']) {
+export class UpdateAuthorize extends PickType(User, ['uid']) {
 	@ApiProperty({ description: '权限ID', type: [Number], example: [] })
 	@IsNumber({}, { each: true, message: '权限ID 必须为Array<number>' })
 	route: number[]
 }
 
 /**用户列表**/
-export class RequestColumnUser extends IntersectionType(
-	PickType(RequestCommon, ['page', 'size']),
-	PartialType(PickType(RequestUser, []))
+export class ColumnUser extends IntersectionType(
+	PickType(Request, ['page', 'size']),
+	PartialType(PickType(User, []))
 ) {}

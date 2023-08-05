@@ -3,9 +3,9 @@ import { IsNotEmpty } from 'class-validator'
 import { Type } from 'class-transformer'
 import { at } from '@/i18n'
 import { IsOptional } from '@/decorator/common.decorator'
-import { RequestCommon } from '@/interface/common.interface'
+import { Request } from '@/interface/common.interface'
 
-export class RequestChacter extends PickType(RequestCommon, ['id', 'status', 'createTime', 'updateTime']) {
+export class Chacter extends PickType(Request, ['id', 'status', 'createTime', 'updateTime']) {
 	@ApiProperty({ description: '字典标识', example: 'enable' })
 	@IsNotEmpty({ message: at('chacter.command.required') })
 	command: string
@@ -24,23 +24,19 @@ export class RequestChacter extends PickType(RequestCommon, ['id', 'status', 'cr
 }
 
 /**新增字典**/
-export class RequestCreateChacter extends PickType(RequestChacter, ['command', 'cn', 'en', 'comment', 'status']) {}
+export class CreateChacter extends PickType(Chacter, ['command', 'cn', 'en', 'comment', 'status']) {}
 
-/**编辑字典**/ //prettier-ignore
-export class RequestUpdateChacter extends PickType(RequestChacter, ['id', 'cn', 'en', 'comment', 'status']) {}
+/**编辑字典**/
+export class UpdateChacter extends PickType(Chacter, ['id', 'cn', 'en', 'comment', 'status']) {}
 
 /**字典信息**/
-export class RequestBasicChacter extends PickType(RequestChacter, ['id']) {}
+export class BasicChacter extends PickType(Chacter, ['id']) {}
 
 /**字典列表**/
-export class RequestColumnChacter extends IntersectionType(
-	PickType(RequestCommon, ['page', 'size']),
-	PartialType(PickType(RequestChacter, ['command']))
+export class ColumnChacter extends IntersectionType(
+	PickType(Request, ['page', 'size']),
+	PartialType(PickType(Chacter, ['command']))
 ) {}
-export class ResultColumnChacter extends PickType(RequestCommon, ['page', 'size', 'total']) {
-	@ApiProperty({ description: '列表', type: [RequestChacter], example: [] })
-	list: RequestChacter[]
-}
 
 /**字典状态**/
-export class RequestTransferChacter extends PickType(RequestChacter, ['id', 'status']) {}
+export class TransferChacter extends PickType(Chacter, ['id', 'status']) {}

@@ -11,7 +11,7 @@ export class ChacterService extends CoreService {
 	}
 
 	/**新增字典**/
-	public async httpCreateChacter(props: http.RequestCreateChacter) {
+	public async httpCreateChacter(props: http.CreateChacter) {
 		return await this.RunCatch(async i18n => {
 			await this.haveCreate({
 				model: this.entity.chacterModel,
@@ -31,7 +31,7 @@ export class ChacterService extends CoreService {
 	}
 
 	/**编辑字典**/
-	public async httpUpdateChacter(props: http.RequestUpdateChacter) {
+	public async httpUpdateChacter(props: http.UpdateChacter) {
 		return await this.RunCatch(async i18n => {
 			await this.validator({
 				model: this.entity.chacterModel,
@@ -51,7 +51,7 @@ export class ChacterService extends CoreService {
 	}
 
 	/**字典详情**/
-	public async httpBasicChacter(props: http.RequestBasicChacter) {
+	public async httpBasicChacter(props: http.BasicChacter) {
 		return await this.RunCatch(async i18n => {
 			return await this.validator({
 				model: this.entity.chacterModel,
@@ -63,7 +63,7 @@ export class ChacterService extends CoreService {
 	}
 
 	/**字典列表**/
-	public async httpColumnChacter(props: http.RequestColumnChacter) {
+	public async httpColumnChacter(props: http.ColumnChacter) {
 		return await this.RunCatch(async i18n => {
 			const [list = [], total = 0] = await this.entity.chacterModel
 				.createQueryBuilder('t')
@@ -83,7 +83,7 @@ export class ChacterService extends CoreService {
 	}
 
 	/**编辑字典状态**/
-	public async httpTransferChacter(props: http.RequestTransferChacter) {
+	public async httpTransferChacter(props: http.TransferChacter) {
 		return await this.RunCatch(async i18n => {
 			await this.validator({
 				model: this.entity.chacterModel,

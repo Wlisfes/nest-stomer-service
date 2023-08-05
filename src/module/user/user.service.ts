@@ -1,6 +1,6 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import { Brackets, In } from 'typeorm'
+import { Brackets, In, EntityManager, QueryBuilder } from 'typeorm'
 import { JwtService } from '@nestjs/jwt'
 import { HttpService } from '@nestjs/axios'
 import { compareSync } from 'bcryptjs'
@@ -47,7 +47,7 @@ export class UserService extends CoreService {
 	}
 
 	/**注册用户**/
-	public async httpRegister(props: http.RequestRegister) {
+	public async httpRegister(props: http.Register) {
 		return await this.RunCatch(async i18n => {
 			await this.haveCreate({
 				model: this.entity.userModel,
@@ -78,27 +78,29 @@ export class UserService extends CoreService {
 		})
 	}
 
-	/**登录**/ //prettier-ignore
-	public async httpAuthorize(props: http.RequestAuthorize, referer: string) {
+	/**登录**/
+	public async httpAuthorize(props: http.Authorize, referer: string) {
 		return await this.RunCatch(async i18n => {
-			await this.httpService.axiosRef.request({
-				url: `https://api.lisfes.cn/api-basic/captcha/supervisor/inspector`,
-				method: 'POST',
-				headers: { origin: referer },
-				data: {
-					appSecret: 'KB91uw5vzwpDwp5E2q3CAr67y7A7t2un',
-					appKey: 'sFnFysvpL0DFGs6H',
-					token: props.token,
-					session: props.session
-				}
-			}).then(async ({ data }) => {
-				return await divineHandler(
-					() => data.code !== 200,
-					() => {
-						throw new HttpException(data.message, HttpStatus.BAD_REQUEST)
+			await this.httpService.axiosRef
+				.request({
+					url: `https://api.lisfes.cn/api-basic/captcha/supervisor/inspector`,
+					method: 'POST',
+					headers: { origin: referer },
+					data: {
+						appSecret: 'KB91uw5vzwpDwp5E2q3CAr67y7A7t2un',
+						appKey: 'sFnFysvpL0DFGs6H',
+						token: props.token,
+						session: props.session
 					}
-				).then(e => data)
-			})
+				})
+				.then(async ({ data }) => {
+					return await divineHandler(
+						() => data.code !== 200,
+						() => {
+							throw new HttpException(data.message, HttpStatus.BAD_REQUEST)
+						}
+					).then(e => data)
+				})
 			const node = await this.validator({
 				model: this.entity.userModel,
 				name: i18n.t('user.name'),
@@ -129,28 +131,26 @@ export class UserService extends CoreService {
 	/**获取用户信息**/
 	public async httpBasicAuthorize(uid: number) {
 		return await this.RunCatch(async i18n => {
-			const node = await this.entity.userModel
-				.createQueryBuilder('t')
-				.leftJoinAndSelect('t.routes', 'routes', 'routes.status IN(:...status)', {
-					status: ['enable', 'disable']
-				})
-				.where(
-					new Brackets(Q => {
-						Q.where('t.uid = :uid', { uid })
+			return await this.validator({
+				model: this.entity.userModel,
+				name: i18n.t('user.name'),
+				empty: { value: true },
+				close: { value: true },
+				delete: { value: true },
+				options: {
+					join: {
+						alias: 'tb',
+						leftJoinAndSelect: { routes: 'tb.routes' }
+					},
+					where: new Brackets(qb => {
+						qb.where('tb.uid = :uid', { uid })
+						qb.where('routes.status IN(:...status)', { status: ['enable', 'disable'] })
 					})
-				)
-				.getOne()
-			await this.nodeValidator(
-				{ node, i18n },
-				{
-					name: i18n.t('user.name'),
-					empty: { value: true },
-					close: { value: true },
-					delete: { value: true }
 				}
-			)
-			return await this.redisService.setStore(`${USER_CACHE}:${uid}`, node).then(() => {
-				return node
+			}).then(async node => {
+				return await this.redisService.setStore(`${USER_CACHE}:${uid}`, node).then(() => {
+					return node
+				})
 			})
 		})
 	}
@@ -163,14 +163,19 @@ export class UserService extends CoreService {
 				name: i18n.t('user.name'),
 				empty: { value: true },
 				options: {
-					where: { uid },
-					relations: ['routes'],
-					select: ['id', 'uid', 'nickname', 'status', 'avatar']
+					join: {
+						alias: 'tb',
+						leftJoinAndSelect: { routes: 'tb.routes' }
+					},
+					select: ['id', 'uid', 'nickname', 'status', 'avatar'],
+					where: new Brackets(qb => {
+						qb.where('tb.uid = :uid', { uid })
+					})
 				}
 			}).then(data => {
 				const routes = treeToList(delChildren(listToTree(data.routes)))
 				return Object.assign(data, {
-					routes: routes.map((x: any) => ({
+					routes: routes.map(x => ({
 						id: x.id,
 						status: x.status,
 						title: x.title,
@@ -183,7 +188,7 @@ export class UserService extends CoreService {
 	}
 
 	/**创建用户**/
-	public async httpCreateUser(props: http.RequestCreateUser) {
+	public async httpCreateUser(props: http.CreateUser) {
 		return await this.RunCatch(async i18n => {
 			await this.haveCreate({
 				model: this.entity.userModel,
@@ -204,9 +209,8 @@ export class UserService extends CoreService {
 	}
 
 	/**编辑用户权限**/
-	public async httpUpdateAuthorize(props: http.RequestUpdateAuthorize) {
+	public async httpUpdateAuthorize(props: http.UpdateAuthorize) {
 		return await this.RunCatch(async i18n => {
-			console.log(props)
 			const user = await this.validator({
 				model: this.entity.userModel,
 				name: i18n.t('user.name'),
@@ -245,7 +249,7 @@ export class UserService extends CoreService {
 	}
 
 	/**用户列表**/
-	public async httpColumnUser(props: http.RequestColumnUser) {
+	public async httpColumnUser(props: http.ColumnUser) {
 		return await this.RunCatch(async i18n => {
 			const [list = [], total = 0] = await this.entity.userModel
 				.createQueryBuilder('t')

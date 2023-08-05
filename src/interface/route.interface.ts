@@ -1,10 +1,10 @@
-import { ApiProperty, PickType } from '@nestjs/swagger'
+import { ApiProperty, PickType, getSchemaPath } from '@nestjs/swagger'
 import { IsNotEmpty } from 'class-validator'
 import { Type } from 'class-transformer'
 import { IsOptional } from '@/decorator/common.decorator'
-import { RequestCommon } from '@/interface/common.interface'
+import { Request } from '@/interface/common.interface'
 
-export class RequestRoute extends PickType(RequestCommon, ['id', 'status', 'createTime', 'uid']) {
+export class Route extends PickType(Request, ['id', 'status', 'createTime', 'uid']) {
 	@ApiProperty({
 		description: '节点类型: 目录-folder、菜单-menu、规则-rule',
 		enum: ['directory', 'menu'],
@@ -45,34 +45,34 @@ export class RequestRoute extends PickType(RequestCommon, ['id', 'status', 'crea
 }
 
 /**创建路由**/ //prettier-ignore
-export class RequestCreateRoute extends PickType(RequestRoute, ['path', 'redirect', 'source', 'title', 'icon', 'parent', 'status', 'order']) {}
+export class CreateRoute extends PickType(Route, ['path', 'redirect', 'source', 'title', 'icon', 'parent', 'status', 'order']) {}
 
 /**编辑路由**/ //prettier-ignore
-export class RequestUpdateRoute extends PickType(RequestRoute, ['id', 'path', 'redirect', 'source', 'title', 'icon', 'parent', 'status', 'order']) {}
+export class UpdateRoute extends PickType(Route, ['id', 'path', 'redirect', 'source', 'title', 'icon', 'parent', 'status', 'order']) {}
 
 /**路由信息**/
-export class RequestBasicRoute extends PickType(RequestRoute, ['id']) {}
+export class BasicRoute extends PickType(Route, ['id']) {}
 
 /**路由状态**/
-export class RequestTransferRoute extends PickType(RequestRoute, ['id', 'status']) {}
+export class TransferRoute extends PickType(Route, ['id', 'status']) {}
 
 /**路由列表**/
-export class ResultColumnRoute extends PickType(RequestCommon, ['page', 'size', 'total']) {
-	@ApiProperty({ description: '列表', type: [RequestRoute], example: [] })
-	list: RequestRoute[]
+export class ColumnRoute<T> extends PickType(Request, ['page', 'size', 'total']) {
+	@ApiProperty({ description: '列表', type: 'array', example: [] })
+	list: T[]
 }
 
 /**动态路由节点**/
-export class ResultDynamicRoute extends ResultColumnRoute {}
+export class DynamicRoute extends ColumnRoute<Route> {}
 
 /**创建规则**/
-export class RequestCreateRule extends PickType(RequestRoute, ['path', 'title', 'method', 'status', 'parent']) {}
+export class CreateRule extends PickType(Route, ['path', 'title', 'method', 'status', 'parent']) {}
 
 /**编辑规则**/
-export class RequestUpdateRule extends PickType(RequestRoute, ['id', 'path', 'title', 'method', 'status', 'parent']) {}
+export class UpdateRule extends PickType(Route, ['id', 'path', 'title', 'method', 'status', 'parent']) {}
 
 /**编辑规则状态*/
-export class RequestTransferRule extends PickType(RequestRoute, ['id', 'status']) {}
+export class TransferRule extends PickType(Route, ['id', 'status']) {}
 
 /**规则信息*/
-export class RequestBasicRule extends PickType(RequestRoute, ['id']) {}
+export class BasicRule extends PickType(Route, ['id']) {}

@@ -2,7 +2,7 @@ import { Controller, Post, Get, Body, Query, Response } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
 import { ApiDecorator } from '@/decorator/compute.decorator'
 import { AlicloudService } from './alicloud.service'
-import { ResultNotice } from '@/interface/common.interface'
+import { Notice } from '@/interface/common.interface'
 import * as http from '@/interface/alicloud.interface'
 
 @ApiTags('基础模块')
@@ -35,7 +35,7 @@ export class BasicController {
 	@Post('/mobile-captcha')
 	@ApiDecorator({
 		operation: { summary: '发送手机验证码' },
-		response: { status: 200, description: 'OK', type: ResultNotice }
+		response: { status: 200, description: 'OK', type: Notice }
 	})
 	public async httpMobileCaptcha(@Body() body: http.RequestMobileCaptcha) {
 		return await this.alicloudService.httpMobileCaptcha(body, 6)

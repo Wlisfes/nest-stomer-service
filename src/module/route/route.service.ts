@@ -13,7 +13,7 @@ export class RouteService extends CoreService {
 	}
 
 	/**新增路由**/
-	public async httpCreateRoute(props: http.RequestCreateRoute) {
+	public async httpCreateRoute(props: http.CreateRoute) {
 		return await this.RunCatch(async i18n => {
 			await this.haveCreate({
 				model: this.entity.routeModel,
@@ -45,7 +45,7 @@ export class RouteService extends CoreService {
 	}
 
 	/**编辑路由**/
-	public async httpUpdateRoute(props: http.RequestUpdateRoute) {
+	public async httpUpdateRoute(props: http.UpdateRoute) {
 		return await this.RunCatch(async i18n => {
 			await this.haveUpdate(
 				{
@@ -83,7 +83,7 @@ export class RouteService extends CoreService {
 	}
 
 	/**编辑路由状态**/
-	public async httpTransferRoute(props: http.RequestTransferRoute) {
+	public async httpTransferRoute(props: http.TransferRoute) {
 		return await this.RunCatch(async i18n => {
 			await this.validator({
 				model: this.entity.routeModel,
@@ -98,7 +98,7 @@ export class RouteService extends CoreService {
 	}
 
 	/**路由信息**/
-	public async httpBasicRoute(props: http.RequestBasicRoute) {
+	public async httpBasicRoute(props: http.BasicRoute) {
 		return await this.RunCatch(async i18n => {
 			const node = await this.entity.routeModel
 				.createQueryBuilder('t')
@@ -164,7 +164,7 @@ export class RouteService extends CoreService {
 	}
 
 	/**新增接口规则**/
-	public async httpCreateRule(props: http.RequestCreateRule) {
+	public async httpCreateRule(props: http.CreateRule) {
 		return await this.RunCatch(async i18n => {
 			await this.haveCreate({
 				model: this.entity.routeModel,
@@ -194,7 +194,7 @@ export class RouteService extends CoreService {
 	}
 
 	/**编辑接口规则**/
-	public async httpUpdateRule(props: http.RequestUpdateRule) {
+	public async httpUpdateRule(props: http.UpdateRule) {
 		return await this.RunCatch(async i18n => {
 			await this.haveUpdate(
 				{
@@ -227,7 +227,7 @@ export class RouteService extends CoreService {
 	}
 
 	/**编辑接口规则状态**/
-	public async httpTransferRule(props: http.RequestTransferRule) {
+	public async httpTransferRule(props: http.TransferRule) {
 		return await this.RunCatch(async i18n => {
 			await this.validator({
 				model: this.entity.routeModel,
@@ -242,7 +242,7 @@ export class RouteService extends CoreService {
 	}
 
 	/**接口规则信息**/
-	public async httpBasicRule(props: http.RequestBasicRule) {
+	public async httpBasicRule(props: http.BasicRule) {
 		return await this.RunCatch(async i18n => {
 			return await this.validator({
 				model: this.entity.routeModel,
