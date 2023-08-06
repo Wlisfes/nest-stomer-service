@@ -1,5 +1,5 @@
 import { Controller, Post, Get, Put, Body, Query } from '@nestjs/common'
-import { ApiTags, getSchemaPath } from '@nestjs/swagger'
+import { ApiTags } from '@nestjs/swagger'
 import { ApiDecorator } from '@/decorator/compute.decorator'
 import { Notice } from '@/interface/common.interface'
 import { RouteService } from './route.service'

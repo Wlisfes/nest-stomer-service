@@ -1,5 +1,5 @@
 import { ApiOperationOptions, ApiResponseOptions, getSchemaPath } from '@nestjs/swagger'
-import { ApiOperation, ApiConsumes, ApiProduces, ApiResponse, ApiOkResponse, ApiBearerAuth } from '@nestjs/swagger'
+import { ApiOperation, ApiConsumes, ApiProduces, ApiResponse, ApiBearerAuth } from '@nestjs/swagger'
 import { applyDecorators } from '@nestjs/common'
 import { ApiBearer } from '@/guard/auth.guard'
 import { SwaggerOption } from '@/config/swagger-config'
@@ -25,7 +25,7 @@ export function ApiDecorator(option: Partial<Option> = {}) {
 
 	if (option.customize) {
 		decorator.push(
-			ApiOkResponse({
+			ApiResponse({
 				status: option.customize.status,
 				description: option.customize.description,
 				schema: {
