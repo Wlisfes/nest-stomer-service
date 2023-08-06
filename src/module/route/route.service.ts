@@ -100,66 +100,81 @@ export class RouteService extends CoreService {
 	/**路由信息**/
 	public async httpBasicRoute(props: http.BasicRoute) {
 		return await this.RunCatch(async i18n => {
-			const node = await this.entity.routeModel
-				.createQueryBuilder('t')
-				.leftJoinAndSelect('t.rule', 'rule', 'rule.status IN(:...status)', { status: ['enable', 'disable'] })
-				.where(
-					new Brackets(Q => {
-						Q.where('t.id = :id', { id: props.id })
-						Q.andWhere('t.status IN(:...status)', { status: ['enable', 'disable'] })
+			return await this.validator({
+				model: this.entity.routeModel,
+				name: i18n.t('route.name'),
+				empty: { value: true },
+				delete: { value: true },
+				options: {
+					join: { alias: 'tb' },
+					where: new Brackets(qb => {
+						qb.where('tb.id = :id', { id: props.id })
 					})
-				)
-				.getOne()
-			return await this.nodeValidator(
-				{ node, i18n },
-				{
-					name: i18n.t('route.name'),
-					empty: { value: true },
-					delete: { value: true }
 				}
-			)
+			})
 		})
 	}
 
 	/**动态路由节点**/
 	public async httpDynamicRoute() {
 		return await this.RunCatch(async i18n => {
-			const [list = [], total = 0] = await this.entity.routeModel
-				.createQueryBuilder('t')
-				.where(
-					new Brackets(Q => {
-						Q.andWhere('t.source IN(:...source)', { source: ['folder', 'menu'] })
+			return await this.batchValidator({
+				model: this.entity.routeModel,
+				name: i18n.t('route.name'),
+				options: {
+					join: { alias: 'tb' },
+					order: { order: 'DESC', id: 'DESC' },
+					where: new Brackets(qb => {
+						qb.where('tb.source IN(:...source)', { source: ['folder', 'menu'] })
 					})
-				)
-				.orderBy({ 't.order': 'DESC', 't.id': 'DESC' })
-				.getManyAndCount()
-			return {
-				total,
-				list: listToTree(list, ['enable'])
-			}
+				}
+			}).then(({ total, list }) => {
+				return {
+					total,
+					list: listToTree(list, ['enable'])
+				}
+			})
 		})
 	}
 
 	/**路由列表**/
 	public async httpColumnRoute() {
 		return await this.RunCatch(async i18n => {
-			const [list = [], total = 0] = await this.entity.routeModel
-				.createQueryBuilder('t')
-				.orderBy({ 't.order': 'DESC', 't.id': 'DESC' })
-				.getManyAndCount()
-			return { total, list: listToTree(list, ['enable', 'disable']) }
+			return await this.batchValidator({
+				model: this.entity.routeModel,
+				name: i18n.t('route.name'),
+				options: {
+					join: { alias: 'tb' },
+					order: { order: 'DESC', id: 'DESC' }
+				}
+			}).then(({ total, list }) => {
+				return {
+					total,
+					list: listToTree(list, ['enable', 'disable'])
+				}
+			})
 		})
 	}
 
 	/**路由权限列表**/
 	public async httpOptionsRoute() {
 		return await this.RunCatch(async i18n => {
-			const [list = [], total = 0] = await this.entity.routeModel
-				.createQueryBuilder('t')
-				.select(['t.id', 't.status', 't.title', 't.source', 't.parent', 't.order'])
-				.orderBy({ 't.order': 'DESC', 't.id': 'DESC' })
-				.getManyAndCount()
-			return { total, list: delChildren(listToTree(list, ['enable', 'disable'])) }
+			return await this.RunCatch(async i18n => {
+				return await this.batchValidator({
+					model: this.entity.routeModel,
+					name: i18n.t('route.name'),
+					options: {
+						join: { alias: 'tb' },
+						order: { order: 'DESC', id: 'DESC' },
+						select: ['id', 'status', 'title', 'source', 'parent', 'order']
+					}
+				}).then(({ total, list }) => {
+					return {
+						total,
+						list: delChildren(listToTree(list, ['enable', 'disable']))
+					}
+				})
+			})
 		})
 	}
 
