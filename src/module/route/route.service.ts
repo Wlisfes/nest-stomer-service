@@ -120,7 +120,6 @@ export class RouteService extends CoreService {
 		return await this.RunCatch(async i18n => {
 			return await this.batchValidator({
 				model: this.entity.routeModel,
-				name: i18n.t('route.name'),
 				options: {
 					join: { alias: 'tb' },
 					order: { order: 'DESC', id: 'DESC' },
@@ -142,7 +141,6 @@ export class RouteService extends CoreService {
 		return await this.RunCatch(async i18n => {
 			return await this.batchValidator({
 				model: this.entity.routeModel,
-				name: i18n.t('route.name'),
 				options: {
 					join: { alias: 'tb' },
 					order: { order: 'DESC', id: 'DESC' }
@@ -162,7 +160,6 @@ export class RouteService extends CoreService {
 			return await this.RunCatch(async i18n => {
 				return await this.batchValidator({
 					model: this.entity.routeModel,
-					name: i18n.t('route.name'),
 					options: {
 						join: { alias: 'tb' },
 						order: { order: 'DESC', id: 'DESC' },

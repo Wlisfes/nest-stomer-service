@@ -1,4 +1,4 @@
-import { Repository, FindOneOptions } from 'typeorm'
+import { Repository, FindOneOptions, FindManyOptions } from 'typeorm'
 
 export interface ICoreDator<T> {
 	name: string //模型名称
@@ -9,4 +9,9 @@ export interface ICoreDator<T> {
 	close?: { value: boolean; message?: string } //是否判断已关闭
 	model: Repository<T>
 	options?: FindOneOptions<T>
+}
+
+export type BatchOption<T> = {
+	model: Repository<T>
+	options?: FindOneOptions<T> | FindManyOptions<T>
 }

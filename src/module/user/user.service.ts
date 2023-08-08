@@ -65,7 +65,7 @@ export class UserService extends CoreService {
 				throw new HttpException(i18n.t('user.code.error'), HttpStatus.BAD_REQUEST)
 			}
 			const node = await this.entity.userModel.create({
-				uid: Date.now(),
+				uid: Number(Date.now() + this.createUIDNumber(3)),
 				nickname: props.nickname,
 				password: props.password,
 				mobile: props.mobile
@@ -221,7 +221,6 @@ export class UserService extends CoreService {
 			})
 			const { list } = await this.batchValidator({
 				model: this.entity.routeModel,
-				name: i18n.t('route.rule'),
 				options: { where: { id: In(props.route) } }
 			}).then(async data => {
 				return await divineHandler(
@@ -251,15 +250,17 @@ export class UserService extends CoreService {
 	/**用户列表**/
 	public async httpColumnUser(props: http.ColumnUser) {
 		return await this.RunCatch(async i18n => {
-			const [list = [], total = 0] = await this.entity.userModel
-				.createQueryBuilder('t')
-				.where(new Brackets(Q => {}))
-				.orderBy({ 't.createTime': 'DESC' })
-				.skip((props.page - 1) * props.size)
-				.take(props.size)
-				.getManyAndCount()
-
-			return { size: props.size, page: props.page, total, list }
+			return await this.batchValidator({
+				model: this.entity.userModel,
+				options: {
+					join: { alias: 'tb' },
+					order: { createTime: 'DESC' },
+					skip: (props.page - 1) * props.size,
+					take: props.size
+				}
+			}).then(({ list, total }) => {
+				return { size: props.size, page: props.page, total, list }
+			})
 		})
 	}
 }

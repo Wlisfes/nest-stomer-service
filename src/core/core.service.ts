@@ -1,13 +1,13 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common'
 import { usuCurrent } from '@/i18n'
-import { ICoreDator } from './core.interface'
+import { ICoreDator, BatchOption } from './core.interface'
 import * as moment from 'dayjs'
 import * as Nanoid from 'nanoid'
 
 @Injectable()
 export class CoreService {
-	public createUIDNumber(size: number = 18) {
-		return Nanoid.customAlphabet('1234567890')(size)
+	public createUIDNumber(size: number = 18, custom: string = '123456789') {
+		return Nanoid.customAlphabet(custom)(size)
 	}
 
 	/**创建国际化实例**/
@@ -74,7 +74,7 @@ export class CoreService {
 	}
 
 	/**批量验证数据模型是否有效**/
-	public async batchValidator<T>(props: ICoreDator<T>): Promise<{ list: Array<T>; total: number }> {
+	public async batchValidator<T>(props: BatchOption<T>): Promise<{ list: Array<T>; total: number }> {
 		return await this.RunCatch(async i18n => {
 			const [list = [], total = 0] = await props.model.findAndCount(props.options)
 			return { list, total }
