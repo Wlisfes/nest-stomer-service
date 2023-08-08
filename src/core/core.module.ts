@@ -1,4 +1,5 @@
 import { Module, Global } from '@nestjs/common'
+import { ScheduleModule } from '@nestjs/schedule'
 import { CoreService } from '@/core/core.service'
 import { EntityService } from '@/core/entity.service'
 import { RedisService } from '@/core/redis.service'
@@ -18,6 +19,7 @@ import { ChacterEntity } from '@/entity/chacter.entity'
 @Module({
 	imports: [
 		TypeOrmModule.forFeature([UserEntity, RouteEntity, ChacterEntity]),
+		ScheduleModule.forRoot(),
 		BasicModule,
 		DispatchModule,
 		WeChatModule,

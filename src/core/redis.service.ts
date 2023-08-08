@@ -1,9 +1,18 @@
 import { Injectable } from '@nestjs/common'
 import { InjectRedis, Redis } from '@nestjs-modules/ioredis'
+import { Interval } from '@nestjs/schedule'
+import { divineHandler } from '@/utils/utils-common'
 
 @Injectable()
 export class RedisService {
 	constructor(@InjectRedis() private readonly client: Redis) {}
+
+	@Interval(30000)
+	private async beatInterval() {
+		return await divineHandler(process.env.NODE_ENV.trim() === 'development', () => {
+			this.client.ping()
+		})
+	}
 
 	/**redis存储**/
 	public async setStore(key: string, data: any, seconds?: number) {

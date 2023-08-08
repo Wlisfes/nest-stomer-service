@@ -56,9 +56,7 @@ import * as path from 'path'
 					host: config.get('REDIS_HOST'),
 					port: parseInt(config.get('REDIS_PORT')),
 					password: config.get('REDIS_PASSWORD'),
-					db: parseInt(config.get('REDIS_DB')),
-					lazyConnect: false,
-					keepAlive: true
+					db: parseInt(config.get('REDIS_DB'))
 				}
 			})
 		}),
